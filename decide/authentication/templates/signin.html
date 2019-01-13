@@ -1,0 +1,123 @@
+{% extends "base_template.html" %}
+{% load i18n static %}
+
+{% block content %}
+
+{% load account socialaccount %}
+
+
+{% if not user.is_authenticated %}
+	<div>
+		<h1>Sign in</h1>
+		<h2>Please enter your username and your password</h2>
+	</div>
+
+    <div id="login">
+        <p>If you have not created an account yet, then please <button onClick="window.location.href='../sign-up'">Sign up</button></p>
+        <label for="username">{% trans "Username" %}</label>
+        <input type="text" id="username" name="username" value=""/>
+        <br/>
+        <label for="password">{% trans "Password" %}</label>
+        <input type="password" id="password" name="password" value=""/>
+        <br/>
+        <input type="submit" value="{% trans "Login" %}" onClick="decideLogin()"/>
+    </div>
+	<!--<div>
+		<h3>{% trans "Log in with Facebook"%}</h3><a href="/"><img src="{% static 'facebook.png'%}" width="5%"></a> <br>
+
+		<h3>{% trans "Log in with Google"%}</h3><a href="https://accounts.google.com/signin/oauth?client_id=479028502719-ums97b8c1dmn9hmdugmuibcrbma4eq9i.apps.googleusercontent.com&as=qobA5BlwcQ10YnJYV0XhYQ&destination=http://localhost:8000&approval_state=!ChRmSmJoXzFBTGpRVmUxTWF0ZXhFdxIfazdRVEdzWGVaYkFaUUhVU2RlLXNqMHdyTmhQZGVSWQ%E2%88%99APNbktkAAAAAXBEkwGfnjHdZJHm7Spd9NS2jujltYATo&oauthgdpr=1&xsrfsig=AHgIfE8mb8oaNe8w90CvpDhVcP6GBYkr6w"><img src="{% static 'google.jpg'%}" width="7%"></a> <br>
+	</div-->
+
+	{% get_providers as socialaccount_providers %}
+	{% if socialaccount_providers %}
+	<div class="socialaccount_ballot">
+
+	  <ul class="socialaccount_providers">
+	    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+	  </ul>
+
+	</div>
+
+	{% endif %}
+
+
+
+
+  {% endif %}
+
+{% endblock %}
+{% block extrabody %}
+
+    <script>
+        var token = null;
+        var user = null;
+
+        function postData(url, data) {
+          // Default options are marked with *
+          var fdata = {
+            body: JSON.stringify(data),
+            headers: {
+              'content-type': 'application/json',
+            },
+            method: 'POST',
+          };
+
+          if (token) {
+              fdata.headers['Authorization'] = 'Token ' + token;
+          }
+
+          return fetch(url, fdata)
+          .then(response => {
+            if (response.status === 200 || response.status === 201) {
+                return response.json();
+            } else {
+                return Promise.reject(response.statusText);
+            }
+          });
+        }
+
+
+        function decideUser() {
+            var data = { token: token };
+            postData("{{auth_url}}" + "/authentication/getuser/", data)
+              .then(data => {
+                user = data;
+
+              }).catch(error => {
+                alert("Error:" + error);
+              });
+        }
+
+        function decideLogin() {
+            var data = {
+                username: document.querySelector("#username").value,
+                password: document.querySelector("#password").value,
+            };
+            postData("{{auth_url}}" + "/rest-auth/login/", data)
+              .then(data => {
+                document.cookie = 'decide='+data.key+'; path=/';
+                token = data.key;
+                decideUser();
+                window.location.href = "/";
+              })
+              .catch(error => {
+                alert("Error:" + error);
+                console.error(error);
+              });
+        }
+
+        function init() {
+            var cookies = document.cookie.split("; ");
+            cookies.forEach((c) => {
+                var cs = c.split("=");
+                if (cs[0] == 'decide' && cs[1]) {
+                    token = cs[1];
+                    decideUser();
+                }
+            });
+        }
+
+        init();
+    </script>
+</body>
+{% endblock %}

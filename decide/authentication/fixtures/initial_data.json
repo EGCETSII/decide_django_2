@@ -1,0 +1,59 @@
+[
+  {
+    "model": "socialaccount.socialapp",
+    "pk": 100,
+    "fields": {
+      "provider": "facebook",
+      "name": "Facebook App",
+      "client_id": "2046681465554360",
+      "secret": "ef8d0a022314910a0ce88632c13e9c8d"
+    }
+  },
+
+  {
+    "model": "socialaccount.socialapp_sites",
+    "pk": 100,
+    "fields": {
+      "socialapp_id": 100,
+      "site_id": 1
+    }
+  },
+    {
+    "model": "socialaccount.socialapp",
+    "pk": 200,
+    "fields": {
+      "provider": "twitter",
+      "name": "Twitter App",
+      "client_id": "APxkDJTHAnzsUDHfdFDSJ39a4",
+      "secret": "5K6G55WZZrBjdWr7sdoz1XvlNxnoJ60YvIT1wYCGtsNJDfWmQg"
+    }
+  },
+
+  {
+    "model": "socialaccount.socialapp_sites",
+    "pk": 200,
+    "fields": {
+      "socialapp_id": 200,
+      "site_id": 1
+    }
+  }
+  {
+      "model": "socialaccount.socialapp",
+      "pk": 300,
+      "fields": {
+        "provider": "google",
+        "name": "Google App",
+        "client_id": "479028502719-ums97b8c1dmn9hmdugmuibcrbma4eq9i.apps.googleusercontent.com",
+        "secret": "nVRxIFx56EMbWJGsatqVIyhv"
+      }
+    },
+
+    {
+      "model": "socialaccount.socialapp_sites",
+      "pk": 300,
+      "fields": {
+        "socialapp_id": 300,
+        "site_id": 1
+      }
+    }
+]

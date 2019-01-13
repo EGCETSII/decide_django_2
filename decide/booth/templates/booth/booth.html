@@ -1,20 +1,24 @@
-{% extends "base.html" %}
+{% extends "base_template.html" %}
 {% load i18n static %}
 
 {% block content %}
     <h1>{{ voting.id }} - {{ voting.name }}</h1>
 
     <div id="login">
+        <p>If you have not created an account yet, then please <button onClick="window.location.href='/authentication/sign-up'">Sign up</button></p>
         <label for="username">{% trans "Username" %}</label>
         <input type="text" id="username" name="username" value=""/>
         <br/>
         <label for="password">{% trans "Password" %}</label>
-        <input type="password" id="password" name="username" value=""/>
+        <input type="password" id="password" name="password" value=""/>
         <br/>
         <input type="submit" value="{% trans "Login" %}" onClick="decideLogin()"/>
     </div>
 
     <div id="voting">
+        {% load account %}
+        {% user_display user as name %}
+        {% blocktrans %}Successfully signed in as {{name}}.{% endblocktrans %}
         <a href="#" onClick="decideLogout()">{% trans "logout" %}</a>
         <h2>{{ voting.question.desc }}</h2>
 
@@ -26,6 +30,7 @@
 
         <input type="submit" value="{% trans "Vote" %}" onClick="decideSend()"/>
     </div>
+
 {% endblock %}
 
 {% block extrabody %}
@@ -49,6 +54,8 @@
         };
 
         var token = null;
+        var csrftoken = null;
+        var csrftoken_value = null;
         var user = null;
 
         function postData(url, data) {
@@ -60,11 +67,12 @@
             },
             method: 'POST',
           };
-
           if (token) {
               fdata.headers['Authorization'] = 'Token ' + token;
           }
-
+          if(csrftoken_value){
+              fdata.headers['X-CSRFToken'] = csrftoken_value;
+          }
           return fetch(url, fdata)
           .then(response => {
             if (response.status === 200) {
@@ -78,6 +86,7 @@
         function decideEncrypt() {
             var msg = document.querySelector("input[name=question]:checked").value;
             var bigmsg = BigInt.fromJSONObject(msg);
+            console.log(bigmsg);
             var cipher = ElGamal.encrypt(bigpk, bigmsg);
             return cipher;
         }
@@ -89,10 +98,10 @@
                 voting: {{voting.id}},
                 voter: user.id,
                 token: token
-            }
+            };
             postData("{{store_url}}" + "/store/", data)
               .then(data => {
-                alert("{% trans "Conglatulations. Your vote has been sent" %}")
+                alert("{% trans "Congratulations. Your vote has been sent" %}");
                 console.log(v);
               })
               .catch(error => {
@@ -102,21 +111,23 @@
         }
 
         function decideLogout() {
-            var data = { token: token };
-            postData("{{auth_url}}" + "/authentication/logout/", data);
+            postData("{{auth_url}}" + "/rest-auth/logout/");
 
             token = null;
             user = null;
-            document.cookie = 'decide=;';
+            document.cookie = 'decide=;csrftoken=; path=/';
             panel('login');
+            window.location.href = "/authentication/logout";
         }
 
         function decideUser() {
-            var data = { token: token };
+            var data = { token: token , csrftoken: csrftoken_value };
             postData("{{auth_url}}" + "/authentication/getuser/", data)
               .then(data => {
                 user = data;
-                panel('voting');
+                if(user.id){
+                    panel('voting');
+                }
               }).catch(error => {
                 alert("{% trans "Error: " %}" + error);
               });
@@ -127,10 +138,10 @@
                 username: document.querySelector("#username").value,
                 password: document.querySelector("#password").value,
             };
-            postData("{{auth_url}}" + "/authentication/login/", data)
+            postData("{{auth_url}}" + "/rest-auth/login/", data)
               .then(data => {
-                document.cookie = 'decide='+data.token+';';
-                token = data.token;
+                document.cookie = 'decide='+data.key+'; path=/';
+                token = data.key;
                 decideUser();
               })
               .catch(error => {
@@ -139,7 +150,7 @@
               });
         }
 
-        function panel(p) {
+         function panel(p) {
             switch(p) {
                 case 'login':
                     document.querySelector("#voting").style.display = "none";
@@ -155,7 +166,7 @@
 
         function init() {
             panel('login');
-
+            
             var cookies = document.cookie.split("; ");
             cookies.forEach((c) => {
                 var cs = c.split("=");
@@ -163,10 +174,16 @@
                     token = cs[1];
                     decideUser();
                 }
+
+                if(cs[0] == 'csrftoken' && cs[1]){
+                    csrftoken_value = cs[1];
+                    decideUser();
+                }
             });
         }
-
         init();
     </script>
 </body>
 {% endblock %}
+
+

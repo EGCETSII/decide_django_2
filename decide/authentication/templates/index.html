@@ -1,0 +1,84 @@
+{% extends 'base_template.html' %}
+{% load i18n static %}
+
+{% block content %}
+  <h1>Welcome to Decide Locaste! Your web platform for voting</h1>
+	{% if user.is_authenticated %}
+    <div>
+      {% load account %}
+      {% user_display user as name %}
+      {% blocktrans %}Successfully signed in as {{name}}.{% endblocktrans %}
+      <button onClick="decideLogout()">{% trans "logout" %}</button>
+    </div>
+  {% else %}
+    <div>
+      <button type="button" value="Sign in" onclick="window.location.href='authentication/sign-in'">Sign in</button>
+      <button type="button" value="Sign up" onclick="window.location.href='authentication/sign-up'">Sign up</button>
+    </div>
+  {% endif %}
+{% endblock %}
+
+
+{% block extrabody %}
+    <script>
+        var token = null;
+        var user = null;
+
+        function decideUser() {
+          var data = { token: token };
+          postData("{{auth_url}}" + "/authentication/getuser/", data)
+            .then(data => {
+              user = data;
+
+            }).catch(error => {
+              alert("{% trans "Error: " %}" + error);
+            });
+        }
+
+        function postData(url, data) {
+                // Default options are marked with *
+          var fdata = {
+            body: JSON.stringify(data),
+            headers: {
+              'content-type': 'application/json',
+            },
+            method: 'POST',
+          };
+
+          if (token) {
+              fdata.headers['Authorization'] = 'Token ' + token;
+          }
+
+          return fetch(url, fdata)
+          .then(response => {
+            if (response.status === 200 || response.status === 201) {
+                return response.json();
+            } else {
+                return Promise.reject(response.statusText);
+            }
+          });
+        }
+
+        function decideLogout() {
+
+          token = null;
+          user = null;
+          document.cookie = 'decide=; path=/';
+          window.location.href = "accounts/logout/";
+        }
+
+        function init() {
+          var cookies = document.cookie.split("; ");
+          cookies.forEach((c) => {
+              var cs = c.split("=");
+              if (cs[0] == 'decide' && cs[1]) {
+                  token = cs[1];
+                  decideUser();
+              }
+          });
+        }
+
+        init();
+
+    </script>
+    {% endblock %}

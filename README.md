@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/EGC-Decide/locaste.svg?branch=master)](https://travis-ci.org/EGC-Decide/locaste)
+
 Plataforma voto electrónico educativa
 =====================================
 
