@@ -1,3 +1,5 @@
+https://travis-ci.org/carmenJaraAlvarez/decide.svg?branch=master
+
 Plataforma voto electrónico educativa
 =====================================
 
