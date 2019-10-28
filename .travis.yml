@@ -12,7 +12,8 @@ before_script:
   - psql -U postgres -c "ALTER USER decide CREATEDB"
 language: python
 python:
-  - "3.6"
+  - "2.7"
+  - "3.3"
 install:
   - pip install -r requirements.txt
   - pip install codacy-coverage
@@ -21,3 +22,4 @@ script:
   - coverage run --branch --source=. ./manage.py test --keepdb --with-xunit
   - coverage xml
   - python-codacy-coverage -r coverage.xml
+  - flake8 .
