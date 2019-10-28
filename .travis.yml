@@ -5,6 +5,7 @@ services:
 addons:
   postgresql: "9.4"
 before_script:
+  - cd decide
   - cp local_settings.travis.py local_settings.py
   - psql -U postgres -c "create user decide password 'decide'"
   - psql -U postgres -c "create database test_decide owner decide"
@@ -17,7 +18,6 @@ install:
   - pip install codacy-coverage
   - pip install flake8
 script:
-  - cd decide
   - coverage run --branch --source=. ./manage.py test --keepdb --with-xunit
   - coverage xml
   - python-codacy-coverage -r coverage.xml
