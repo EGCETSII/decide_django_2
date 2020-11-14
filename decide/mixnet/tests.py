@@ -157,13 +157,11 @@ class MixnetCase(APITestCase):
 
         self.assertNotEqual(clear, clear2)
         self.assertEqual(sorted(clear), sorted(clear2))
-'''
+
     def test_multiple_auths_mock(self):
-        '''
         '''
         This test emulates a two authorities shuffle and decryption.
         '''
-    '''
         data = {
             "voting": 1,
             "auths": [
@@ -176,9 +174,7 @@ class MixnetCase(APITestCase):
         pk = key["p"], key["g"], key["y"]
 
         clear = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-        encrypt = self.encrypt_msgs(clear, pk)
-
-        data = { "msgs": encrypt, "pk": key }
+        encrypt = self.encrypt_msgs(clear, pk        data = { "msgs": encrypt, "pk": key }
         response = self.client.post('/mixnet/shuffle/1/', data, format='json')
         shuffled = response.json()
         self.assertNotEqual(shuffled, encrypt)
@@ -188,5 +184,4 @@ class MixnetCase(APITestCase):
         clear1 = response.json()
 
         self.assertNotEqual(clear, clear1)
-        self.assertEqual(sorted(clear), sorted(clear1))
-'''        
+        self.assertEqual(sorted(clear), sorted(clear1))     
