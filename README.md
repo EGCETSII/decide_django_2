@@ -1,4 +1,9 @@
-[![Build Status](https://travis-ci.com/wadobo/decide.svg?branch=master)](https://travis-ci.com/wadobo/decide) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/94a85eaa0e974c71af6899ea3b0d27e0)](https://www.codacy.com/app/Wadobo/decide?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wadobo/decide&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/94a85eaa0e974c71af6899ea3b0d27e0)](https://www.codacy.com/app/Wadobo/decide?utm_source=github.com&utm_medium=referral&utm_content=wadobo/decide&utm_campaign=Badge_Coverage)
+[![Build Status](https://travis-ci.org/AndresJRamirez/decide.svg?branch=master)](https://travis-ci.org/AndresJRamirez/decide)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6f738bc832d84dbda8caf4dc772bd244)](https://www.codacy.com/manual/AndresJRamirez/decide?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AndresJRamirez/decide&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/6f738bc832d84dbda8caf4dc772bd244)](https://www.codacy.com/manual/AndresJRamirez/decide?utm_source=github.com&utm_medium=referral&utm_content=AndresJRamirez/decide&utm_campaign=Badge_Coverage)
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/94a85eaa0e974c71af6899ea3b0d27e0)](https://www.codacy.com/app/Wadobo/decide?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wadobo/decide&amp;utm_campaign=Badge_Grade) 
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/94a85eaa0e974c71af6899ea3b0d27e0)](https://www.codacy.com/app/Wadobo/decide?utm_source=github.com&utm_medium=referral&utm_content=wadobo/decide&utm_campaign=Badge_Coverage)
 
 Plataforma voto electrónico educativa
 =====================================
