@@ -2,13 +2,61 @@
 <html>
     <head>
         <meta charset="utf-8" />
+        <!-- materialize.css -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        
         <title>{% block title %}Decide!{% endblock %}</title>
         {% block extrahead %}{% endblock %}
     </head>
     <body>
+
+        <div class="navbar-fixed">
+            
+            <!-- Navbar dropdown menu-->
+            <ul id="navbar-dropdown" class="dropdown-content">
+                <li><a href="/admin">Administrator dashboard</a></li>
+            </ul>
+
+            <nav>
+                <div class="nav-wrapper blue-grey darken-4">
+                    <a href="#" class="brand-logo center">Decide!</a>
+                        <ul id="nav-mobile" class="right active blue-grey darken-3">
+                            <li><a class="dropdown-trigger center " data-target="navbar-dropdown" style="width: 15em !important">Menu<i class="material-icons right">arrow_drop_down</i></a></li>
+                        </ul>
+                </div>
+            </nav>
+
+            <script>
+                    $(document).ready(function(){
+                        $('.modal').modal();
+                        $(".dropdown-trigger").dropdown({
+                            coverTrigger: false
+                        });
+                    });
+            </script>
+
+        </div>
+
+
         {% block content %}
         {% endblock %}
 
         {% block extrabody %}{% endblock %}
-    </body>
+        
+
+        <div class="footer">
+            <footer class="page-footer blue-grey darken-4" style="position:fixed;bottom:0;left:0;width:100%;">
+                <div class="right-align footer-copyright blue-grey darken-4">
+                    <div class="container">
+                        <span><a class="grey-text text-lighten-4" target="_blank" href="https://github.com/egc-articuno/decide/">© 2019-2020 Decide-Articuno</a> - AGPLv3.0</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Materialize JavaScript. Keep at the end of body for optimized loading-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.js"></script>
+        </body>
 </html>

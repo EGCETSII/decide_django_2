@@ -101,3 +101,9 @@ ENV/
 .mypy_cache/
 
 .vagrant
+
+# macOS
+.DS_Store
+
+#node_modules for angular app
+node_modules/

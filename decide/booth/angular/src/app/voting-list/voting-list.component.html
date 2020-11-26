@@ -1,0 +1,11 @@
+
+<div class="list-group">
+  <a *ngFor='let voting of votings' href="#" class="list-group-item list-group-item-action active">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{voting.name}}</h5>
+      <small>{{ voting.start_date | date }}</small>
+    </div>
+    <p class="mb-1">{{ voting.desc }}</p>
+    <small>Id: {{ voting.id }}</small>
+  </a>
+</div>

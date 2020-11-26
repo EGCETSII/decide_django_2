@@ -1,0 +1,3 @@
+[submodule "decide-telegram-bot"]
+	path = decide-telegram-bot
+	url = https://github.com/javdc/decide-telegram-bot.git
