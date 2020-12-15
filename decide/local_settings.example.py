@@ -2,12 +2,6 @@ ALLOWED_HOSTS = ["*"]
 
 # Modules in use, commented modules that you won't use
 MODULES = [
-    'authentication',
-    'base',
-    'booth',
-    'census',
-    'mixnet',
-    'postproc',
     'store',
     'visualizer',
     'voting',
@@ -25,7 +19,7 @@ APIS = {
     'voting': 'http://10.5.0.1:8000',
 }
 
-BASEURL = 'http://10.5.0.1:8000'
+BASEURL = 'localhost'
 
 DATABASES = {
     'default': {
