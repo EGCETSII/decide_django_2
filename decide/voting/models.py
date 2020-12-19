@@ -2,9 +2,11 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from django.core.validators import MaxValueValidator, MinValueValidator
 from base import mods
 from base.models import Auth, Key
+from django.db.models import Max,Min
+
 
 #Votaciones binarias
 # MODELO DE VOTACION BINARIA
@@ -137,6 +139,17 @@ class VotacionPreferencia(models.Model):
     def __str__(self):
         return self.titulo
 
+    # DEVUELVE EL NÚMERO DE PREGUNTAS QUE TIENE ASOCIDADA UNA VOTACION DE PREFERENCIA
+    def Numero_De_Preguntas_Preferencia(self):
+        return PreguntaPreferencia.objects.filter(votacionPreferencia_id=self.id).count()
+
+    # AÑADE UNA PREGUNTA PREFERENCIA  A LA VOTACION PREFERENCIA
+    # A LA HORA DE CREAR LA PREGUNTA PREFERENCIA SOLO ES NECESARIO INDICARLE EL ATRIBUTO TEXTOPREGUNTA
+     # LA FUNCION SE ENCARGA DE ASOCIAR LA PREGUNTA PREFERENCIA  A LA VOTACION PREFERENCIA QUE SE LE HA INDICADO
+    def addPreguntaPreferencia(self, preguntaPreferencia):
+        preguntaPreferencia.votacionPreferencia = self
+        preguntaPreferencia.save()
+
 class PreguntaPreferencia(models.Model):
     id = models.AutoField(primary_key=True)
     votacionPreferencia = models.ForeignKey(VotacionPreferencia,on_delete = models.CASCADE)
@@ -146,6 +159,17 @@ class PreguntaPreferencia(models.Model):
     def __str__(self):
         return self.textoPregunta
 
+    # DEVUELVE EL NÚMERO DE OPCIONES QUE TIENE LA PREGUNTA
+    def Numero_De_Opciones(self):
+        return OpcionRespuesta.objects.filter(preguntaPreferencia_id=self.id).count()
+
+    # AÑADE UNA  OPCION RESPUESTA A LA PREGUNTA PREFERENCIA
+    # A LA HORA DE CREAR LA OPCION RESPUESTA SOLO ES NECESARIO INDICARLE EL ATRIBUTO NOMBRE_OPCION
+    # LA FUNCION SE ENCARGA DE ASOCIAR LA OPCION RESPUESTA  A LA PREGUNTA PREFERENCIA  QUE SE LE HA INDICADO
+    def addOpcionRespuesta(self, opcionRespuesta):
+        opcionRespuesta.preguntaPreferencia = self
+        opcionRespuesta.save()
+
 class OpcionRespuesta(models.Model):
     id = models.AutoField(primary_key=True)
     preguntaPreferencia = models.ForeignKey(PreguntaPreferencia,on_delete = models.CASCADE)
@@ -154,6 +178,43 @@ class OpcionRespuesta(models.Model):
         return self.preguntaPreferencia.textoPregunta
     def __str__(self):
         return self.nombre_opcion
+
+    # AÑADE UNA  RESPUESTA PREFERENCIA A LA OPCION RESPUESTA
+    # A LA HORA DE CREAR LA RESPUESTA PREFERENCIA SOLO ES NECESARIO INDICARLE EL ATRIBUTO ORDEN_PREFERENCIA
+    # LA FUNCION SE ENCARGA DE ASOCIAR LA RESPUESTA PREFERENCIA  A LA OPCION RESPUESTA  QUE SE LE HA INDICADO
+    def addRespuetaPreferencia(self, respuestaPreferencia):
+        respuestaPreferencia.opcionRespuesta = self
+        respuestaPreferencia.save()
+
+    # DEVUELVE LA MEDIA DE PREFERENCIA DE LA OPCION EN FUNCION DE LAS RESPUESTAS QUE SE HAN DADO EN ESA OPCION
+    def Media_Preferencia(self):
+        respuestas = RespuestaPreferencia.objects.filter(opcionRespuesta=self.id).values('orden_preferencia')
+        n_respuestas = len(respuestas)
+        if n_respuestas == 0:  ##EVITAR DIVISIÓN POR CERO
+            n_respuestas = 1
+        total = 0
+        for value in respuestas:
+            total = total + value['orden_preferencia']
+        return total / n_respuestas
+
+    # POR CADA OPCION DEVUELVE UN DICCIONARIO CON EL SIGUIENTE FORMATO:
+    # (POS1: X veces), (POS2, Y veces),...,(POS N : Z veces)
+    # DONDE POS es la posición de preferencia donde se ha puesto dicha opcion y 'X' es el nº de veces que se ha puesto en esa posicion
+    def Respuestas_Opcion(self):
+        respuestas = RespuestaPreferencia.objects.filter(opcionRespuesta=self.id).values('orden_preferencia')
+        result = {}
+
+        for value in respuestas:
+            if value['orden_preferencia'] in result:
+                result[value['orden_preferencia']] = result[value['orden_preferencia']] + 1
+            else:
+                result[value['orden_preferencia']] = 1
+
+        for key in result:
+            result[key] = str(result[key]) + " veces"
+
+        print(result)
+        return sorted(result.items())
 
 class RespuestaPreferencia(models.Model):
     id = models.AutoField(primary_key=True)
