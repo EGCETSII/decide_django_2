@@ -25,6 +25,33 @@ class RespuestaBinaria(models.Model):
     def Nombre_Votacion(self):
         return self.votacionBinaria.titulo
 
+#Votaciones normales
+
+#MODELO DE VOTACIONES
+class Votacion(models.Model):
+    id = models.AutoField(primary_key=True)
+    titulo = models.CharField(max_length=60)
+    descripcion = models.TextField()
+    def __str__(self):
+        return self.titulo
+
+#MODELO DE PREGUNTAS
+class Pregunta(models.Model):
+    id = models.AutoField(primary_key=True)
+    votacion = models.ForeignKey(Votacion,on_delete = models.CASCADE)
+    textoPregunta = models.CharField(max_length=50)
+    def Nombre_Votacion(self):
+        return self.votacion.titulo
+    def __str__(self):
+        return self.textoPregunta
+
+#Modelo de Respuesta
+class Respuesta(models.Model):
+    id = models.AutoField(primary_key=True)
+    pregunta = models.ForeignKey(Pregunta,on_delete = models.CASCADE)
+    respuesta = models.IntegerField(validators=[MaxValueValidator(10), MinValueValidator(0)])
+    def Nombre_Pregunta(self):
+        return self.pregunta.textoPregunta
 
 class Question(models.Model):
     desc = models.TextField()
