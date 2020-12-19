@@ -6,6 +6,25 @@ from django.dispatch import receiver
 from base import mods
 from base.models import Auth, Key
 
+#Votaciones binarias
+# MODELO DE VOTACION BINARIA
+class VotacionBinaria(models.Model):
+    id = models.AutoField(primary_key=True)
+    titulo = models.CharField(max_length=60)
+    descripcion = models.TextField()
+    
+    def __str__(self):
+        return self.titulo
+        
+
+#MODELO DE RESPUESTA BINARIA
+class RespuestaBinaria(models.Model):
+    id = models.AutoField(primary_key=True)
+    votacionBinaria = models.ForeignKey(VotacionBinaria,on_delete = models.CASCADE)
+    respuesta = models.BooleanField(choices =[(1,('Sí')),(0,('No'))])
+    def Nombre_Votacion(self):
+        return self.votacionBinaria.titulo
+
 
 class Question(models.Model):
     desc = models.TextField()
