@@ -98,6 +98,36 @@ class Respuesta(models.Model):
     def Nombre_Pregunta(self):
         return self.pregunta.textoPregunta
 
+
+# VOTACIONES MÚLTIPLES
+class VotacionMultiple(models.Model):
+    id = models.AutoField(primary_key=True)
+    titulo = models.CharField(max_length=60)
+    descripcion = models.TextField()
+
+    def __str__(self):
+        return self.titulo
+
+
+class PreguntaMultiple(models.Model):
+    id = models.AutoField(primary_key=True)
+    votacionMultiple = models.ForeignKey(VotacionMultiple,on_delete = models.CASCADE)
+    textoPregunta = models.CharField(max_length=50)
+    def Nombre_VotacionMultiple(self):
+        return self.votacionMultiple.titulo
+    def __str__(self):
+        return self.textoPregunta
+
+class OpcionMultiple(models.Model):
+    id = models.AutoField(primary_key=True)
+    preguntaMultiple = models.ForeignKey(PreguntaMultiple,on_delete = models.CASCADE)
+    nombre_opcion = models.CharField(max_length=100)
+    n_votado = models.PositiveIntegerField(blank=True, null=True,default=0)
+
+    def __str__(self):
+        return self.nombre_opcion
+    def Nombre_Pregunta_Multiple(self):
+        return self.preguntaMultiple.textoPregunta
 class Question(models.Model):
     desc = models.TextField()
 
