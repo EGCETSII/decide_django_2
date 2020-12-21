@@ -1,25 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import Login from './components/Login';
+import Voting from './components/Voting';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentUser: null,
+            keybits : window.KEYBITS,
+            urlLogin : window.urlLogin,
+            urlStore : window.urlStore,
+            urlGetUser : window.urlGetUser,
+            urlLogout : window.urlLogout,
+            voting : window.votingData,
+        };
+    }
+
+
+    setCurrentUser(user) {
+        this.setState({currentUser:user});
+    }
+
+    render() {
+        return(
+            <div className="App">
+                {!this.state.currentUser ? 
+                    <Login setCurrentUser={this.setCurrentUser.bind(this)} />
+                    : 
+                    <Voting voting={this.state.voting} user={this.state.currentUser} /> }
+            </div>);
+    }
 }
 
 export default App;

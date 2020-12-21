@@ -25,10 +25,23 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+    <script type="text/javascript">
+      var votingData = {{voting|safe}}
+      var KEYBITS = {{KEYBITS}}
+      var urlLogin = "{% url "gateway" "authentication" "/login/" %}"
+      var urlStore = "{% url "gateway" "store" "/" %}"
+      var urlGetUser = "{% url "gateway" "authentication" "/getuser/" %}"
+      var urlLogout = "{% url "gateway" "authentication" "/logout/" %}"
+    </script>
   </head>
   <body>
+
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!--input type="hidden" value={{voting}} id="voting"/> 
+    <input type="hidden" value={{KEYBITS}} id="KEYBITS"/> 
+    -->
     <div id="root"></div>
+    
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -39,5 +52,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-  </body>
+
+    </body>
 </html>
