@@ -28,7 +28,10 @@
     <script type="text/javascript">
       var votingData = {{voting|safe}}
       var KEYBITS = {{KEYBITS}}
-      var urlGateway = "{% url "gateway" "authentication" "/login/" %}"
+      var urlLogin = "{% url "gateway" "authentication" "/login/" %}"
+      var urlStore = "{% url "gateway" "store" "/" %}"
+      var urlGetUser = "{% url "gateway" "authentication" "/getuser/" %}"
+      var urlLogout = "{% url "gateway" "authentication" "/logout/" %}"
     </script>
   </head>
   <body>

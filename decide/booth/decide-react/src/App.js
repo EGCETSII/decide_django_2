@@ -4,7 +4,10 @@ import React from 'react';
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Form from 'react-bootstrap/Form'
-import FormText from 'react-bootstrap/FormCheckInput'
+import Label from 'react-bootstrap/FormLabel'
+import Control from 'react-bootstrap/FormControl'
+import Button from 'react-bootstrap/Button'
+
 import FormGroup from 'react-bootstrap/FormGroup'
 import axios from 'axios'
 
@@ -13,6 +16,10 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      urlLogin : window.urlLogin,
+      urlStore : window.urlStore,
+      urlGetUser : window.urlGetUser,
+      urlLogout : window.urlLogout,
       keybits : window.KEYBITS,
       voting : window.votingData,
       selected : "",
@@ -23,8 +30,8 @@ class App extends React.Component {
       token : null,
       user : null,
       form : {
-        username: "votante3",
-        password: "1234abcd"
+        username: "",
+        password: ""
       }
     };
 
@@ -35,7 +42,8 @@ class App extends React.Component {
 
   onSubmitLogin(event) {
     event.preventDefault();
-    this.postData("http://localhost:8000/gateway/authentication/login/", this.state.form)
+    console.log(this.state.form)
+    this.postData(this.state.urlLogin, this.state.form)
         .then(data => {
             document.cookie = 'decide='+data.token+'; Secure';
             this.state.token = data.data.token
@@ -51,7 +59,7 @@ class App extends React.Component {
     var token = {
       token: this.state.token
     } 
-    this.postData("http://localhost:8000/gateway/authentication/getuser/", token)
+    this.postData(this.state.urlGetUser, token)
         .then(data => {
             this.state.user = data;
             this.state.signup = false;
@@ -59,6 +67,8 @@ class App extends React.Component {
             this.showAlert("danger", 'Error: ' + error);
         });
     }
+  
+  
 
   postData(url, data) {
     // Default options are marked with *
@@ -84,37 +94,29 @@ class App extends React.Component {
       this.state.alertShow = true;
   }
 
+  handleChange = (event) => {
+    this.state.form[event.target.name] = event.target.value
+  }
+
   render() {
+    const {username, password} = this.state.form
     return(
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-        {this.state.voting.id}
-        {window.urlGateway}
-        </p>
-        <button onClick = {this.onSubmitLogin}></button>
-        <Form onSubmit={this.onSubmitLogin}>
+      
+        <Form>
           <FormGroup>
-            
+            <Label>Usuario</Label>
+            <Control type="text" name="username" onChange={this.handleChange} placeholder="Introduce tu usuario"></Control>
           </FormGroup>
           <FormGroup>
-
+            <Label>Contraseña</Label>
+            <Control type="password" name="password" onChange={this.handleChange} placeholder="Introduce tu contraseña"></Control>
           </FormGroup>
+          <Button onClick={this.onSubmitLogin}>
+            Submit
+          </Button>
         </Form>
 
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
     </div>)
   };
 }
