@@ -8,7 +8,7 @@ from base import mods
 
 # TODO: check permissions and census
 class BoothView(TemplateView):
-    template_name = 'booth/booth.html'
+    template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -27,5 +27,5 @@ class BoothView(TemplateView):
             raise Http404
 
         context['KEYBITS'] = settings.KEYBITS
-
+        #Cambiado para react
         return context
