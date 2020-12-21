@@ -46,6 +46,7 @@ export default class Login extends Component {
         this.postData(this.state.urlLogin, this.state.form)
             .then(data => {
                 document.cookie = 'decide='+data.token+'; Secure';
+                window.tokenUser = data.data.token;
                 this.setState({token: data.data.token});
                 console.log(this.state.token);
                 this.getUser();
