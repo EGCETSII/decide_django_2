@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-// import Navbar from 'react-bootstrap/Navbar';
-// import Nav from 'react-bootstrap/Nav';
-import Form from 'react-bootstrap/Form';
-import Label from 'react-bootstrap/FormLabel';
-import Control from 'react-bootstrap/FormControl';
-import Button from 'react-bootstrap/Button';
-import FormGroup from 'react-bootstrap/FormGroup';
 import axios from 'axios';
+import './Login.css';
 
 
 export default class Login extends Component {
@@ -103,22 +97,36 @@ export default class Login extends Component {
 
     render() {
         return (
-            <div>
-                <Form>
-                    <FormGroup >
-                        <Label>Usuario</Label>
-                        <Control type="text" name="username" onChange={this.handleChange} placeholder="Introduce tu usuario"></Control>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>Contraseña</Label>
-                        <Control type="password" name="password" onChange={this.handleChange} placeholder="Introduce tu contraseña"></Control>
-                    </FormGroup>
-                    <Button type="submit" onClick={this.onSubmitLogin}>
-                        Entrar
-                    </Button>
-                    <br/>
-                    {this.state.alertShow === true ? <span  style={{fontSize:"12px", color:"red"}}>Usuario incorrecto</span> :<span/>}
-                </Form>
+            <div className="html">
+                <div className="body">
+                    <div className="container">
+                        <div className="content">
+                            <div className="row">
+                                <div className="span14">
+                                    <div className="clearfix">
+
+                                                        <label>Usuario</label>
+                                                        <div className="input">
+                                                            <input type="text" name="username" onChange={this.handleChange} placeholder="Introduce tu usuario"/>
+                                                        </div>
+                                                        <label>Contraseña</label>
+                                                        <div className="input">
+                                                            <input type="password" name="password" onChange={this.handleChange} placeholder="Introduce tu contraseña"/>
+                                                        </div>
+                                    </div>
+                                    <div className="actions">
+                                        
+                                                    <button type="subm+it" className="btn-primary" onClick={this.onSubmitLogin}>
+                                                        Entrar
+                                                    </button>
+                                                    <br/>
+                                                    {this.state.alertShow === true ? <span  style={{fontSize:"12px", color:"red"}}>Usuario incorrecto</span> :<span/>}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
