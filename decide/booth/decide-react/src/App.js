@@ -2,6 +2,8 @@ import './App.css';
 import React from 'react';
 import Login from './components/Login';
 import Voting from './components/Voting';
+import Barra from './components/Barra';
+
 
 class App extends React.Component {
 
@@ -15,6 +17,9 @@ class App extends React.Component {
             urlGetUser : window.urlGetUser,
             urlLogout : window.urlLogout,
             voting : window.votingData,
+            user: null,
+            token: null,
+            signup: true
         };
     }
 
@@ -23,13 +28,29 @@ class App extends React.Component {
         this.setState({currentUser:user});
     }
 
+    setUser(user2) {
+        this.setState({user:user2});
+    }
+
+    setToken(token2) {
+        console.log('Token',token2)
+        this.setState({token:token2});
+    }
+
+    setSignup(signup2) {
+        this.setState({signup:signup2});
+    }
+
+
     render() {
         return(
             <div className="App">
-                {!this.state.currentUser ? 
-                    <Login setCurrentUser={this.setCurrentUser.bind(this)} />
+                    { <Barra urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup.bind(this)} token={this.state.token} setToken={this.setToken.bind(this)} setUser={this.setUser.bind(this)}/>}
+
+                {this.state.signup ? 
+                    <Login setUser={this.setUser.bind(this)} setToken={this.setToken.bind(this)} setSignup={this.setSignup.bind(this)} token={this.state.token} />
                     : 
-                    <Voting voting={this.state.voting} user={this.state.currentUser} /> }
+                    <Voting voting={this.state.voting} user={this.state.user} token={this.state.token}/> }
             </div>);
     }
 }
