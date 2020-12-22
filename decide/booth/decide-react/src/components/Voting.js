@@ -67,12 +67,13 @@ export default class Voting extends Component {
             alert("Selecciona una opción");
         } else {
             const { voting, user } = this.props;
+            console.log(user)
             const vote = this.decideEncrypt();
             const data = {
                 vote: {a: vote.alpha.toString(), b: vote.beta.toString()},
                 voting: voting.id,
                 voter: user.id,
-                token: window.tokenUser
+                token: this.props.token
             }
             this.decideSend(data);
         }
@@ -97,8 +98,8 @@ export default class Voting extends Component {
         var headers = {
             'content-type': 'application/json',
         };
-        if (window.tokenUser) {
-            headers['Authorization'] = 'Token ' + window.tokenUser;
+        if (this.props.token) {
+            headers['Authorization'] = 'Token ' + this.props.token;
         }
         return axios.post(url, data, {headers})
             .then(response => {

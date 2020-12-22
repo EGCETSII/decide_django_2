@@ -7,7 +7,6 @@ import Control from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import FormGroup from 'react-bootstrap/FormGroup';
 import axios from 'axios';
-import Barra from './Barra';
 
 
 export default class Login extends Component {
