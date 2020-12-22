@@ -1,5 +1,5 @@
 import { BigInteger as BigInt } from "jsbn";
-import * as sjcl from 'sjcl';
+import * as sjcl from './sjcl';
 
 const ElGamal = {};
 ElGamal.BITS = 256;
