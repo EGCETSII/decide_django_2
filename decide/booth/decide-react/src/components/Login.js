@@ -7,9 +7,10 @@ import Control from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import FormGroup from 'react-bootstrap/FormGroup';
 import axios from 'axios';
+import Barra from './Barra';
+
 
 export default class Login extends Component {
-
 
     constructor(props) {
         super(props);
@@ -17,15 +18,11 @@ export default class Login extends Component {
             urlLogin : window.urlLogin,
             urlStore : window.urlStore,
             urlGetUser : window.urlGetUser,
-            urlLogout : window.urlLogout,
             voting : window.votingData,
             selected : '',
-            signup : true,
             alertShow : false,
             alertMsg : '',
             alertLvl : 'info',
-            token : null,
-            user : null,
             form : {
                 username: '',
                 password: ''
@@ -41,14 +38,10 @@ export default class Login extends Component {
 
     onSubmitLogin(event) {
         event.preventDefault();
-        console.log(this.state.form);
-
         this.postData(this.state.urlLogin, this.state.form)
             .then(data => {
                 document.cookie = 'decide='+data.token+'; Secure';
-                window.tokenUser = data.data.token;
-                this.setState({token: data.data.token});
-                console.log(this.state.token);
+                this.props.setToken(data.data.token);
                 this.getUser();
             })
             .catch(error => {
@@ -59,11 +52,13 @@ export default class Login extends Component {
 
     getUser() {
         var token = {
-            token: this.state.token
-        }; 
+            token: this.props.token
+        };
+        
         this.postData(this.state.urlGetUser, token)
             .then(response => {
-                this.props.setCurrentUser(response.data);
+                this.props.setUser(response.data);
+                this.props.setSignup(false);
             }).catch(error => {
                 this.showAlert('danger', 'Error: ' + error);
             });
@@ -75,9 +70,10 @@ export default class Login extends Component {
         var headers = {
             'content-type': 'application/json',
         };
-        if (this.state.token) {
-            headers['Authorization'] = 'Token ' + this.state.token;
+        if (this.props.token) {        
+            headers['Authorization'] = 'Token ' + this.props.token;
         }
+        
         return axios.post(url, data, headers)
             .then(response => {
                 if (response.status === 200) { 
@@ -92,6 +88,7 @@ export default class Login extends Component {
         this.setState({alertLvl: lvl});
         this.setState({alertMsg: msg});
         this.setState({alertShow: true});
+        console.log(this.state.alertLvl,'MSG', this.state.alertMsg, 'Show', this.state.alertShow)
     }
 
     handleChange(event) {
@@ -107,19 +104,23 @@ export default class Login extends Component {
 
     render() {
         return (
-            <Form>
-                <FormGroup >
-                    <Label>Usuario</Label>
-                    <Control type="text" name="username" onChange={this.handleChange} placeholder="Introduce tu usuario"></Control>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Contraseña</Label>
-                    <Control type="password" name="password" onChange={this.handleChange} placeholder="Introduce tu contraseña"></Control>
-                </FormGroup>
-                <Button onClick={this.onSubmitLogin}>
-                    Submit
-                </Button>
-            </Form>
+            <div>
+                <Form>
+                    <FormGroup >
+                        <Label>Usuario</Label>
+                        <Control type="text" name="username" onChange={this.handleChange} placeholder="Introduce tu usuario"></Control>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Contraseña</Label>
+                        <Control type="password" name="password" onChange={this.handleChange} placeholder="Introduce tu contraseña"></Control>
+                    </FormGroup>
+                    <Button type="submit" onClick={this.onSubmitLogin}>
+                        Entrar
+                    </Button>
+                    <br/>
+                    {this.state.alertShow === true ? <span  style={{fontSize:"12px", color:"red"}}>Usuario incorrecto</span> :<span/>}
+                </Form>
+            </div>
         );
     }
 }
