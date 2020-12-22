@@ -2,25 +2,31 @@
   "name": "decide-react",
   "version": "0.1.0",
   "private": true,
+  "main": "./AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.2.2",
     "axios": "^0.21.0",
-    "bootstrap": "^4.5.3",
+    "crypto": "npm:expo-crypto",
+    "expo": "~40.0.0",
+    "expo-status-bar": "~1.0.3",
     "jsbn": "^1.1.0",
-    "react": "^17.0.1",
+    "react": "16.13.1",
     "react-bootstrap": "^1.4.0",
-    "react-dom": "^17.0.1",
-    "react-scripts": "4.0.1",
-    "sjcl": "^1.0.8",
-    "web-vitals": "^0.2.4"
+    "react-dom": "16.13.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
+    "react-native-web": "~0.13.12"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+  "devDependencies": {
+    "@babel/core": "~7.9.0"
   },
   "eslintConfig": {
     "extends": [
