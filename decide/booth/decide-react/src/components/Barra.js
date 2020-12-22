@@ -1,11 +1,9 @@
 import React, {Component} from 'react'
-import Navbar from 'react-bootstrap/Navbar'
-import Nav from 'react-bootstrap/Nav'
-import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import { Button, StatusBar, Text, View } from 'react-native';
 
 
-export default class Login extends Component{
+export default class Barra extends Component{
     constructor(props) {
         super(props);   
             
@@ -17,7 +15,7 @@ export default class Login extends Component{
         this.postData(this.props.urlLogout, data);
         this.props.setToken(null);
         this.props.setUser(null);
-        document.cookie = 'decide=;';
+        // document.cookie = 'decide=;';
         this.props.setSignup(true);
     }
 
@@ -41,18 +39,27 @@ export default class Login extends Component{
         }
 
     render(){
+        const statusHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
+
         return(
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="#home">Decide votacion</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="mr-auto">
-                    <Nav.Link href="#home">Inicio</Nav.Link>
-                    <Nav.Link href="#link">Link test</Nav.Link>
-                    {this.props.signup ? <p></p>:<Button onClick={this.decideLogout}>Logout</Button>}
-                </Nav>
-                </Navbar.Collapse>
-            </Navbar>
+            <View style={{
+                    
+                    width: "100%",
+                    backgroundColor: "rgb(7, 7, 76)",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 20,
+                    paddingTop: statusHeight + 15,
+                    paddingBottom: 15,
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center"}}>
+                <View>
+                    <Text style={{color:"white", fontSize: 18}}>DecideHueznar</Text>
+                </View>
+                {!this.props.signup && <View>
+                    <Text style={{color:"white"}} onPress={this.decideLogout}>Logout</Text>
+                </View>}
+            </View>
         );
 }
 }

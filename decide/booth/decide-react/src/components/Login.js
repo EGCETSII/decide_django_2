@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-// import Navbar from 'react-bootstrap/Navbar';
-// import Nav from 'react-bootstrap/Nav';
-import Form from 'react-bootstrap/Form';
-import Label from 'react-bootstrap/FormLabel';
-import Control from 'react-bootstrap/FormControl';
-import Button from 'react-bootstrap/Button';
-import FormGroup from 'react-bootstrap/FormGroup';
 import axios from 'axios';
+import { Alert, Button, Text, TextInput, View } from "react-native";
 
 
 export default class Login extends Component {
@@ -14,9 +8,9 @@ export default class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            urlLogin : window.urlLogin,
+            urlLogin : "http://localhost:8000/authentication/login/",
             urlStore : window.urlStore,
-            urlGetUser : window.urlGetUser,
+            urlGetUser : "http://localhost:8000/authentication/getuser/",
             voting : window.votingData,
             selected : '',
             alertShow : false,
@@ -35,11 +29,11 @@ export default class Login extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    onSubmitLogin(event) {
-        event.preventDefault();
+    onSubmitLogin() {
+        console.log(this.state.form)
         this.postData(this.state.urlLogin, this.state.form)
             .then(data => {
-                document.cookie = 'decide='+data.token+'; Secure';
+                // document.cookie = 'decide='+data.token+'; Secure';
                 this.props.setToken(data.data.token);
                 this.getUser();
             })
@@ -87,15 +81,16 @@ export default class Login extends Component {
         this.setState({alertLvl: lvl});
         this.setState({alertMsg: msg});
         this.setState({alertShow: true});
-        console.log(this.state.alertLvl,'MSG', this.state.alertMsg, 'Show', this.state.alertShow)
+        // console.log(this.state.alertLvl,'MSG', this.state.alertMsg, 'Show', this.state.alertShow)
     }
 
-    handleChange(event) {
+    handleChange(name, value) {
+        
         this.setState(
             {
                 form: {
                     ...this.state.form,
-                    [event.target.name]: event.target.value
+                    [name]: value
                 }
             }
         );
@@ -103,23 +98,17 @@ export default class Login extends Component {
 
     render() {
         return (
-            <div>
-                <Form>
-                    <FormGroup >
-                        <Label>Usuario</Label>
-                        <Control type="text" name="username" onChange={this.handleChange} placeholder="Introduce tu usuario"></Control>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>Contraseña</Label>
-                        <Control type="password" name="password" onChange={this.handleChange} placeholder="Introduce tu contraseña"></Control>
-                    </FormGroup>
-                    <Button type="submit" onClick={this.onSubmitLogin}>
-                        Entrar
-                    </Button>
-                    <br/>
-                    {this.state.alertShow === true ? <span  style={{fontSize:"12px", color:"red"}}>Usuario incorrecto</span> :<span/>}
-                </Form>
-            </div>
+            <View>
+                <View>
+                    <Text>Usuario</Text>
+                    <TextInput onChangeText={(val) => this.handleChange("username", val)} placeholder="Introduce tu usuario"></TextInput>
+                </View>
+                <View>
+                    <Text>Contraseña</Text>
+                    <TextInput secureTextEntry={true} onChangeText={(val) => this.handleChange("password", val)} placeholder="Introduce tu contraseña"></TextInput>
+                </View>
+                <Button  onPress={this.onSubmitLogin} title="Login" />
+            </View>
         );
     }
 }

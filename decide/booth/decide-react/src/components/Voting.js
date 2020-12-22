@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import FormCheck from 'react-bootstrap/esm/FormCheck';
 import axios from 'axios';
 import { BigInteger as BigInt } from "jsbn";
 import { ElGamal } from "../crypto/ElGamal";
+import { Alert, Button, Picker, Text, View } from 'react-native';
 
 // why not?
 // ZERO AND ONE are already taken care of
@@ -33,7 +33,7 @@ BigInt.use_applet = false;
 export default class Voting extends Component {
 
     state = {
-        urlStore : window.urlStore,
+        urlStore : "http://localhost:8000/store/",
         bigpk: {
             p: BigInt.fromJSONObject(this.props.voting.pub_key.p.toString()),
             g: BigInt.fromJSONObject(this.props.voting.pub_key.g.toString()),
@@ -83,11 +83,12 @@ export default class Voting extends Component {
         this.postData(this.state.urlStore, data)
             .then(response => {
                 // this.showAlert("success", '{% trans "Congratulations. Your vote has been sent" %}');
-                this.setState({voted: true});
+                Alert.alert("Enhorabuena, has votado correctamente");
+                this.props.resetSelected();
             })
             .catch(error => {
                 // this.showAlert("danger", '{% trans "Error: " %}' + error);
-                alert("Peto algo wey");
+                Alert.alert("Error al procesar la votacion");
             });
 
             
@@ -115,20 +116,16 @@ export default class Voting extends Component {
         const { voting } = this.props;
         const { voted } = this.state;
 
-        return !voted ? <div class="voting">
-                <h1>{voting.id} - {voting.name}</h1>
-                <div>
-                    <h2>{voting.question.desc}</h2>
-                    {voting.question.options.map(opt => <>
-                            <FormCheck type="radio" name="question" label={opt.option} onClick={() => this.setState({selected: opt.number})} />
-                        </>
-                    )}
-                    <button onClick={this.handleSubmit}>Votar</button>
-                </div>
-            </div>: <>
-                <div className="alert alert-success">
-                    Has votao, enhorabuena crack.
-                </div>
-            </>;
+        return <View>
+            <Text style={{fontSize: 15}}>{voting.name}</Text>
+            <Text style={{fontSize: 13}}>{voting.question.desc}</Text>
+            <Picker selectedValue={this.selected} onValueChange={(itemValue, itemIndex) => this.setState({selected: itemValue})}>
+                {voting.question.options.map(opt => 
+                    <Picker.Item label={opt.option} value={opt.number} />
+                )}
+            </Picker>
+            <Button title="Votar" onPress={this.handleSubmit} />
+            <Button title="Volver" color="#333" onPress={this.props.resetSelected} />
+        </View>
     }
 }

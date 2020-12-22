@@ -1,8 +1,9 @@
-import './App.css';
+import axios from 'axios';
 import React from 'react';
+import { FlatList, Text, TouchableOpacity, View, Button } from 'react-native';
+import Barra from './components/Barra';
 import Login from './components/Login';
 import Voting from './components/Voting';
-import Barra from './components/Barra';
 
 
 class App extends React.Component {
@@ -11,7 +12,7 @@ class App extends React.Component {
         super(props);
         this.state = {
             currentUser: null,
-            keybits : window.KEYBITS,
+            keybits : 256,
             urlLogin : window.urlLogin,
             urlStore : window.urlStore,
             urlGetUser : window.urlGetUser,
@@ -19,7 +20,9 @@ class App extends React.Component {
             voting : window.votingData,
             user: null,
             token: null,
-            signup: true
+            signup: true,
+            selectedVoting: undefined,
+            votings: []
         };
     }
 
@@ -42,16 +45,47 @@ class App extends React.Component {
     }
 
 
-    render() {
-        return(
-            <div className="App">
-                    { <Barra urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup.bind(this)} token={this.state.token} setToken={this.setToken.bind(this)} setUser={this.setUser.bind(this)}/>}
+    loadVotings = () => {
+        axios.get("http://localhost:8000/voting/").then(response => {
+            this.setState({votings: response.data})
+            console.log(response.data)
+        })
 
-                {this.state.signup ? 
-                    <Login setUser={this.setUser.bind(this)} setToken={this.setToken.bind(this)} setSignup={this.setSignup.bind(this)} token={this.state.token} />
-                    : 
-                    <Voting voting={this.state.voting} user={this.state.user} token={this.state.token}/> }
-            </div>);
+    }
+
+    componentDidMount() {
+        this.loadVotings()
+    }
+
+    setSelectedVoting = (voting) => {
+        this.setState({selectedVoting: voting})
+    }
+
+
+    render_voting = ({item}) => {
+       return <TouchableOpacity onPress={() => this.setSelectedVoting(item)} disabled={!item.start_date}>
+            <View style={{ padding: 20, backgroundColor: "#fff", borderRadius: 10, marginBottom: 15 }}><Text>{item.name}</Text></View></TouchableOpacity>;
+    } 
+
+    render() {
+        
+        return(
+            <View style={{backgroundColor: "#f5f5f5", height: "100%"}}>
+                <Barra urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup.bind(this)} token={this.state.token} setToken={this.setToken.bind(this)} setUser={this.setUser.bind(this)}/>
+                <View style={{padding:20, maxWidth: 800}}>
+                    {this.state.signup ? 
+                        <Login setUser={this.setUser.bind(this)} setToken={this.setToken.bind(this)} setSignup={this.setSignup.bind(this)} token={this.state.token} />
+                        : 
+                        (!this.state.selectedVoting ? 
+                            <View>
+                                <Text style={{fontWeight: "bold", marginBottom: 15}}>Votaciones disponibles</Text>
+                                <FlatList data={this.state.votings} renderItem={this.render_voting} />
+                                <Button title="Recargar" color="#333" onPress={this.loadVotings} />
+                            </View> :
+                            <Voting voting={this.state.selectedVoting} user={this.state.user} token={this.state.token} resetSelected={() => this.setSelectedVoting(undefined)}/> )
+                        }
+                </View>
+            </View>);
     }
 }
 
