@@ -89,7 +89,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'booth/decide-react/build/')
+            os.path.join(BASE_DIR, 'booth/decide-react/web-build/')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -162,7 +162,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'booth/decide-react/build/static/')
+    os.path.join(BASE_DIR, 'booth/decide-react/web-build/static/')
 ]
 
 # number of bits for the key, all auths should use the same number of bits

@@ -1,58 +1,41 @@
-import React, {Component} from 'react'
-import Navbar from 'react-bootstrap/Navbar'
-import Nav from 'react-bootstrap/Nav'
-import Button from 'react-bootstrap/Button';
-import axios from 'axios';
+import React, {Component} from 'react';
+import { StatusBar, Text, View } from 'react-native';
+import { postData } from '../utils';
+import config from '../config.json';
 
+export default class Barra extends Component{
 
-export default class Login extends Component{
-    constructor(props) {
-        super(props);   
-            
-    }   
+    logout = () => {
+        const {token, setToken, setUser, setSignup } = this.props;
+        const data = {token};  
 
-    decideLogout = (event) => {
-        event.preventDefault();
-        var data = {token: this.props.token};
-        this.postData(this.props.urlLogout, data);
-        this.props.setToken(null);
-        this.props.setUser(null);
-        document.cookie = 'decide=;';
-        this.props.setSignup(true);
+        postData(config.LOGOUT_URL, data, token);
+        setToken(null);
+        setUser(null);
+        setSignup(true);
     }
 
-    postData(url, data) {
-        // Default options are marked with *
-            var headers = {
-                'content-type': 'application/json',
-            };
-            if (this.props.token) {        
-                headers['Authorization'] = 'Token ' + this.props.token;
-            }
-            
-            return axios.post(url, data, headers)
-                .then(response => {
-                    if (response.status === 200) { 
-                        return response;
-                    } else {
-                        return Promise.reject(response.statusText);
-                    }
-                });
-        }
-
     render(){
+        const statusHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
+
         return(
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="#home">Decide votacion</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="mr-auto">
-                    <Nav.Link href="#home">Inicio</Nav.Link>
-                    <Nav.Link href="#link">Link test</Nav.Link>
-                    {this.props.signup ? <p></p>:<Button onClick={this.decideLogout}>Logout</Button>}
-                </Nav>
-                </Navbar.Collapse>
-            </Navbar>
+            <View style={{                    
+                width: '100%',
+                backgroundColor: 'rgb(7, 7, 76)',
+                justifyContent: 'space-between',
+                paddingHorizontal: 20,
+                paddingTop: statusHeight + 15,
+                paddingBottom: 15,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center'}}>
+                <View>
+                    <Text style={{color:'white', fontSize: 18}}>DecideHueznar</Text>
+                </View>
+                {!this.props.signup && <View>
+                    <Text style={{color:'white'}} onPress={this.logout}>Logout</Text>
+                </View>}
+            </View>
         );
-}
+    }
 }
