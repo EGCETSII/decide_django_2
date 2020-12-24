@@ -17,6 +17,22 @@ class VotacionBinaria(models.Model):
     
     def __str__(self):
         return self.titulo
+
+
+#DEVUELVE EL NÚMERO DE RESPUESTAS A TRUE QUE TIENE LA VOTACION BINARIA 
+    def Numero_De_Trues(self):
+        return RespuestaBinaria.objects.filter(respuesta=1,votacionBinaria_id=self.id).count()
+
+   #DEVUELVE EL NÚMERO DE RESPUESTAS A FALSE QUE TIENE LA BOTACION BINARIA 
+    def Numero_De_Falses(self):
+        return RespuestaBinaria.objects.filter(respuesta=0,votacionBinaria_id=self.id).count()
+
+   #AÑADE UNA RESPUESTA BINARIA A LA VOTACION BINARIA 
+   #A LA HORA DE CREAR LA RESPUESTA BINARIA SOLO ES NECESARIO INDICARLE EL ATRIBUTO RESPUESTA
+   # LA FUNCION SE ENCARGA DE ASOCIAR LA RESPUESTA BINARIA A LA VOTACION BINARIA QUE SE LE HA INDICADO  
+    def addRespuestaBinaria(self,respuestaBinaria):
+        respuestaBinaria.votacionBinaria = self
+        respuestaBinaria.save()
         
 
 #MODELO DE RESPUESTA BINARIA
