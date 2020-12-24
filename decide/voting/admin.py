@@ -7,6 +7,24 @@ from .models import Voting
 
 from .filters import StartedFilter
 
+# Votaciones normales
+
+class RespuestaInline(admin.TabularInline):
+    model = Respuesta
+    extra = 1
+class PreguntaInline(admin.TabularInline):
+    model = Pregunta
+    extra = 1
+class VotacionAdmin(admin.ModelAdmin):
+    list_display=('id','titulo','descripcion','Numero_De_Preguntas')
+    inlines =[PreguntaInline]
+
+class PreguntaAdmin(admin.ModelAdmin):
+    list_display = ('id','Nombre_Votacion','textoPregunta','Numero_De_Respuestas','Media_De_Las_Respuestas','Respuesta_Maxima','Respuesta_Minima')
+    inlines =[RespuestaInline]
+
+class RespuestaAdmin(admin.ModelAdmin):
+    list_display = ('id','respuesta','Nombre_Pregunta')
 
 def start(modeladmin, request, queryset):
     for v in queryset.all():
@@ -48,3 +66,7 @@ class VotingAdmin(admin.ModelAdmin):
 
 admin.site.register(Voting, VotingAdmin)
 admin.site.register(Question, QuestionAdmin)
+
+admin.site.register(Votacion, VotacionAdmin)
+admin.site.register(Pregunta,PreguntaAdmin)
+admin.site.register(Respuesta,RespuestaAdmin)
