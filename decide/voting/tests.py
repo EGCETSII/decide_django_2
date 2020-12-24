@@ -15,6 +15,54 @@ from mixnet.mixcrypt import MixCrypt
 from mixnet.models import Auth
 from voting.models import Voting, Question, QuestionOption
 
+#TEST VOTACIONES BINARIAS
+
+class GuardaVotacionBinariaTest(BaseTestCase):
+    def setUp(self):
+        vb = VotacionBinaria(titulo="titulo 1",descripcion="Descripcion 1")
+        vb.save()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vb=None
+    def testExist(self):
+        vb = VotacionBinaria.objects.get(titulo="titulo 1")
+        self.assertEquals(vb.titulo,"titulo 1")
+        self.assertEquals(vb.descripcion,"Descripcion 1")
+
+
+class ActualizaVotacionBinariaTest(BaseTestCase):
+    def setUp(self):
+        vb = VotacionBinaria(titulo="titulo 1",descripcion="Descripcion 1")
+        vb.save()
+        vb.titulo = "titulo 2"
+        vb.descripcion = "descripcion 2"
+        vb.save()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vb=None
+    def testActualizado(self):
+        vb = VotacionBinaria.objects.get(titulo="titulo 2")
+        self.assertEquals(vb.titulo,"titulo 2")
+        self.assertEquals(vb.descripcion,"descripcion 2")
+
+
+class BorraVotacionBinariaTest(BaseTestCase):
+    def setUp(self):
+        vb1 = VotacionBinaria(titulo="titulo 1",descripcion="Descripcion 1")
+        vb1.save()
+        vb2 = VotacionBinaria(titulo="titulo 2",descripcion="Descripcion 2")
+        vb2.save()
+        vb2.delete()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vb1=None
+        self.vb2=None
+    def testBorrado(self):
+        totalVotaciones = len(VotacionBinaria.objects.all())
+        self.assertEquals(totalVotaciones,1)
 
 class VotingTestCase(BaseTestCase):
 
