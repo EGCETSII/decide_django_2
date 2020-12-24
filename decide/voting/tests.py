@@ -13,7 +13,7 @@ from census.models import Census
 from mixnet.mixcrypt import ElGamal
 from mixnet.mixcrypt import MixCrypt
 from mixnet.models import Auth
-from voting.models import Voting, Question, QuestionOption
+from voting.models import *
 
 #TEST VOTACIONES BINARIAS
 
@@ -62,6 +62,52 @@ class BorraVotacionBinariaTest(BaseTestCase):
         self.vb2=None
     def testBorrado(self):
         totalVotaciones = len(VotacionBinaria.objects.all())
+        self.assertEquals(totalVotaciones,1)
+#TEST VOTACIONES PREFERENCIAS
+class GuardaVotacionPreferenciaTest(BaseTestCase):
+    def setUp(self):
+        vp = VotacionPreferencia(titulo="preferencia 1",descripcion="descripcion 1")
+        vp.save()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vp=None
+    def testExist(self):
+        vp = VotacionPreferencia.objects.get(titulo="preferencia 1")
+        self.assertEquals(vp.titulo,"preferencia 1")
+        self.assertEquals(vp.descripcion,"descripcion 1")
+
+
+class ActualizaVotacionPreferenciaTest(BaseTestCase):
+    def setUp(self):
+        vp = VotacionPreferencia(titulo="preferencia 1",descripcion="descripcion 1")
+        vp.save()
+        vp.titulo = "preferencia 2"
+        vp.descripcion = "descripcion 2"
+        vp.save()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vp=None
+    def testActualizado(self):
+        vp = VotacionPreferencia.objects.get(titulo="preferencia 2")
+        self.assertEquals(vp.titulo,"preferencia 2")
+        self.assertEquals(vp.descripcion,"descripcion 2")
+
+class BorraVotacionPreferenciaTest(BaseTestCase):
+    def setUp(self):
+        vp1 = VotacionPreferencia(titulo="preferencia 1",descripcion="descripcion 1")
+        vp1.save()
+        vp2 = VotacionPreferencia(titulo="preferencia 2",descripcion="descripcion 2")
+        vp2.save()
+        vp2.delete()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vp1=None
+        self.vp2=None
+    def testBorrado(self):
+        totalVotaciones = len(VotacionPreferencia.objects.all())
         self.assertEquals(totalVotaciones,1)
 
 class VotingTestCase(BaseTestCase):
