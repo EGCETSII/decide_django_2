@@ -110,7 +110,12 @@ class VotacionMultiple(models.Model):
     def __str__(self):
         return self.titulo
 
-
+#AÑADE UNA PREGUNTA MULTIPLE  A LA VOTACION MULTIPLE
+    #A LA HORA DE CREAR LA PREGUNTA MULTIPLE SOLO ES NECESARIO INDICARLE EL ATRIBUTO TEXTOPREGUNTA
+    #LA FUNCION SE ENCARGA DE ASOCIAR LA PREGUNTA MULTIPLE  A LA VOTACION MULTIPLE QUE SE LE HA INDICADO
+    def addPreguntaMultiple(self,preguntaMultiple):
+        preguntaMultiple.votacionMultiple = self
+        preguntaMultiple.save()
 class PreguntaMultiple(models.Model):
     id = models.AutoField(primary_key=True)
     votacionMultiple = models.ForeignKey(VotacionMultiple,on_delete = models.CASCADE)
@@ -120,6 +125,34 @@ class PreguntaMultiple(models.Model):
     def __str__(self):
         return self.textoPregunta
 
+    # DEVUELVE EL NÚMERO DE OPCIONES QUE TIENE LA PREGUNTA
+    def Numero_De_Opciones(self):
+        return OpcionMultiple.objects.filter(preguntaMultiple_id=self.id).count()
+
+    # AÑADE UNA  OPCION MULTIPLE A LA PREGUNTA MULTIPLE
+    # A LA HORA DE CREAR LA OPCION MULTIPLE SOLO ES NECESARIO INDICARLE EL ATRIBUTO NOMBRE_OPCION
+    # LA FUNCION SE ENCARGA DE ASOCIAR LA OPCION MULTIPLE  A LA PREGUNTA MULTIPLE  QUE SE LE HA INDICADO
+    def addOpcionMultiple(self, opcionMultiple):
+        opcionMultiple.preguntaMultiple = self
+        opcionMultiple.save()
+
+    # DEVUELVE EL Nº DE VECES QUE SE HA VOTADO CADA OPCION QUE TIENE LA PREGUNTA ASOCIADA
+    # DEVUELVE UN DICCIONARIO DE LA FORMA:
+    # {OPCION1:N_VOTADO,..., OPCION-N: N_VOTAO}
+    def cuentaOpcionesMultiple(self):
+        opciones = OpcionMultiple.objects.filter(preguntaMultiple_id=self.id).values('nombre_opcion', 'n_votado')
+        res = {}
+        for opcion in opciones:
+            res[opcion['nombre_opcion']] = opcion['n_votado']
+        return res
+
+    # SUMA 1 AL CAMPO N_VOTADO DE CADA OPCION QUE SE ENCUENTRE EN EL LISTADO QUE SE LE PASA COMO PARÁMETRO
+    def votaOpcioneMultiples(self, listadoOpcionesSeleccionadas):
+        for opcion in listadoOpcionesSeleccionadas:
+            opcion.preguntaMultiple = self
+            opcion.n_votado = opcion.n_votado + 1
+            opcion.save()
+1
 class OpcionMultiple(models.Model):
     id = models.AutoField(primary_key=True)
     preguntaMultiple = models.ForeignKey(PreguntaMultiple,on_delete = models.CASCADE)
@@ -130,6 +163,11 @@ class OpcionMultiple(models.Model):
         return self.nombre_opcion
     def Nombre_Pregunta_Multiple(self):
         return self.preguntaMultiple.textoPregunta
+
+#SUMA 1 AL CAMPO N_VOTADO DE LA OPCION SELECCIONADA
+    def votaOpciones(self):
+        self.n_votado = self.n_votado + 1
+        self.save()
 
 #Votaciones Preferencia
 class VotacionPreferencia(models.Model):
