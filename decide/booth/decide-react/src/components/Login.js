@@ -77,7 +77,7 @@ export default class Login extends Component {
                                             </View>
                                         </View>
                                         <View style={styles.btnprimary}>
-                                            <Button onPress={this.onSubmitLogin} title="Login" />
+                                            <Button color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.onSubmitLogin} title="Login" />
                                         </View>
                                     </View>
                                 </View>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         "marginTop": 0,
         "marginRight": 0,
         "marginBottom": 0,
-        "marginLeft": 400,
+        "marginLeft": 0,
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 0,
@@ -179,8 +179,6 @@ const styles = StyleSheet.create({
         "borderBottomRightRadius": 25,
         "borderBottomLeftRadius": 25,
         "backgroundColor": "#0064cd",
-        "display": "flex",
-        "alignItems": "center",
         "paddingTop": 0,
         "paddingRight": 25,
         "paddingBottom": 0,
