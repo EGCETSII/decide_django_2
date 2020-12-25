@@ -172,7 +172,6 @@ const styles = StyleSheet.create({
         "lineHeight": 1.5,
         "color": "#fff",
         "textTransform": "uppercase",
-        "width": "100%",
         "height": 50,
         "borderTopLeftRadius": 25,
         "borderTopRightRadius": 25,
