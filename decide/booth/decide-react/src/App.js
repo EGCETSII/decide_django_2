@@ -2,22 +2,55 @@ import React from 'react';
 import Barra from './components/Barra';
 import Login from './components/Login';
 import Voting from './components/Voting';
-import { FlatList, Text, TouchableOpacity, View, Button } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View, Button, Alert} from 'react-native';
 import axios from 'axios';
 import config from './config.json';
+import { postData } from '../utils';
 
 class App extends React.Component {
 
     state = {
-        currentUser: undefined,
+        user: undefined,
         selectedVoting: undefined,
         token: undefined,
         votings: [],
         signup: true,
     }
 
-    setCurrentUser = (user) => {
-        this.setState({currentUser:user});
+    init = () => {
+        storageValue = this.handleGetStorage('decide')
+        if (storageValue != null && storageValue != ""){
+            this.setToken = storageValue;
+            this.getUser;
+        }else{
+            break;
+        }
+    }
+
+    //Sustituye a la gestión de las cookies
+    handleSetStorage = (key, value) => {
+        localStorage.setItem(key, value)
+    }
+
+    //Sustituye a la gestión de las cookies
+    handleGetStorage = (key) => {
+        return localStorage.getItem(key)
+    }
+
+    getUser = () => {
+        token = this.state.token
+
+        const data = {
+            token
+        };
+        
+        postData(config.GETUSER_URL, data, token)
+            .then(response => {
+                this.setUser(response.data);
+                this.setSignup(false);
+            }).catch(error => {
+                Alert.alert(`Error: ${error}`);
+            });
     }
 
     setUser = (user2) => {
@@ -58,11 +91,11 @@ class App extends React.Component {
         
         return(
             <View style={{backgroundColor: '#f5f5f5', height: '100%'}}>
-                <Barra urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup} token={this.state.token} setToken={this.setToken} setUser={this.setUser}/>
+                <Barra urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup} token={this.state.token} setToken={this.setToken} setUser={this.setUser} handleSetStorage={this.handleSetStorage}/>
                 
                 <View style={{padding:20, maxWidth: 800}}>
                     {this.state.signup ? 
-                        <Login setUser={this.setUser} setToken={this.setToken} setSignup={this.setSignup} token={this.state.token} />
+                        <Login setUser={this.setUser} setToken={this.setToken} setSignup={this.setSignup} token={this.state.token} handleSetStorage={this.handleSetStorage} />
                         : 
                         (!this.state.selectedVoting ? 
                             <View>
