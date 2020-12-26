@@ -8,7 +8,6 @@ export const postData = (url, data, token=undefined) => {
         headers['Authorization'] = 'Token ' + token;
     }
     const options = {headers};
-
     return axios.post(url, data, options)
         .then(response => {
             if (response.status === 200) { 
