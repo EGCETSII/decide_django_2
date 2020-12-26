@@ -13,17 +13,17 @@ export default class Login extends Component {
     }
 
     onSubmitLogin = () => {
-        const { setToken } = this.props;
+        const { setToken, handleSetStorage } = this.props;
         postData(config.LOGIN_URL, this.state.form)
             .then(response => {
-                setToken(response.data.token);
+                handleSetStorage("decide", response.data.token)
+                setToken(response.data.token)
                 this.getUser();
             })
             .catch(error => {
                 Alert.alert(`Error: ${error}`);
             });
-    }
-      
+    }    
 
     getUser = () => {
         const { token, setUser, setSignup } = this.props;

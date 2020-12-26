@@ -12,6 +12,7 @@ export default class Barra extends Component{
         postData(config.LOGOUT_URL, data, token);
         setToken(null);
         setUser(null);
+        this.props.handleSetStorage("decide", "")
         setSignup(true);
     }
 
