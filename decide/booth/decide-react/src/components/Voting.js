@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { BigInt } from '../crypto/BigInt';
 import { ElGamal } from '../crypto/ElGamal';
-import { Alert, Button, Picker, Text, View } from 'react-native';
+import { Alert, Button, Text, View } from 'react-native';
 import { postData } from '../utils';
 import config from '../config.json';
+import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
 export default class Voting extends Component {
 
@@ -15,6 +16,8 @@ export default class Voting extends Component {
         },
         voting: null,
         selected: this.props.voting.question.options[0].number,
+        options: new Array()
+
     }
 
     handleSubmit = (event) => {
@@ -30,6 +33,7 @@ export default class Voting extends Component {
                 voter: user.id,
                 token: this.props.token
             };
+            console.log('Data',data)
             this.send(data);
         }
     }
@@ -44,25 +48,40 @@ export default class Voting extends Component {
     send = (data) => {
         postData(config.STORE_URL, data, this.props.token)
             .then(response => {
-                Alert.alert('Enhorabuena, has votado correctamente');
+                alert('Enhorabuena, has votado correctamente');
                 this.props.resetSelected();
             })
             .catch(error => {
-                Alert.alert(`Error: ${error}`);
+                alert(`Error: ${error}`);
             });
+    }
+
+    introduccion = (opt) => {
+        const dict ={};
+        dict['label'] = opt.option;
+        dict['value'] = opt.number;
+        this.state.options.push(dict);
+    }
+
+    options = (voting) => {
+        voting.question.options.map(opt => 
+        this.introduccion(opt))}
+
+    componentDidMount() {
+        const { voting } = this.props;
+        this.options(voting);
+        this.setState({options:this.state.options})
     }
 
     render() {
         const { voting, resetSelected } = this.props;
-
         return <View>
             <Text style={{fontSize: 15}}>{voting.name}</Text>
             <Text style={{fontSize: 13}}>{voting.question.desc}</Text>
-            <Picker selectedValue={this.state.selected} onValueChange={(itemValue, itemIndex) => this.setState({selected: itemValue})}>
-                {voting.question.options.map(opt => 
-                    <Picker.Item label={opt.option} value={opt.number} key={opt.number} />
-                )}
-            </Picker>
+            <RadioForm
+                radio_props={this.state.options}
+                onPress={(itemValue, itemIndex) => this.setState({selected: itemValue})}
+            />
             <Button title="Votar" onPress={this.handleSubmit} />
             <Button title="Volver" color="#333" onPress={resetSelected} />
         </View>;
