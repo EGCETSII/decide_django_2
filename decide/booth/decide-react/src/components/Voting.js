@@ -4,7 +4,7 @@ import { ElGamal } from '../crypto/ElGamal';
 import { Alert, Button, Text, View } from 'react-native';
 import { postData } from '../utils';
 import config from '../config.json';
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import RadioForm from 'react-native-simple-radio-button';
 
 export default class Voting extends Component {
 
@@ -76,11 +76,12 @@ export default class Voting extends Component {
     render() {
         const { voting, resetSelected } = this.props;
         return <View>
-            <Text style={{fontSize: 15}}>{voting.name}</Text>
-            <Text style={{fontSize: 13}}>{voting.question.desc}</Text>
+            <Text style={{fontSize: 18, fontWeight:'bold'}}>{voting.name}</Text>
+            <Text style={{fontSize: 14}}>{voting.question.desc}{'\n'}{'\n'}</Text>
             <RadioForm
                 radio_props={this.state.options}
-                onPress={(itemValue, itemIndex) => this.setState({selected: itemValue})}
+                onPress={(itemValue) => this.setState({selected: itemValue})}
+                buttonSize={9}
             />
             <Button title="Votar" onPress={this.handleSubmit} />
             <Button title="Volver" color="#333" onPress={resetSelected} />
