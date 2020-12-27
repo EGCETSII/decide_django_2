@@ -15,8 +15,9 @@ export default class Voting extends Component {
             y: BigInt.fromJSONObject(this.props.voting.pub_key.y.toString()),
         },
         voting: null,
-        selected: this.props.voting.question.options[0].number,
-        options: new Array()
+        selected: null,
+        options: new Array(),
+        noSelection: false
 
     }
 
@@ -27,7 +28,8 @@ export default class Voting extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         if (!this.state.selected) {
-            alert('Selecciona una opción');
+            this.setState({noSelection:true})
+            //alert('Selecciona una opción');
         } else {
             const { voting, user } = this.props;
             const vote = this.encrypt();
@@ -44,6 +46,7 @@ export default class Voting extends Component {
 
     encrypt = () =>  {
         const { selected } = this.state;
+        console.log('Sel',selected)
         const bigmsg = BigInt.fromJSONObject(selected.toString());
         const cipher = ElGamal.encrypt(this.state.bigpk, bigmsg);
         return cipher;
@@ -82,12 +85,17 @@ export default class Voting extends Component {
         const { voting, resetSelected } = this.props;
         return <View>
             <Text style={{fontSize: 18, fontWeight:'bold'}}>{voting.name}</Text>
-            <Text style={{fontSize: 14}}>{voting.question.desc}{'\n'}{'\n'}</Text>
+            <Text style={{fontSize: 14, paddingBottom:15, paddingTop:5}}>{voting.question.desc}</Text>
             <RadioForm
                 radio_props={this.state.options}
+                initial={-1}
                 onPress={(itemValue) => this.setState({selected: itemValue})}
                 buttonSize={9}
+                
             />
+            {this.state.noSelection && <View style={{paddingTop:10, paddingBottom:7}}>
+                <Text style={{fontWeight: 'bold', color:'rgb(248,62,62)', fontFamily: 'calibri', fontSize:'15px'}}>Debe seleccionar una opción</Text>
+            </View>}
             <Button title="Votar" onPress={this.handleSubmit} />
             <Button title="Volver" color="#333" onPress={resetSelected} />
         </View>;
