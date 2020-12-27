@@ -20,6 +20,10 @@ export default class Voting extends Component {
 
     }
 
+    doneToFalse =() => {
+        this.props.setDone(false);
+    }
+
     handleSubmit = (event) => {
         event.preventDefault();
         if (!this.state.selected) {
@@ -48,7 +52,7 @@ export default class Voting extends Component {
     send = (data) => {
         postData(config.STORE_URL, data, this.props.token)
             .then(response => {
-                alert('Enhorabuena, has votado correctamente');
+                this.props.setDone(true)
                 this.props.resetSelected();
             })
             .catch(error => {
@@ -68,6 +72,7 @@ export default class Voting extends Component {
         this.introduccion(opt))}
 
     componentDidMount() {
+        this.doneToFalse();
         const { voting } = this.props;
         this.options(voting);
         this.setState({options:this.state.options})
