@@ -1,28 +1,35 @@
 {% extends "base.html" %}
 {% load i18n static %}
 
+{% block title %} - Visualización{% endblock %}
 {% block extrahead %}
-    <link type="text/css" rel="stylesheet"
-         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet"
-         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
-    <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <link type="text/css" rel="stylesheet" href="{% static 'css/footer.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/mfb.css' %}" >
 {% endblock %}
 
 {% block content %}
     <div id="app-visualizer">
         <!-- Navbar -->
         <b-navbar type="dark" variant="secondary">
-            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
+            <b-navbar-brand tag="h1">Decide Visualización</b-navbar-brand>
+            
+            <b-navbar-nav class="ml-auto">
+                <!-- Dark mode and light mode buttons -->
+                <button id="lightButton" type="button" class="btn btn-light btn-sm pull-xs-right" style="display: none"
+                    onclick="activateLightMode()">Modo claro</button>
+                <button id="darkButton" type="button" class="btn btn-dark btn-sm pull-xs-right" style="display: inline"
+                    onclick="activateDarkMode()">Modo oscuro</button>
+            </b-navbar-nav>
         </b-navbar>
 
-        <div class="voting container">
-            <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
+        
 
-            <h2 v-if="!voting.start_date">Votación no comenzada</h2>
-            <h2 v-else-if="!voting.end_date">Votación en curso</h2>
-            <div v-else>
-                <h2 class="heading">Resultados:</h2>
 
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -40,9 +47,46 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <canvas id="myChart" ></canvas>
+                
             </div>
 
         </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <nav class="navbar navbar-default navbar-fixed-bottom">
+                <div class="container">
+                    <p class="navbar-text">Evolución y Gestión de la Configuración · <em>Decide</em></p>
+                    <p class="navbar-text navbar-right">Decide Pícaro - Visualización &copy; 2021</p>
+                </div>
+            </nav>
+        </footer>
+
+        <!-- Floating action button to select language -->
+        <ul id="menu" class="mfb-component--br mfb-zoomin" data-mfb-toggle="hover">
+            <li class="mfb-component__wrap">
+                <a href="#" class="pmd-floating-action-btn btn pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-primary">
+                    <i class="fa fa-globe"></i>
+                </a>
+                <ul class="mfb-component__list">
+                    <li>
+                        <a class="pmd-floating-action-btn btn btn-sm pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-light"
+                            data-title="English" data-mfb-label="Inglés"> 
+                            <img width="30" src="{% static '/images/england.jpg' %}"> 
+                        </a> 
+                    </li>
+                    <li>
+                        <a class="pmd-floating-action-btn btn btn-sm pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-light" 
+                            data-title="Spanish" data-mfb-label="Español"> 
+                            <img width="30" src="{% static '/images/spain.jpg' %}"> 
+                        </a> 
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
     </div>
 {% endblock %}
 
@@ -51,7 +95,7 @@
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-
+    <script src="http://java.sun.com/jsp/jstl/core"></script>
     <script>
         var voting = {{voting|safe}};
         var app = new Vue({
@@ -62,5 +106,54 @@
             }
         })
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="{% static 'js/mfb.js' %}"></script>
+
+    <script>
+        var data=[];var labels=[];var colores=[]; var numeros="0123456789ABCDEF";var almohadilla="#";var color="";
+        var postproc=voting.postproc;
+
+        function getColoresRandom(){
+            var colorRandom='#'+Math.random().toString(16).substr(-6);
+           return colorRandom;
+        }
+
+        for(var i=0;i<postproc.length;i++){
+            data.push(postproc[i].votes)
+            labels.push(postproc[i].option)
+            color= getColoresRandom()
+            colores.push(color)
+        }
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'doughnut',
+            data:{
+                datasets: [{
+                    data: data,
+                    backgroundColor: colores,
+                    label: 'Número de votos'}],
+                    labels: labels},
+            options: {responsive: true}
+            });
+    </script>
 </body>
+   
+    
+    <script>
+        function activateLightMode() {
+            document.body.className = "bg-light"
+            document.getElementById("lightButton").style.display = "none"
+            document.getElementById("darkButton").style.display = "inline"
+        }
+
+        function activateDarkMode() {
+            document.body.className = "bg-dark"
+            document.getElementById("lightButton").style.display = "inline"
+            document.getElementById("darkButton").style.display = "none"
+        }
+
+        //window.onload = activateDarkMode();
+    </script>
+
 {% endblock %}

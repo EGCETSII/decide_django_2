@@ -70,7 +70,19 @@ MODULES = [
     'voting',
 ]
 
-BASEURL = 'http://localhost:8000'
+BASEURL = 'https://picaro-decide.herokuapp.com'
+
+APIS = {
+    'authentication': BASEURL ,
+    'base': BASEURL ,
+    'booth': BASEURL ,
+    'census': BASEURL ,
+    'mixnet': BASEURL ,
+    'postproc': BASEURL ,
+    'store': BASEURL ,
+    'visualizer': BASEURL ,
+    'voting': BASEURL ,
+    }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -150,6 +162,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
+]
+
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
@@ -157,6 +173,21 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = ''
+STATIC_TMP = os.path.join(BASE_DIR, 'static')
+
+os.makedirs(STATIC_TMP, exist_ok=True)
+
+STATICFILES_DIRS = (
+    'static',
+)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = ''
+
+MEDIAFILES_DIRS = (
+    'media',
+)
 
 # number of bits for the key, all auths should use the same number of bits
 KEYBITS = 256
@@ -180,3 +211,6 @@ if os.path.exists("config.jsonnet"):
 
 
 INSTALLED_APPS = INSTALLED_APPS + MODULES
+
+import django_heroku
+django_heroku.settings(locals())

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+{% load i18n static %}
+<html lang>
     <head>
         <meta charset="utf-8" />
-        <title>{% block title %}Decide!{% endblock %}</title>
+        <title>Decide Pícaro{% block title %}{% endblock %}</title>
+        <link rel="shortcut icon" type="image/png" href="{% static 'favicon/picaro.png' %}" />
         {% block extrahead %}{% endblock %}
     </head>
     <body>
