@@ -48,6 +48,25 @@ class OpcionRespuestaAdmin(admin.ModelAdmin):
 class RespuestaPreferenciaAdmin(admin.ModelAdmin):
     list_display = ('id','orden_preferencia','Nombre_Opcion_Respuesta')
 
+#VOTACIONES MÚLTIPLES
+class OpcionMultipleInline(admin.TabularInline):
+    model = OpcionMultiple
+    extra = 1
+class PreguntaMultipleInline(admin.TabularInline):
+    model = PreguntaMultiple
+    extra = 1
+class VotacionMultipleAdmin(admin.ModelAdmin):
+    list_display=('id','titulo','descripcion','Numero_De_Preguntas_Multiple')
+    inlines =[PreguntaMultipleInline]
+
+class PreguntaMultipleAdmin(admin.ModelAdmin):
+    list_display = ('id','Nombre_VotacionMultiple','textoPregunta','Numero_De_Opciones','cuentaOpcionesMultiple')
+    inlines =[OpcionMultipleInline]
+
+class OpcionMultipleAdmin(admin.ModelAdmin):
+    list_display = ('id','nombre_opcion','n_votado','Nombre_Pregunta_Multiple')
+
+
 def start(modeladmin, request, queryset):
     for v in queryset.all():
         v.create_pubkey()
@@ -97,3 +116,7 @@ admin.site.register(VotacionPreferencia,VotacionPreferenciaAdmin)
 admin.site.register(PreguntaPreferencia, PreguntaPreferenciaAdmin)
 admin.site.register(OpcionRespuesta,OpcionRespuestaAdmin)
 admin.site.register(RespuestaPreferencia,RespuestaPreferenciaAdmin)
+
+admin.site.register(VotacionMultiple, VotacionMultipleAdmin)
+admin.site.register(PreguntaMultiple,PreguntaMultipleAdmin)
+admin.site.register(OpcionMultiple,OpcionMultipleAdmin)

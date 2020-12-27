@@ -125,7 +125,9 @@ class VotacionMultiple(models.Model):
 
     def __str__(self):
         return self.titulo
-
+      # DEVUELVE EL NÚMERO DE PREGUNTAS QUE TIENE ASOCIDADA UNA VOTACION MULTIPLE
+    def Numero_De_Preguntas_Multiple(self):
+        return PreguntaMultiple.objects.filter(votacionMultiple_id=self.id).count()
 #AÑADE UNA PREGUNTA MULTIPLE  A LA VOTACION MULTIPLE
     #A LA HORA DE CREAR LA PREGUNTA MULTIPLE SOLO ES NECESARIO INDICARLE EL ATRIBUTO TEXTOPREGUNTA
     #LA FUNCION SE ENCARGA DE ASOCIAR LA PREGUNTA MULTIPLE  A LA VOTACION MULTIPLE QUE SE LE HA INDICADO
