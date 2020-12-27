@@ -9,7 +9,9 @@ export default class Login extends Component {
         form: {
             username: '',
             password: ''
-        }
+        },
+        error: false
+
     }
 
     onSubmitLogin = () => {
@@ -21,7 +23,7 @@ export default class Login extends Component {
                 this.getUser();
             })
             .catch(error => {
-                Alert.alert(`Error: ${error}`);
+                this.setState({error:true})
             });
     }    
 
@@ -36,7 +38,7 @@ export default class Login extends Component {
                 setUser(response.data);
                 setSignup(false);
             }).catch(error => {
-                Alert.alert(`Error: ${error}`);
+                this.setState({error:true})
             });
     }
   
@@ -62,6 +64,9 @@ export default class Login extends Component {
                     <Text>Contraseña</Text>
                     <TextInput secureTextEntry={true} onChangeText={(val) => this.handleChange('password', val)} placeholder="Introduce tu contraseña"></TextInput>
                 </View>
+                {this.state.error && <View style={{paddingTop:10, paddingBottom:7}}>
+                <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px'}}>El usuario introducido no existe</Text>
+            </View>}
                 <Button  onPress={this.onSubmitLogin} title="Login" />
             </View>
         );
