@@ -57,7 +57,7 @@ class App extends React.Component {
                 this.setUser(response.data);
                 this.setSignup(false);
             }).catch(error => {
-                Alert.alert(`Error: ${error}`);
+                alert(`Error: ${error}`);
             });
     }
 
@@ -107,33 +107,33 @@ class App extends React.Component {
                 <Barra urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup} token={this.state.token} setToken={this.setToken} setUser={this.setUser} handleSetStorage={this.handleSetStorage}/>
                 
                 {this.state.signup ?
-                <View style={{padding:20, maxWidth: 800}}>
-                    <Login setUser={this.setUser} setToken={this.setToken} setSignup={this.setSignup} token={this.state.token} handleSetStorage={this.handleSetStorage}/>
-                </View>
-                    : 
+                     <View style={{padding:20, maxWidth: 800}}>
+                        <Login setUser={this.setUser} setToken={this.setToken} setSignup={this.setSignup} token={this.state.token} handleSetStorage={this.handleSetStorage}/>
+                    </View>
+                : 
                     (!this.state.selectedVoting ?
-                    <View>
-                        <View>     
-                                {this.state.done == true &&  <View style={{width: '100%',
+                        <View>
+                            <View>     
+                                {this.state.done == true &&  <View style={{width: '100%', //Si la votación se ha realizado se muestra la barra verde.
                                 backgroundColor: 'rgb(49, 250, 95)',
-                                paddingHorizontal: 30,
+                                paddingHorizontal: 20,
                                 paddingTop: statusHeight + 10,
                                 paddingBottom: 10}}>
-                                    <Text style={{fontWeight: 'bold', fontFamily: 'calibri'}}>Votación enviada!</Text>
+                                    <Text style={{fontWeight:500, fontFamily: 'calibri', fontSize:'16px'}}>Votación enviada!</Text>
                                 </View>}
                             </View> 
-                        <View style={{padding:20, maxWidth: 800}}>
-                            <Text style={{fontWeight: 'bold', marginBottom: 15}}>Votaciones disponibles</Text>
-                            <FlatList data={this.state.votings} renderItem={this.render_voting} />
-                            <Button title="Recargar" color="#333" onPress={this.loadVotings} />
-                        </View> 
-                    </View>
+                            <View style={{padding:20, maxWidth: 800}}>
+                                <Text style={{fontWeight: 'bold', marginBottom: 15}}>Votaciones disponibles</Text>
+                                <FlatList data={this.state.votings} renderItem={this.render_voting} />
+                                <Button title="Recargar" color="#333" onPress={this.loadVotings} />
+                            </View> 
+                        </View>
                         :
                     <View style={{padding:20, maxWidth: 800}}>
                         <Voting setDone={this.setDone} voting={this.state.selectedVoting} user={this.state.user} token={this.state.token} resetSelected={() => this.setSelectedVoting(undefined)}/>  
                     </View>
-                )}
-                </View>
+        )}
+            </View>
         );
     }
 }

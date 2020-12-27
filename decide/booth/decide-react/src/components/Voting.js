@@ -29,7 +29,6 @@ export default class Voting extends Component {
         event.preventDefault();
         if (!this.state.selected) {
             this.setState({noSelection:true})
-            //alert('Selecciona una opción');
         } else {
             const { voting, user } = this.props;
             const vote = this.encrypt();
@@ -39,14 +38,12 @@ export default class Voting extends Component {
                 voter: user.id,
                 token: this.props.token
             };
-            console.log('Data',data)
             this.send(data);
         }
     }
 
     encrypt = () =>  {
         const { selected } = this.state;
-        console.log('Sel',selected)
         const bigmsg = BigInt.fromJSONObject(selected.toString());
         const cipher = ElGamal.encrypt(this.state.bigpk, bigmsg);
         return cipher;
@@ -94,7 +91,7 @@ export default class Voting extends Component {
                 
             />
             {this.state.noSelection && <View style={{paddingTop:10, paddingBottom:7}}>
-                <Text style={{fontWeight: 'bold', color:'rgb(248,62,62)', fontFamily: 'calibri', fontSize:'15px'}}>Debe seleccionar una opción</Text>
+                <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px'}}>Debe seleccionar una opción</Text>
             </View>}
             <Button title="Votar" onPress={this.handleSubmit} />
             <Button title="Volver" color="#333" onPress={resetSelected} />
