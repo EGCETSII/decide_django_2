@@ -57,13 +57,14 @@ export default class Voting extends Component {
     render() {
         const { voting, resetSelected } = this.props;
 
-        return <View style={styles.html}>
-                <View style={styles.container}>
-                    <View style={styles.content}>
+        return <View style={styles.htmlStyle}>
+                <View style={styles.containerStyle}>
+                    <View style={styles.contentStyle}>
                         <View style={styles.row}>
                             <View style={styles.clearfix}>
                                 <Text style={styles.textStyle}>{voting.name}</Text>
                                 <Text style={styles.textStyle}>{voting.question.desc}</Text>
+                                <View style={{flex: 1, backgroundColor: 'powderblue'}} />
                             </View>
                             <View style={styles.clearfix}>
                                 <Picker style={styles.pickerStyle} selectedValue={this.state.selected} onValueChange={(itemValue, itemIndex) => this.setState({selected: itemValue})}>
@@ -73,10 +74,14 @@ export default class Voting extends Component {
                                 </Picker>
                             </View>
                             <View style={styles.clearfix}> 
-                                <Button title="Votar" color="blue" onPress={this.handleSubmit} />
+                                <View style={styles.button1Style}>
+                                    <Button title="Votar" color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.handleSubmit} />
+                                </View>
                             </View>
                             <View style={styles.clearfix}> 
-                                <Button title="Volver" color="black" onPress={resetSelected} />
+                                <View style={styles.button2Style}>
+                                    <Button title="Volver" color="linear-gradient(top, #696969, #000000)" onPress={resetSelected} />
+                                </View>
                             </View>
                         </View>    
                     </View>
@@ -135,5 +140,71 @@ const styles = StyleSheet.create ({
     clearfix: {
         "marginBottom": 24,
         "zoom": 1
-    }
+    },
+    button1Style: {
+        width: "100%",
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        fontSize: 18,
+        lineHeight: 1.5,
+        color: "#fff",
+        textTransform: "uppercase",
+        height: 50,
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
+        borderBottomRightRadius: 25,
+        borderBottomLeftRadius: 25,
+        backgroundColor: "#0064cd",
+        paddingTop: 0,
+        paddingRight: 25,
+        paddingBottom: 0,
+        paddingLeft: 25,
+        transition: "all 0.4s",
+        backgroundRepeat: "repeat-x",
+        backgroundImage: "linear-gradient(top, #049cdb, #0064cd)",
+        textShadowOffset: {
+          width: 0,
+          height: -1
+        },
+        textShadowRadius: 0,
+        textShadowColor: "rgba(0, 0, 0, 0.25)",
+        borderTopColor: "#0064cd",
+        borderRightColor: "#0064cd",
+        borderBottomColor: "#0064cd",
+        borderLeftColor: "#0064cd"
+    },
+    button2Style: {
+        width: "100%",
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        fontSize: 18,
+        lineHeight: 1.5,
+        color: "#fff",
+        textTransform: "uppercase",
+        height: 50,
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
+        borderBottomRightRadius: 25,
+        borderBottomLeftRadius: 25,
+        backgroundColor: "#000000",
+        paddingTop: 0,
+        paddingRight: 25,
+        paddingBottom: 0,
+        paddingLeft: 25,
+        transition: "all 0.4s",
+        backgroundRepeat: "repeat-x",
+        backgroundImage: "linear-gradient(top, #696969, #000000)",
+        textShadowOffset: {
+          width: 0,
+          height: -1
+        },
+        textShadowRadius: 0,
+        textShadowColor: "rgba(0, 0, 0, 0.25)",
+        borderTopColor: "#000000",
+        borderRightColor: "#000000",
+        borderBottomColor: "#000000",
+        borderLeftColor: "#000000"
+    },
 });
