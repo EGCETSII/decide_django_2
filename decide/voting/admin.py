@@ -1,11 +1,20 @@
 from django.contrib import admin
 from django.utils import timezone
 
-from .models import QuestionOption
-from .models import Question
-from .models import Voting
+from .models import *
 
 from .filters import StartedFilter
+
+#Votaciones Binarias
+class RespuestaBinariaInline(admin.TabularInline):
+    model = RespuestaBinaria
+    extra = 1
+class VotacionBinariaAdmin(admin.ModelAdmin):
+    list_display=('id','titulo','descripcion','Numero_De_Trues','Numero_De_Falses')
+    inlines =[RespuestaBinariaInline] 
+class RepuestaBinariaAdmin(admin.ModelAdmin):
+    list_display = ('id','respuesta','Nombre_Votacion')
+
 
 # Votaciones normales
 
@@ -107,6 +116,9 @@ class VotingAdmin(admin.ModelAdmin):
 
 admin.site.register(Voting, VotingAdmin)
 admin.site.register(Question, QuestionAdmin)
+
+admin.site.register(VotacionBinaria,VotacionBinariaAdmin)
+admin.site.register(RespuestaBinaria,RepuestaBinariaAdmin)
 
 admin.site.register(Votacion, VotacionAdmin)
 admin.site.register(Pregunta,PreguntaAdmin)
