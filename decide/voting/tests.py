@@ -161,6 +161,54 @@ class BorraVotacionPreferenciaTest(BaseTestCase):
         totalVotaciones = len(VotacionPreferencia.objects.all())
         self.assertEquals(totalVotaciones,1)
 
+#TEST VOTACIONES MULTIPLES
+class GuardaVotacionMultipleTest(BaseTestCase):
+    def setUp(self):
+        vm = VotacionMultiple(titulo="titulo 1",descripcion="Descripcion 1")
+        vm.save()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vm=None
+    def testExist(self):
+        vm = VotacionMultiple.objects.get(titulo="titulo 1")
+        self.assertEquals(vm.titulo,"titulo 1")
+        self.assertEquals(vm.descripcion,"Descripcion 1")
+
+
+class ActualizaVotacionMultipleTest(BaseTestCase):
+    def setUp(self):
+        vm = VotacionMultiple(titulo="titulo 1",descripcion="Descripcion 1")
+        vm.save()
+        vm.titulo = "titulo 2"
+        vm.descripcion = "descripcion 2"
+        vm.save()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vm=None
+    def testActualizado(self):
+        vm = VotacionMultiple.objects.get(titulo="titulo 2")
+        self.assertEquals(vm.titulo,"titulo 2")
+        self.assertEquals(vm.descripcion,"descripcion 2")
+
+
+class BorraVotacionMultipleTest(BaseTestCase):
+    def setUp(self):
+        vm1 = VotacionMultiple(titulo="titulo 1",descripcion="Descripcion 1")
+        vm1.save()
+        vm2 = VotacionMultiple(titulo="titulo 2",descripcion="Descripcion 2")
+        vm2.save()
+        vm2.delete()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vm1=None
+        self.vm2=None
+    def testBorrado(self):
+        totalVotacionesMultiples = len(VotacionMultiple.objects.all())
+        self.assertEquals(totalVotacionesMultiples,1)
+
 class VotingTestCase(BaseTestCase):
 
     def setUp(self):
