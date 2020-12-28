@@ -220,6 +220,97 @@ class AddOpcionRespuestaTest(BaseTestCase):
         self.assertEquals(opr.nombre_opcion,"Opcion 1")
         self.assertEquals(opr.preguntaPreferencia_id,pp.id)
 
+class CuentaOpcionesDePregunta(BaseTestCase):
+    def setUp(self):
+        vp = VotacionPreferencia(titulo="preferencia 1",descripcion="descripcion 1")
+        vp.save()
+        pp = PreguntaPreferencia(textoPregunta ="Texto 1")
+        vp.addPreguntaPreferencia(pp)
+        opr1 = OpcionRespuesta(nombre_opcion = "Opcion 1")
+        pp.addOpcionRespuesta(opr1)
+        opr2 = OpcionRespuesta(nombre_opcion = "Opcion 2")
+        pp.addOpcionRespuesta(opr2)
+        opr3 = OpcionRespuesta(nombre_opcion = "Opcion 3")
+        pp.addOpcionRespuesta(opr3)
+        opr4 = OpcionRespuesta(nombre_opcion = "Opcion 4")
+        pp.addOpcionRespuesta(opr4)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vp=None
+        self.pp=None
+        self.opr1=None
+        self.opr2=None
+        self.opr3=None
+        self.opr4=None
+    def testAdd(self):
+        vp = VotacionPreferencia.objects.get(titulo="preferencia 1")
+        pp = PreguntaPreferencia.objects.get(votacionPreferencia_id=vp.id)
+        self.assertEquals(pp.Numero_De_Opciones(),4)
+
+class AddRespuestaAOpcion(BaseTestCase):
+    def setUp(self):
+        vp = VotacionPreferencia(titulo="preferencia 1",descripcion="descripcion 1")
+        vp.save()
+        pp = PreguntaPreferencia(textoPregunta ="Texto 1")
+        vp.addPreguntaPreferencia(pp)
+        opr = OpcionRespuesta(nombre_opcion = "Opcion 1")
+        pp.addOpcionRespuesta(opr)
+        rp = RespuestaPreferencia(orden_preferencia=1)
+        opr.addRespuetaPreferencia(rp)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vp=None
+        self.pp=None
+        self.opr=None
+        self.rp=None
+    def testAdd(self):
+        vp = VotacionPreferencia.objects.get(titulo="preferencia 1")
+        pp = PreguntaPreferencia.objects.get(votacionPreferencia_id=vp.id)
+        opr = OpcionRespuesta.objects.get(preguntaPreferencia_id=pp.id)
+        rp = RespuestaPreferencia.objects.get(opcionRespuesta_id=opr.id)
+        self.assertEquals(rp.orden_preferencia,1)
+        self.assertEquals(rp.opcionRespuesta_id,opr.id)
+
+
+class EstadisticaOpcionPreferencia(BaseTestCase):
+    def setUp(self):
+        vp = VotacionPreferencia(titulo="preferencia 1",descripcion="descripcion 1")
+        vp.save()
+        pp = PreguntaPreferencia(textoPregunta ="Texto 1")
+        vp.addPreguntaPreferencia(pp)
+        opr = OpcionRespuesta(nombre_opcion = "Opcion 1")
+        pp.addOpcionRespuesta(opr)
+        rp1 = RespuestaPreferencia(orden_preferencia=1)
+        opr.addRespuetaPreferencia(rp1)
+        rp2 = RespuestaPreferencia(orden_preferencia=2)
+        opr.addRespuetaPreferencia(rp2)
+        rp3 = RespuestaPreferencia(orden_preferencia=3)
+        opr.addRespuetaPreferencia(rp3)
+        rp4 = RespuestaPreferencia(orden_preferencia=2)
+        opr.addRespuetaPreferencia(rp4)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vp=None
+        self.pp=None
+        self.opr=None
+        self.rp1=None
+        self.rp2=None
+        self.rp3=None
+        self.rp4=None
+    def testAdd(self):
+        vp = VotacionPreferencia.objects.get(titulo="preferencia 1")
+        pp = PreguntaPreferencia.objects.get(votacionPreferencia_id=vp.id)
+        opr = OpcionRespuesta.objects.get(preguntaPreferencia_id=pp.id)
+
+        respuesta = opr.Respuestas_Opcion()
+        self.assertEquals(opr.Media_Preferencia(),2)
+        self.assertEquals(respuesta[0][1],'1 veces')
+        self.assertEquals(respuesta[1][1],'2 veces')
+        self.assertEquals(respuesta[2][1],'1 veces')
+
 #TEST VOTACIONES MULTIPLES
 class GuardaVotacionMultipleTest(BaseTestCase):
     def setUp(self):
