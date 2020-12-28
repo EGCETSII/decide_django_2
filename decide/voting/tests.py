@@ -209,6 +209,66 @@ class BorraVotacionMultipleTest(BaseTestCase):
         totalVotacionesMultiples = len(VotacionMultiple.objects.all())
         self.assertEquals(totalVotacionesMultiples,1)
 
+class AddPreguntaMultiple(BaseTestCase):
+    def setUp(self):
+        vm1 = VotacionMultiple(titulo="titulo 1",descripcion="Descripcion 1")
+        vm1.save()
+        pm1  = PreguntaMultiple(textoPregunta="pregunta 1")
+        vm1.addPreguntaMultiple(pm1)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vm1=None
+        self.pm1 =None
+    def testAdd(self):
+        vm = VotacionMultiple.objects.get(titulo="titulo 1")
+        pm = PreguntaMultiple.objects.get(votacionMultiple_id=vm.id)
+        self.assertEquals(pm.textoPregunta,"pregunta 1")
+        self.assertEquals(pm.votacionMultiple_id,vm.id)
+
+class CuentaPreguntasMultiples(BaseTestCase):
+    def setUp(self):
+        vm = VotacionMultiple(titulo="votacion 1",descripcion="descripcion 1")
+        vm.save()
+        pm1 = PreguntaMultiple(textoPregunta ="Texto 1")
+        pm2 = PreguntaMultiple(textoPregunta ="Texto 2")
+        pm3 = PreguntaMultiple(textoPregunta ="Texto 3")
+        vm.addPreguntaMultiple(pm1)
+        vm.addPreguntaMultiple(pm2)
+        vm.addPreguntaMultiple(pm3)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vm=None
+        self.pm1=None
+        self.pm2=None
+        self.pm3=None
+    def testContador(self):
+        vm = VotacionMultiple.objects.get(titulo="votacion 1")
+        self.assertEquals(vm.Numero_De_Preguntas_Multiple(),3)
+
+class AddOpcionMultipleTest(BaseTestCase):
+    def setUp(self):
+        vm = VotacionMultiple(titulo="votacion 1",descripcion="descripcion 1")
+        vm.save()
+        pm = PreguntaMultiple(textoPregunta ="Texto 1")
+        vm.addPreguntaMultiple(pm)
+        om1 = OpcionMultiple(nombre_opcion = "Opcion 1",n_votado=0)
+        pm.addOpcionMultiple(om1)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vm=None
+        self.pm=None
+        self.om1=None
+    def testAdd(self):
+        vm = VotacionMultiple.objects.get(titulo="votacion 1")
+        pm = PreguntaMultiple.objects.get(votacionMultiple_id=vm.id)
+        om = OpcionMultiple.objects.get(preguntaMultiple_id=pm.id)
+        self.assertEquals(om.nombre_opcion,"Opcion 1")
+        self.assertEquals(om.preguntaMultiple_id,pm.id)
+        self.assertEquals(om.n_votado,0)
+
 class VotingTestCase(BaseTestCase):
 
     def setUp(self):
