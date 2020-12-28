@@ -161,6 +161,65 @@ class BorraVotacionPreferenciaTest(BaseTestCase):
         totalVotaciones = len(VotacionPreferencia.objects.all())
         self.assertEquals(totalVotaciones,1)
 
+class AddPreguntaPreferenciaTest(BaseTestCase):
+    def setUp(self):
+        vp = VotacionPreferencia(titulo="preferencia 1",descripcion="descripcion 1")
+        vp.save()
+        pp = PreguntaPreferencia(textoPregunta ="Texto 1")
+        vp.addPreguntaPreferencia(pp)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vp=None
+        self.pp=None
+    def testAdd(self):
+        vp = VotacionPreferencia.objects.get(titulo="preferencia 1")
+        pp = PreguntaPreferencia.objects.get(votacionPreferencia_id=vp.id)
+        self.assertEquals(pp.textoPregunta,"Texto 1")
+        self.assertEquals(pp.votacionPreferencia_id,vp.id)
+
+class CuentaPreguntaPreferencia(BaseTestCase):
+    def setUp(self):
+        vp = VotacionPreferencia(titulo="preferencia 1",descripcion="descripcion 1")
+        vp.save()
+        pp1 = PreguntaPreferencia(textoPregunta ="Texto 1")
+        vp.addPreguntaPreferencia(pp1)
+        pp2 = PreguntaPreferencia(textoPregunta ="Texto 2")
+        vp.addPreguntaPreferencia(pp2)
+        pp3 = PreguntaPreferencia(textoPregunta ="Texto 3")
+        vp.addPreguntaPreferencia(pp3)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vp=None
+        self.pp1=None
+        self.pp2=None
+        self.pp3=None
+    def testAdd(self):
+        vp = VotacionPreferencia.objects.get(titulo="preferencia 1")
+        self.assertEquals(vp.Numero_De_Preguntas_Preferencia(),3)
+
+class AddOpcionRespuestaTest(BaseTestCase):
+    def setUp(self):
+        vp = VotacionPreferencia(titulo="preferencia 1",descripcion="descripcion 1")
+        vp.save()
+        pp = PreguntaPreferencia(textoPregunta ="Texto 1")
+        vp.addPreguntaPreferencia(pp)
+        opr = OpcionRespuesta(nombre_opcion = "Opcion 1")
+        pp.addOpcionRespuesta(opr)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vp=None
+        self.pp=None
+        self.opr=None
+    def testAdd(self):
+        vp = VotacionPreferencia.objects.get(titulo="preferencia 1")
+        pp = PreguntaPreferencia.objects.get(votacionPreferencia_id=vp.id)
+        opr = OpcionRespuesta.objects.get(preguntaPreferencia_id=pp.id)
+        self.assertEquals(opr.nombre_opcion,"Opcion 1")
+        self.assertEquals(opr.preguntaPreferencia_id,pp.id)
+
 #TEST VOTACIONES MULTIPLES
 class GuardaVotacionMultipleTest(BaseTestCase):
     def setUp(self):
