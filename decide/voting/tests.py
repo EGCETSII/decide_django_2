@@ -114,6 +114,7 @@ class BorraVotacionBinariaTest(BaseTestCase):
     def testBorrado(self):
         totalVotaciones = len(VotacionBinaria.objects.all())
         self.assertEquals(totalVotaciones,1)
+
 #TEST VOTACIONES PREFERENCIAS
 class GuardaVotacionPreferenciaTest(BaseTestCase):
     def setUp(self):
@@ -310,6 +311,46 @@ class EstadisticaOpcionPreferencia(BaseTestCase):
         self.assertEquals(respuesta[0][1],'1 veces')
         self.assertEquals(respuesta[1][1],'2 veces')
         self.assertEquals(respuesta[2][1],'1 veces')
+
+#TEST VOTACIONES NORMALES
+
+class AddPreguntaTest(BaseTestCase):
+    def setUp(self):
+        v = Votacion(titulo="votacion 1",descripcion="descripcion 1")
+        v.save()
+        p = Pregunta(textoPregunta ="Texto 1")
+        v.addPregunta(p)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.p=None
+    def testAdd(self):
+        v = Votacion.objects.get(titulo="votacion 1")
+        p = Pregunta.objects.get(votacion_id=v.id)
+        self.assertEquals(p.textoPregunta,"Texto 1")
+        self.assertEquals(p.votacion_id,v.id)
+
+class CuentaPreguntas(BaseTestCase):
+    def setUp(self):
+        v = Votacion(titulo="votacion 1",descripcion="descripcion 1")
+        v.save()
+        p1 = Pregunta(textoPregunta ="Texto 1")
+        p2 = Pregunta(textoPregunta ="Texto 2")
+        p3 = Pregunta(textoPregunta ="Texto 3")
+        v.addPregunta(p1)
+        v.addPregunta(p2)
+        v.addPregunta(p3)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.p1=None
+        self.p2=None
+        self.p3=None
+    def testContador(self):
+        v = Votacion.objects.get(titulo="votacion 1")
+        self.assertEquals(v.Numero_De_Preguntas(),3)
 
 #TEST VOTACIONES MULTIPLES
 class GuardaVotacionMultipleTest(BaseTestCase):
