@@ -314,6 +314,52 @@ class EstadisticaOpcionPreferencia(BaseTestCase):
 
 #TEST VOTACIONES NORMALES
 
+class GuardaVotacionTest(BaseTestCase):
+    def setUp(self):
+        v = Votacion(titulo="votacion 1",descripcion="descripcion 1")
+        v.save()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+    def testExist(self):
+        v = Votacion.objects.get(titulo="votacion 1")
+        self.assertEquals(v.titulo,"votacion 1")
+        self.assertEquals(v.descripcion,"descripcion 1")
+
+
+class ActualizaVotacionTest(BaseTestCase):
+    def setUp(self):
+        v = Votacion(titulo="votacion 1",descripcion="descripcion 1")
+        v.save()
+        v.titulo = "votacion 2"
+        v.descripcion = "descripcion 2"
+        v.save()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+    def testActualizado(self):
+        v = Votacion.objects.get(titulo="votacion 2")
+        self.assertEquals(v.titulo,"votacion 2")
+        self.assertEquals(v.descripcion,"descripcion 2")
+
+class BorraVotacionTest(BaseTestCase):
+    def setUp(self):
+        v1 = Votacion(titulo="votacion 1",descripcion="descripcion 1")
+        v1.save()
+        v2 = Votacion(titulo="votacion 2",descripcion="descripcion 2")
+        v2.save()
+        v2.delete()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.v1=None
+        self.v2=None
+    def testBorrado(self):
+        totalVotaciones = len(Votacion.objects.all())
+        self.assertEquals(totalVotaciones,1)
+
 class AddPreguntaTest(BaseTestCase):
     def setUp(self):
         v = Votacion(titulo="votacion 1",descripcion="descripcion 1")
