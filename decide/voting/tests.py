@@ -66,54 +66,50 @@ class BorraVotacionBinariaTest(BaseTestCase):
         self.assertEquals(totalVotaciones,1)
 
 
-#TEST VOTACIONES BINARIAS
-
-class GuardaVotacionBinariaTest(BaseTestCase):
-    def setUp(self):
-        vb = VotacionBinaria(titulo="titulo 1",descripcion="Descripcion 1")
-        vb.save()
-        super().setUp()
-    def tearDown(self):
-        super().tearDown()
-        self.vb=None
-    def testExist(self):
-        vb = VotacionBinaria.objects.get(titulo="titulo 1")
-        self.assertEquals(vb.titulo,"titulo 1")
-        self.assertEquals(vb.descripcion,"Descripcion 1")
-
-
-class ActualizaVotacionBinariaTest(BaseTestCase):
-    def setUp(self):
-        vb = VotacionBinaria(titulo="titulo 1",descripcion="Descripcion 1")
-        vb.save()
-        vb.titulo = "titulo 2"
-        vb.descripcion = "descripcion 2"
-        vb.save()
-        super().setUp()
-    def tearDown(self):
-        super().tearDown()
-        self.vb=None
-    def testActualizado(self):
-        vb = VotacionBinaria.objects.get(titulo="titulo 2")
-        self.assertEquals(vb.titulo,"titulo 2")
-        self.assertEquals(vb.descripcion,"descripcion 2")
-
-
-class BorraVotacionBinariaTest(BaseTestCase):
+class AddRespuestaBinaria(BaseTestCase):
     def setUp(self):
         vb1 = VotacionBinaria(titulo="titulo 1",descripcion="Descripcion 1")
         vb1.save()
-        vb2 = VotacionBinaria(titulo="titulo 2",descripcion="Descripcion 2")
-        vb2.save()
-        vb2.delete()
+        rb1  = RespuestaBinaria(respuesta = 1)
+        vb1.addRespuestaBinaria(rb1)
         super().setUp()
     def tearDown(self):
         super().tearDown()
         self.vb1=None
-        self.vb2=None
-    def testBorrado(self):
-        totalVotaciones = len(VotacionBinaria.objects.all())
-        self.assertEquals(totalVotaciones,1)
+        self.rb1=None
+    def testAdd(self):
+        vb = VotacionBinaria.objects.get(titulo="titulo 1")
+        rb = RespuestaBinaria.objects.get(votacionBinaria_id=vb.id)
+        self.assertEquals(rb.respuesta,1)
+        self.assertEquals(rb.votacionBinaria_id,vb.id)
+
+class CuentaTruesYFalsesTest(BaseTestCase):
+    def setUp(self):
+        vb1 = VotacionBinaria(titulo="titulo 1",descripcion="Descripcion 1")
+        vb1.save()
+        
+        rb1 = RespuestaBinaria(respuesta=1)
+        rb2 = RespuestaBinaria(respuesta=1)
+        rb3 = RespuestaBinaria(respuesta=1)
+        rb4 = RespuestaBinaria(respuesta=0)
+
+        vb1.addRespuestaBinaria(rb1)
+        vb1.addRespuestaBinaria(rb2)
+        vb1.addRespuestaBinaria(rb3)
+        vb1.addRespuestaBinaria(rb4)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vb1=None
+        self.rb1=None
+        self.rb2=None
+        self.rb3=None
+        self.rb4=None
+    def testContador(self):
+        vb = VotacionBinaria.objects.get(titulo="titulo 1")
+        self.assertEquals(vb.Numero_De_Trues(),3)
+        self.assertEquals(vb.Numero_De_Falses(),1)
+
 
 #TEST VOTACIONES PREFERENCIAS
 class GuardaVotacionPreferenciaTest(BaseTestCase):
