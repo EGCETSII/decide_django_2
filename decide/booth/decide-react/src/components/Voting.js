@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { BigInt } from '../crypto/BigInt';
 import { ElGamal } from '../crypto/ElGamal';
-import { Alert, Button, Picker, Text, View } from 'react-native';
+import { Alert, Button, Text, View } from 'react-native';
 import { postData } from '../utils';
 import config from '../config.json';
 import { StyleSheet} from "react-native";
-
+import RadioForm from 'react-native-simple-radio-button';
 
 export default class Voting extends Component {
 
@@ -16,13 +16,20 @@ export default class Voting extends Component {
             y: BigInt.fromJSONObject(this.props.voting.pub_key.y.toString()),
         },
         voting: null,
-        selected: this.props.voting.question.options[0].number,
+        selected: null,
+        options: new Array(),
+        noSelection: false
+
+    }
+
+    doneToFalse =() => {
+        this.props.setDone(false);
     }
 
     handleSubmit = (event) => {
         event.preventDefault();
         if (!this.state.selected) {
-            alert('Selecciona una opción');
+            this.setState({noSelection:true})
         } else {
             const { voting, user } = this.props;
             const vote = this.encrypt();
@@ -46,12 +53,30 @@ export default class Voting extends Component {
     send = (data) => {
         postData(config.STORE_URL, data, this.props.token)
             .then(response => {
-                Alert.alert('Enhorabuena, has votado correctamente');
+                this.props.setDone(true)
                 this.props.resetSelected();
             })
             .catch(error => {
-                Alert.alert(`Error: ${error}`);
+                alert(`Error: ${error}`);
             });
+    }
+
+    introduccion = (opt) => {
+        const dict ={};
+        dict['label'] = opt.option;
+        dict['value'] = opt.number;
+        this.state.options.push(dict);
+    }
+
+    options = (voting) => {
+        voting.question.options.map(opt => 
+        this.introduccion(opt))}
+
+    componentDidMount() {
+        this.doneToFalse();
+        const { voting } = this.props;
+        this.options(voting);
+        this.setState({options:this.state.options})
     }
 
     render() {
@@ -67,12 +92,17 @@ export default class Voting extends Component {
                                 <View style={{flex: 1, backgroundColor: 'powderblue'}} />
                             </View>
                             <View style={styles.clearfix}>
-                                <Picker style={styles.pickerStyle} selectedValue={this.state.selected} onValueChange={(itemValue, itemIndex) => this.setState({selected: itemValue})}>
-                                    {voting.question.options.map(opt => 
-                                        <Picker.Item label={opt.option} value={opt.number} key={opt.number} />
-                                    )}
-                                </Picker>
+                            <RadioForm style={styles.pickerStyle}
+                                            radio_props={this.state.options}
+                                            initial={-1}
+                                            onPress={(itemValue) => this.setState({selected: itemValue})}
+                                            buttonSize={9}
+
+                                        />
                             </View>
+                            {this.state.noSelection && <View style={{paddingTop:10, paddingBottom:7}}>
+                                            <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px'}}>Debe seleccionar una opción</Text>
+                                        </View>}
                             <View style={styles.clearfix}> 
                                 <View style={styles.button1Style}>
                                     <Button title="Votar" color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.handleSubmit} />

@@ -11,21 +11,23 @@ export default class Login extends Component {
         form: {
             username: '',
             password: ''
-        }
+        },
+        error: false
+
     }
 
     onSubmitLogin = () => {
-        const { setToken } = this.props;
+        const { setToken, handleSetStorage } = this.props;
         postData(config.LOGIN_URL, this.state.form)
             .then(response => {
-                setToken(response.data.token);
+                handleSetStorage("decide", response.data.token)
+                setToken(response.data.token)
                 this.getUser();
             })
             .catch(error => {
-                Alert.alert(`Error: ${error}`);
+                this.setState({error:true})
             });
-    }
-      
+    }    
 
     getUser = () => {
         const { token, setUser, setSignup } = this.props;
@@ -38,7 +40,7 @@ export default class Login extends Component {
                 setUser(response.data);
                 setSignup(false);
             }).catch(error => {
-                Alert.alert(`Error: ${error}`);
+                this.setState({error:true})
             });
     }
   
@@ -85,6 +87,10 @@ export default class Login extends Component {
                         </View>
                     </View>
                 </View>
+                {this.state.error && <View style={{paddingTop:10, paddingBottom:7}}>
+                <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px'}}>El usuario introducido no existe</Text>
+            </View>}
+                <Button  onPress={this.onSubmitLogin} title="Login" />
             </View>
         );
     }
