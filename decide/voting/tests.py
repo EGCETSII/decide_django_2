@@ -460,6 +460,107 @@ class AddOpcionMultipleTest(BaseTestCase):
         self.assertEquals(om.preguntaMultiple_id,pm.id)
         self.assertEquals(om.n_votado,0)
 
+
+class numeroOpcionesPreguntaMultipleTest(BaseTestCase):
+    def setUp(self):
+        vm = VotacionMultiple(titulo="votacion 1", descripcion="descripcion 1")
+        vm.save()
+        pm = PreguntaMultiple(textoPregunta="Texto 1")
+        vm.addPreguntaMultiple(pm)
+        om1 = OpcionMultiple(nombre_opcion="Opcion 1", n_votado=0)
+        pm.addOpcionMultiple(om1)
+        om2 = OpcionMultiple(nombre_opcion="Opcion 2", n_votado=1)
+        pm.addOpcionMultiple(om2)
+        om3 = OpcionMultiple(nombre_opcion="Opcion 3", n_votado=10)
+        pm.addOpcionMultiple(om3)
+        om4 = OpcionMultiple(nombre_opcion="Opcion 4", n_votado=20)
+        pm.addOpcionMultiple(om4)
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.vm = None
+        self.pm = None
+        self.om1 = None
+        self.om2 = None
+        self.om3 = None
+        self.om4 = None
+
+    def testAdd(self):
+        vm = VotacionMultiple.objects.get(titulo="votacion 1")
+        pm = PreguntaMultiple.objects.get(votacionMultiple_id=vm.id)
+        self.assertEquals(pm.Numero_De_Opciones(), 4)
+
+
+class presentaOpcionesPreguntaMultipleTest(BaseTestCase):
+    def setUp(self):
+        vm = VotacionMultiple(titulo="votacion 1", descripcion="descripcion 1")
+        vm.save()
+        pm = PreguntaMultiple(textoPregunta="Texto 1")
+        vm.addPreguntaMultiple(pm)
+        om1 = OpcionMultiple(nombre_opcion="Opcion 1", n_votado=0)
+        pm.addOpcionMultiple(om1)
+        om2 = OpcionMultiple(nombre_opcion="Opcion 2", n_votado=1)
+        pm.addOpcionMultiple(om2)
+        om3 = OpcionMultiple(nombre_opcion="Opcion 3", n_votado=10)
+        pm.addOpcionMultiple(om3)
+        om4 = OpcionMultiple(nombre_opcion="Opcion 4", n_votado=20)
+        pm.addOpcionMultiple(om4)
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.vm = None
+        self.pm = None
+        self.om1 = None
+        self.om2 = None
+        self.om3 = None
+        self.om4 = None
+
+    def testAdd(self):
+        vm = VotacionMultiple.objects.get(titulo="votacion 1")
+        pm = PreguntaMultiple.objects.get(votacionMultiple_id=vm.id)
+        presentacionOpciones = pm.cuentaOpcionesMultiple()
+        self.assertEquals(presentacionOpciones['Opcion 1'], 0)
+        self.assertEquals(presentacionOpciones['Opcion 2'], 1)
+        self.assertEquals(presentacionOpciones['Opcion 3'], 10)
+        self.assertEquals(presentacionOpciones['Opcion 4'], 20)
+
+
+class votaVariasOpcionesPreguntaMultipleTest(BaseTestCase):
+    def setUp(self):
+        vm = VotacionMultiple(titulo="votacion 1", descripcion="descripcion 1")
+        vm.save()
+        pm = PreguntaMultiple(textoPregunta="Texto 1")
+        vm.addPreguntaMultiple(pm)
+        om1 = OpcionMultiple(nombre_opcion="Opcion 1", n_votado=0)
+        om2 = OpcionMultiple(nombre_opcion="Opcion 2", n_votado=1)
+        om3 = OpcionMultiple(nombre_opcion="Opcion 3", n_votado=10)
+        om4 = OpcionMultiple(nombre_opcion="Opcion 4", n_votado=20)
+        listaOpciones = [om1, om2, om3, om4]
+        pm.votaOpcioneMultiples(listaOpciones)
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.vm = None
+        self.pm = None
+        self.om1 = None
+        self.om2 = None
+        self.om3 = None
+        self.om4 = None
+
+    def testAdd(self):
+        vm = VotacionMultiple.objects.get(titulo="votacion 1")
+        pm = PreguntaMultiple.objects.get(votacionMultiple_id=vm.id)
+        presentacionOpciones = pm.cuentaOpcionesMultiple()
+        self.assertEquals(pm.Numero_De_Opciones(), 4)
+        self.assertEquals(presentacionOpciones['Opcion 1'], 1)
+        self.assertEquals(presentacionOpciones['Opcion 2'], 2)
+        self.assertEquals(presentacionOpciones['Opcion 3'], 11)
+        self.assertEquals(presentacionOpciones['Opcion 4'], 21)
+
+
 class VotingTestCase(BaseTestCase):
 
     def setUp(self):
