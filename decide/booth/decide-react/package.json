@@ -8,6 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "test": "jest",
     "eject": "expo eject"
   },
   "dependencies": {
@@ -28,8 +29,20 @@
     "react-native-simple-radio-button": "^2.7.4",
     "react-native-web": "~0.13.12"
   },
+  "jest": {
+    "preset": "react-native",
+    "verbose": true,
+    "testURL": "http://localhost/",
+    "setupFilesAfterEnv": [
+      "<rootDir>src/setupTests.js"
+    ]
+  },
   "devDependencies": {
-    "@babel/core": "~7.9.0"
+    "@babel/core": "~7.9.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.5",
+    "jest-enzyme": "^7.1.2",
+    "react-addons-test-utils": "^15.6.2"
   },
   "eslintConfig": {
     "extends": [
