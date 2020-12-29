@@ -397,6 +397,58 @@ class CuentaPreguntas(BaseTestCase):
     def testContador(self):
         v = Votacion.objects.get(titulo="votacion 1")
         self.assertEquals(v.Numero_De_Preguntas(),3)
+        
+class AddRespuestaTest(BaseTestCase):
+    def setUp(self):
+        v = Votacion(titulo="votacion 1",descripcion="descripcion 1")
+        v.save()
+        p = Pregunta(textoPregunta ="Texto 1")
+        v.addPregunta(p)
+        r1 = Respuesta(respuesta = 7)
+        p.addRespuesta(r1)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.p=None
+        self.r1=None
+    def testAdd(self):
+        v = Votacion.objects.get(titulo="votacion 1")
+        p = Pregunta.objects.get(votacion_id=v.id)
+        r = Respuesta.objects.get(pregunta_id=p.id)
+        self.assertEquals(r.respuesta,7)
+        self.assertEquals(r.pregunta_id,p.id)
+
+class EstadisticasRespuestasTest(BaseTestCase):
+    def setUp(self):
+        v = Votacion(titulo="votacion 1",descripcion="descripcion 1")
+        v.save()
+        p = Pregunta(textoPregunta ="Texto 1")
+        v.addPregunta(p)
+        r1 = Respuesta(respuesta = 7)
+        p.addRespuesta(r1)
+        r2 = Respuesta(respuesta = 5)
+        p.addRespuesta(r2)
+        r3 = Respuesta(respuesta = 1)
+        p.addRespuesta(r3)
+        r4 = Respuesta(respuesta = 3)
+        p.addRespuesta(r4)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.p=None
+        self.r1=None
+        self.r2=None
+        self.r3=None
+        self.r4=None
+    def testAdd(self):
+        v = Votacion.objects.get(titulo="votacion 1")
+        p = Pregunta.objects.get(votacion_id=v.id)
+        self.assertEquals(p.Numero_De_Respuestas(),4)
+        self.assertEquals(p.Media_De_Las_Respuestas(),4)
+        self.assertEquals(p.Respuesta_Maxima(),"7")
+        self.assertEquals(p.Respuesta_Minima(),"1")
 
 #TEST VOTACIONES MULTIPLES
 class GuardaVotacionMultipleTest(BaseTestCase):
