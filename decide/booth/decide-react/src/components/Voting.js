@@ -5,7 +5,7 @@ import { Alert, Button, Text, View } from 'react-native';
 import { postData } from '../utils';
 import config from '../config.json';
 import { StyleSheet} from "react-native";
-import RadioForm from 'react-native-simple-radio-button';
+import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
 export default class Voting extends Component {
 
@@ -92,15 +92,18 @@ export default class Voting extends Component {
                                 <View style={{flex: 1, backgroundColor: 'powderblue'}} />
                             </View>
                             <View style={styles.clearfix}>
-                            <RadioForm style={styles.pickerStyle}
+                            <RadioForm style={styles.radioStyle}
                                             radio_props={this.state.options}
                                             initial={-1}
+                                            formHorizontal={true}
+                                            labelHorizontal={false}
+                                            buttonColor={'#2196f3'}
+                                            animation={true}
                                             onPress={(itemValue) => this.setState({selected: itemValue})}
-                                            buttonSize={9}
-
+                                            buttonSize={20}
                                         />
                             </View>
-                            {this.state.noSelection && <View style={{paddingTop:10, paddingBottom:7}}>
+                            {this.state.noSelection && <View style={styles.textStyle}>
                                             <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px'}}>Debe seleccionar una opción</Text>
                                         </View>}
                             <View style={styles.clearfix}> 
@@ -153,15 +156,14 @@ const styles = StyleSheet.create ({
         paddingLeft: 50
     },
     textStyle:{
-        fontSize: 18,
+        fontSize: 26,
         lineHeight: 24,
+        paddingTop:10, 
+        paddingBottom:10,
         justifyContent: 'center',
         alignSelf: 'center'
     },
-    pickerStyle:{  
-        height: 40,  
-        width: 800,  
-        color: 'rgb(7, 7, 76)',  
+    radioStyle:{
         justifyContent: 'center',
         alignSelf: 'center'  
     },
