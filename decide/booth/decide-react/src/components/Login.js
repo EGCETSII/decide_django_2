@@ -20,7 +20,7 @@ export default class Login extends Component {
         const { setToken, handleSetStorage } = this.props;
         postData(config.LOGIN_URL, this.state.form)
             .then(response => {
-                handleSetStorage("decide", response.data.token)
+               handleSetStorage("decide", response.data.token)
                 setToken(response.data.token)
                 this.getUser();
             })
@@ -79,7 +79,7 @@ export default class Login extends Component {
                                             </View>
                                         </View>
                                         <View style={styles.btnprimary}>
-                                            <Button id="button" color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.onSubmitLogin} title="Login" />
+                                            <Button id='button' color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.onSubmitLogin} title="Login" />
                                         </View>
                                     </View>
                                 </View>

@@ -39,6 +39,9 @@
     "moduleDirectories": [
       "node_modules",
       "src"
+    ],
+    "setupFiles": [
+      "<rootDir>src/jestSetupFile.js"
     ]
   },
   "devDependencies": {
@@ -46,6 +49,8 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "jest-enzyme": "^7.1.2",
+    "jsdom": "16.4.0",
+    "jsdom-global": "3.0.2",
     "react-addons-test-utils": "^15.6.2"
   },
   "eslintConfig": {
