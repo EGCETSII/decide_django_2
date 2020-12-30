@@ -69,17 +69,17 @@ export default class Login extends Component {
                                                 <Text style={styles.title}>Usuario</Text>
                                             </View>
                                             <View>
-                                                <TextInput testID='#username' name="username" hint="username" style={styles.input} onChangeText={(val) => this.handleChange('username', val)} placeholder="Introduce tu usuario"></TextInput>
+                                                <TextInput id='username'  name="username" hint="username" style={styles.input} onChangeText={(val) => this.handleChange('username', val)} placeholder="Introduce tu usuario"></TextInput>
                                             </View>
                                             <View>
                                                 <Text style={styles.title}>Contraseña</Text>
                                             </View>
                                             <View>
-                                                <TextInput testID='#password' name="password" hint="password" style={styles.input} secureTextEntry={true} onChangeText={(val) => this.handleChange('password', val)} placeholder="Introduce tu contraseña"></TextInput>
+                                                <TextInput id='password' name="password" hint="password" style={styles.input} secureTextEntry={true} onChangeText={(val) => this.handleChange('password', val)} placeholder="Introduce tu contraseña"></TextInput>
                                             </View>
                                         </View>
                                         <View style={styles.btnprimary}>
-                                            <Button color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.onSubmitLogin} title="Login" />
+                                            <Button id="button" color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.onSubmitLogin} title="Login" />
                                         </View>
                                     </View>
                                 </View>
