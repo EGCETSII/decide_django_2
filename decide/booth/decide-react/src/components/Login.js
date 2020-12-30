@@ -20,7 +20,7 @@ export default class Login extends Component {
         const { setToken, handleSetStorage } = this.props;
         postData(config.LOGIN_URL, this.state.form)
             .then(response => {
-                handleSetStorage("decide", response.data.token)
+               handleSetStorage("decide", response.data.token)
                 setToken(response.data.token)
                 this.getUser();
             })
@@ -69,17 +69,17 @@ export default class Login extends Component {
                                                 <Text style={styles.title}>Usuario</Text>
                                             </View>
                                             <View>
-                                                <TextInput  style={styles.input} onChangeText={(val) => this.handleChange('username', val)} placeholder="Introduce tu usuario"></TextInput>
+                                                <TextInput id='username'  name="username" hint="username" style={styles.input} onChangeText={(val) => this.handleChange('username', val)} placeholder="Introduce tu usuario"></TextInput>
                                             </View>
                                             <View>
                                                 <Text style={styles.title}>Contraseña</Text>
                                             </View>
                                             <View>
-                                                <TextInput  style={styles.input} secureTextEntry={true} onChangeText={(val) => this.handleChange('password', val)} placeholder="Introduce tu contraseña"></TextInput>
+                                                <TextInput id='password' name="password" hint="password" style={styles.input} secureTextEntry={true} onChangeText={(val) => this.handleChange('password', val)} placeholder="Introduce tu contraseña"></TextInput>
                                             </View>
                                         </View>
                                         <View style={styles.btnprimary}>
-                                            <Button color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.onSubmitLogin} title="Login" />
+                                            <Button id='button' color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.onSubmitLogin} title="Login" />
                                         </View>
                                     </View>
                                 </View>
@@ -89,8 +89,7 @@ export default class Login extends Component {
                 </View>
                 {this.state.error && <View style={{paddingTop:10, paddingBottom:7}}>
                 <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px'}}>El usuario introducido no existe</Text>
-            </View>}
-                <Button  onPress={this.onSubmitLogin} title="Login" />
+                </View>}
             </View>
         );
     }
@@ -150,13 +149,11 @@ const styles = StyleSheet.create({
     },
     clearfix: {
         "marginBottom": 24,
-        "zoom": 1
     },
     input: {
         "fontSize": 15,
         "lineHeight": 1,
         "color": "#666666",
-        "display": "block",
         "width": "100%",
         "backgroundColor": "#e6e6e6",
         "height": 50,
@@ -188,9 +185,6 @@ const styles = StyleSheet.create({
         "paddingRight": 25,
         "paddingBottom": 0,
         "paddingLeft": 25,
-        "transition": "all 0.4s",
-        "backgroundRepeat": "repeat-x",
-        "backgroundImage": "linear-gradient(top, #049cdb, #0064cd)",
         "textShadowOffset": {
           "width": 0,
           "height": -1
@@ -212,7 +206,6 @@ const styles = StyleSheet.create({
         "lineHeight": 1.2,
         "textAlign": "center",
         "width": "100%",
-        "display": "block",
         "paddingTop": 30,
         "paddingRight": 30,
         "paddingBottom": 30,

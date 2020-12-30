@@ -141,7 +141,7 @@ const styles = StyleSheet.create ({
     },
     contentStyle: {
         width: 960,
-        backgroundColor: 'fff',
+        backgroundColor: '#fff',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
@@ -171,7 +171,6 @@ const styles = StyleSheet.create ({
     },
     clearfix: {
         "marginBottom": 24,
-        "zoom": 1
     },
     button1Style: {
         width: "100%",
@@ -192,9 +191,6 @@ const styles = StyleSheet.create ({
         paddingRight: 25,
         paddingBottom: 0,
         paddingLeft: 25,
-        transition: "all 0.4s",
-        backgroundRepeat: "repeat-x",
-        backgroundImage: "linear-gradient(top, #049cdb, #0064cd)",
         textShadowOffset: {
           width: 0,
           height: -1
@@ -225,9 +221,6 @@ const styles = StyleSheet.create ({
         paddingRight: 25,
         paddingBottom: 0,
         paddingLeft: 25,
-        transition: "all 0.4s",
-        backgroundRepeat: "repeat-x",
-        backgroundImage: "linear-gradient(top, #696969, #000000)",
         textShadowOffset: {
           width: 0,
           height: -1

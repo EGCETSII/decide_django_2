@@ -87,7 +87,6 @@ class App extends React.Component {
         this.setDone(false)
         axios.get(config.VOTING_URL).then(response => {
             this.setState({votings: response.data});
-            console.log(response.data);
         });
 
     }
@@ -146,7 +145,6 @@ class App extends React.Component {
     }
 }
 
-export default App;
 
 const styles = StyleSheet.create({
     html: {
@@ -205,7 +203,6 @@ const styles = StyleSheet.create({
         "lineHeight": 1.2,
         "textAlign": "center",
         "width": "100%",
-        "display": "block",
         "paddingTop": 30,
         "paddingRight": 30,
         "paddingBottom": 30,
@@ -231,9 +228,6 @@ const styles = StyleSheet.create({
         "paddingRight": 25,
         "paddingBottom": 0,
         "paddingLeft": 25,
-        "transition": "all 0.4s",
-        "backgroundRepeat": "repeat-x",
-        "backgroundImage": "linear-gradient(top, #049cdb, #0064cd)",
         "textShadowOffset": {
           "width": 0,
           "height": -1
@@ -262,4 +256,6 @@ const styles = StyleSheet.create({
         marginVertical: 8,
         marginHorizontal: 16,
     }
+    
 });
+export default App;
