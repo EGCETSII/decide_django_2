@@ -13,7 +13,55 @@ describe('Testing App component',() => {
     let wrapper;
     
     configure({adapter: new Adapter()});
+
+    it('Correct render Login component', () => {
+        wrapper = mount(<App />);
+        const wrapperLogin = wrapper.find(Login);
+
+        expect(wrapperLogin).toHaveLength(1);
+    });
+
+    it('Correct render TextInput component', () => {
+        wrapper = mount(<App />);
+        const wrapperLogin = wrapper.find(Login);
+        const wrapperUsernameTextInput = wrapperLogin.find(TextInput);
+
+        expect(wrapperUsernameTextInput).toHaveLength(2);
+    });
+
+    it('Correct render input username', () => {
+        wrapper = mount(<App />);
+        const wrapperLogin = wrapper.find(Login);
+        const wrapperUsernameTextInput = wrapperLogin.find(TextInput);
+        const wrapperUsername = wrapperUsernameTextInput.first();
+
+        expect(wrapperUsername).toHaveLength(1);
+        expect(wrapperUsername.prop('id')).toBe('username');
+    });
+
+    it('Correct render input password', () => {
+        wrapper = mount(<App />);
+        const wrapperLogin = wrapper.find(Login);
+        const wrapperUsernameTextInput = wrapperLogin.find(TextInput);
+        const wrapperUsername = wrapperUsernameTextInput.first();
+        const wrapperPassword = wrapperUsernameTextInput.at(1);
+
+        expect(wrapperPassword).toHaveLength(1);
+        expect(wrapperPassword.prop('id')).toBe('password');
+    });
     
+    it('Correct render submit button', () => {
+        wrapper = mount(<App />);
+        const wrapperLogin = wrapper.find(Login);
+        const wrapperUsernameTextInput = wrapperLogin.find(TextInput);
+        const wrapperUsername = wrapperUsernameTextInput.first();
+        const wrapperPassword = wrapperUsernameTextInput.at(1);
+        const wrapperWithButton = wrapperLogin.find(Button);
+
+        expect(wrapperWithButton).toHaveLength(1);
+        expect(wrapperWithButton.prop('id')).toBe('button');
+    });
+
     it('Full integration Login test Incorrect', async () => {
         wrapper = mount(<App/>);
         const wrapperLogin = wrapper.find(Login);
@@ -32,11 +80,12 @@ describe('Testing App component',() => {
 
         await new Promise((r) => setTimeout(r, 1000));
 
-        expect(wrapper.find(Login)).toHaveLength(1);
-        expect(wrapper.find(TextInput)).toHaveLength(2);
-        expect(wrapper.find(TextInput).first()).toHaveLength(1);
-        expect(wrapper.find(TextInput).at(1)).toHaveLength(1);
-        expect(wrapper.find(Button)).toHaveLength(1);
+        expect(wrapperLogin).toHaveLength(1);
+        expect(wrapperUsernameTextInput).toHaveLength(2);
+        expect(wrapperUsername).toHaveLength(1);
+        expect(wrapperPassword).toHaveLength(1);
+        expect(wrapperWithButton).toHaveLength(1);
+        
         expect(wrapperLogin.state('form').username).toBe('decidehueznar');
         expect(wrapperLogin.state('form').password).toBe('contrasenna_erronea');
         expect(wrapper.state('signup')).toBe(true);
@@ -62,11 +111,12 @@ describe('Testing App component',() => {
 
         await new Promise((r) => setTimeout(r, 250));
 
-        expect(wrapper.find(Login)).toHaveLength(1);
-        expect(wrapper.find(TextInput)).toHaveLength(2);
-        expect(wrapper.find(TextInput).first()).toHaveLength(1);
-        expect(wrapper.find(TextInput).at(1)).toHaveLength(1);
-        expect(wrapper.find(Button)).toHaveLength(1);
+        expect(wrapperLogin).toHaveLength(1);
+        expect(wrapperUsernameTextInput).toHaveLength(2);
+        expect(wrapperUsername).toHaveLength(1);
+        expect(wrapperPassword).toHaveLength(1);
+        expect(wrapperWithButton).toHaveLength(1);
+
         expect(wrapperLogin.state('form').username).toBe('decidehueznar');
         expect(wrapper.state('signup')).toBe(false);
         expect(wrapperLogin.state('error')).toBe(false);
