@@ -5,9 +5,14 @@ services:
 addons:
   postgresql: "9.4"
 before_script:
+  - psql -U postgres -c "DROP DATABASE IF EXISTS test_decide"
   - psql -U postgres -c "create user decide password 'decide'"
   - psql -U postgres -c "create database test_decide owner decide"
   - psql -U postgres -c "ALTER USER decide CREATEDB"
+  - psql -U postgres -c "create database decide owner decide"
+  - cd decide
+  - python ./manage.py makemigrations
+  - python ./manage.py migrate
 language: python
 python:
   - "3.6"
@@ -15,7 +20,8 @@ install:
   - pip install -r requirements.txt
   - pip install codacy-coverage
 script:
-  - cd decide
-  - coverage run --branch --source=. ./manage.py test --keepdb --with-xunit
+  - coverage run --branch --source=. ./manage.py test voting census booth visualizer --keepdb --with-xunit
   - coverage xml
   - python-codacy-coverage -r coverage.xml
+notifications:
+  email: false
