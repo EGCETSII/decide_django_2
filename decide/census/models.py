@@ -1,6 +1,5 @@
 from django.db import models
 import ldap3
-from .settingsLdap import *
 import re
 
 

@@ -12,15 +12,11 @@ from rest_framework.status import (
 
 from base.perms import UserIsStaff
 from .models import Census
-"""
-class CensusLdapCreate(generics.ListCreateAPIView):
-    permission_classes = (UserIsStaff,)
 
-    def createLdap(self, request, *args, **kwargs):
-        list_key = request.data.get('list_key')
-        group = request.data.get('group')
-        try:
-"""
+from django.db import models
+
+
+
 
 class CensusCreate(generics.ListCreateAPIView):
     permission_classes = (UserIsStaff,)
@@ -57,3 +53,19 @@ class CensusDetail(generics.RetrieveDestroyAPIView):
         except ObjectDoesNotExist:
             return Response('Invalid voter', status=ST_401)
         return Response('Valid voter')
+
+
+"""
+class CensusLdap(generics.RetrieveDestroyAPIView):
+   
+
+    def retrieve(self, request, *args, **kwargs):
+        ldapUrl = request.GET.get('urlLdap')
+        dominio = request.GET.get('dominio')
+        psw = request.GET.get('psw')
+        grupo = request.GET.get('grupo')
+        CensusLdapObject.objects.get
+        censo = CensusLdap().sacaMiembros(ldapUrl, dominio, psw, grupo)
+        return Response({'censo': censo})
+
+"""

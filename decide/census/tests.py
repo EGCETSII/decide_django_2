@@ -6,6 +6,7 @@ from rest_framework.test import APIClient
 from .models import Census
 from base import mods
 from base.tests import BaseTestCase
+from .ldapMethods import LdapCensus
 
 
 class CensusTestCase(BaseTestCase):
@@ -15,9 +16,24 @@ class CensusTestCase(BaseTestCase):
         self.census = Census(voting_id=1, voter_id=1)
         self.census.save()
 
+
+
     def tearDown(self):
         super().tearDown()
         self.census = None
+    #Comprueba si se crea una conexion con la base de datos
+    def test_connection_check(self):
+        connection = LdapCensus().ldapConnectionMethod('ldap://localhost:389','cn=admin,dc=example,dc=com', 'admin')
+        self.assert_(connection is not None)
+        
+    # Saca de la base de datos del censo los usuarios del grupo que se ha buscado y los mete en el censo
+    def test_add_census_from_ldap(self):
+        #censusLista = LdapCensus().sacaMiembros('ldap://localhost:389','cn=admin,dc=example,dc=com', 'admin',"grupo 1")
+        #census = Census.objects.get(voting_id=23)
+        #user = User.objects.get(first_name='manolo')
+        #print(census)
+        #self.assertEquals(user.username,'noadmin')
+
 
     def test_check_vote_permissions(self):
         response = self.client.get('/census/{}/?voter_id={}'.format(1, 2), format='json')
