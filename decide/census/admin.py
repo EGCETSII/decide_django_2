@@ -1,8 +1,10 @@
 from django.contrib import admin
 
 from .models import Census
+from django.urls import reverse
+from django.utils.html import format_html
 
-from .models import CensusLdap
+#from .models import CensusLdap
 
 
 class CensusAdmin(admin.ModelAdmin):
@@ -10,6 +12,9 @@ class CensusAdmin(admin.ModelAdmin):
     list_filter = ('voting_id', )
 
     search_fields = ('voter_id', )
+    
+    change_form_template = "census/census.html"
+    
 """
 class CensusAdminLdap(admin.ModelAdmin):
 

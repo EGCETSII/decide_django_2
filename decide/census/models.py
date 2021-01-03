@@ -10,9 +10,10 @@ class Census(models.Model):
     voting_id = models.PositiveIntegerField()
     voter_id = models.PositiveIntegerField()
 
+
     class Meta:
         unique_together = (('voting_id', 'voter_id'),)
-
+"""
 class CensusLdap(models.Model):
     list_key = models.TextField()
     list_value = models.PositiveIntegerField()
@@ -34,15 +35,7 @@ class CensusLdap(models.Model):
     listaGrupos = property(sacaGrupos)
     class Meta:
         unique_together = (('list_key', 'list_value'),)
-
+"""
         
 
     
-
-
-
-     
-
-        
-
-            
