@@ -12,7 +12,15 @@ from rest_framework.status import (
 
 from base.perms import UserIsStaff
 from .models import Census
+"""
+class CensusLdapCreate(generics.ListCreateAPIView):
+    permission_classes = (UserIsStaff,)
 
+    def createLdap(self, request, *args, **kwargs):
+        list_key = request.data.get('list_key')
+        group = request.data.get('group')
+        try:
+"""
 
 class CensusCreate(generics.ListCreateAPIView):
     permission_classes = (UserIsStaff,)
