@@ -27,12 +27,12 @@ class LdapCensus:
         conn = LdapCensus().ldapConnectionMethod(urlLdap, dominio, psw)
         gidNumber = LdapCensus().sacaGrupos(urlLdap, dominio, psw)[grupo]
         search_string='(&(objectclass=person)(gidNumber=%s))' %gidNumber
-        conn.search('dc=example,dc=com', search_string,attributes=['uid'])
+        conn.search('dc=example,dc=com', search_string,attributes=[ALL_ATTRIBUTES])
         
         lista = []
         for texto in conn.entries:
             text = str(texto)
-            usuario = re.search('uid: (.+?)', text)
+            usuario = re.search('uid: (.+?)\n', text)
             if usuario:
                     lista.append(usuario.group(1))
         return lista

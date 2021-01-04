@@ -12,6 +12,8 @@ from rest_framework.status import (
 
 from base.perms import UserIsStaff
 from .models import Census
+from .ldapMethods import LdapCensus
+from django.contrib.auth.models import User
 
 from django.db import models
 
@@ -19,8 +21,8 @@ from django.db import models
 
 
 class CensusCreate(generics.ListCreateAPIView):
-    permission_classes = (UserIsStaff,)
-
+    #permission_classes = (UserIsStaff,)
+    """
     def create(self, request, *args, **kwargs):
         voting_id = request.data.get('voting_id')
         voters = request.data.get('voters')
@@ -31,11 +33,30 @@ class CensusCreate(generics.ListCreateAPIView):
         except IntegrityError:
             return Response('Error try to create census', status=ST_409)
         return Response('Census created', status=ST_201)
-
+    """
     def list(self, request, *args, **kwargs):
         voting_id = request.GET.get('voting_id')
         voters = Census.objects.filter(voting_id=voting_id).values_list('voter_id', flat=True)
         return Response({'voters': voters})
+
+    def create(self, request, *args, **kwargs):
+        urlLdap = request.data.get('urlLdap')
+        userDomain = request.data.get('treeSufix')
+        psw = request.data.get('psw')
+        group = request.data.get('group')
+        voting_id = request.data.get('voting_id')
+        try:
+            usernameList = LdapCensus().sacaMiembros(urlLdap, userDomain, psw, group)
+            for userName in usernameList:
+                user = User.objects.get(username=userName)
+                if user:
+                    census = Census(voting_id=voting_id, voter_id=user.pk)
+                    census.save()
+                #else:
+                    #TODO
+        except IntegrityError:
+            return Response('Error try to create census', status=ST_409)
+        return Response('Census created', status=ST_201)
 
 
 class CensusDetail(generics.RetrieveDestroyAPIView):
