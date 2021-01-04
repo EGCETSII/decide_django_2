@@ -12,19 +12,6 @@ class CensusAdmin(admin.ModelAdmin):
     list_filter = ('voting_id', )
 
     search_fields = ('voter_id', )
-    
-    change_form_template = "census/census.html"
-    
-"""
-class CensusAdminLdap(admin.ModelAdmin):
 
-    list_display = ('list_key','list_value')
-    list_filter = ('list_key', )
-
-    search_fields = ('list_key', )
-
-
-admin.site.register(CensusLdap, CensusAdminLdap)
-"""
 
 admin.site.register(Census, CensusAdmin)

@@ -46,16 +46,6 @@ class CensusTestCase(BaseTestCase):
         self.assertEqual(response.json(), 'Valid voter')
 
     def test_list_voting(self):
-
-        data = {
-            "urlLdap": "ldap://localhost:389",
-            "treeSufix": "cn=admin,dc=example,dc=com",
-            "psw": "admin",
-            "group": "grupo 4",
-            "voting_id": 1
-        }
-       
-        """
          response = self.client.post('/census/', data,format='json')
         self.assertEqual(response.status_code, 201)
         response = self.client.get('/census/?voting_id={}'.format(1), format='json')
@@ -69,7 +59,7 @@ class CensusTestCase(BaseTestCase):
         response = self.client.get('/census/?voting_id={}'.format(1), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'voters': [1]})
-         """
+     
         
     def test_add_new_voters_conflict(self):
         data = {'voting_id': 1, 'voters': [1]}
