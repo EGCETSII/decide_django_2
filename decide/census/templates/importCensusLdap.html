@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans 'Import of census by LDAP' %}{% endblock %}
+
+{% block content %}
+
+ <div class="container">
+  <nav>
+    <div class="nav-wrapper row teal darken-3">
+      <div class="col s12">
+        <div class="col s12"><a href="/" class="breadcrumb">{% trans 'Home' %}</a>
+        <a href="{% url 'main_census' %}" class="breadcrumb">{% trans 'Census'%}</a>
+            <a href="" class="breadcrumb">{% trans "Import LDAP census" %}</a>
+      </div>
+      </div>
+    </div>
+  </nav>
+
+    <div>
+        <h4>{% trans 'Adding voters on a vote' %}</h4>
+
+        <div>
+            <form action="{% url 'addLDAPcensus' %}" method="POST">
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td><label>{% trans 'Select voting' %}</label>{{ form.voting }}</td>
+                    </tr>
+                </table>
+                <h5>{% trans 'Filtering' %}</h5>
+                <table>
+                    <tr>
+                        <td colspan="2"><label>{% trans 'urlLdap' %}</label>{{ form.urlLdap }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><label>{% trans 'treeSufix' %}</label>{{ form.treeSufix }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><label>{% trans 'pwd' %}</label>{{ form.pwd }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><label>{% trans 'group' %}</label>{{ form.group }}</td>
+                    </tr>
+ 
+                </table>
+                <br/>
+                <button class="btn waves-effect waves-light" type="submit" value="Submit">{% trans "Create census" %}<i class="material-icons right">send</i></button>
+            </form>
+            <br/><br/>
+        </div>
+
+    </div>
+</div>    
+
+{% endblock %}
