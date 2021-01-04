@@ -1,26 +1,37 @@
-{% extends "base.html" %}
 {% load i18n static %}
+<!DOCTYPE html>
+<div class="text-center">
+<div class="container-fluid bg-primary text-white py-3">
+    <div class="container">
+        <h1 class="display-3 ">
+            <b>DECIDE-CABINA</b>
+        </h1>
+    </div>
+</div>
+<p class="lead bg-info text-white">Selecciona tu respuesta para esta votación</p>
+</div>
+
 
 {% block extrahead %}
     <link type="text/css" rel="stylesheet"
          href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet"
          href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
-    <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+    <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
 {% endblock %}
 
+<body style="background-color:#b4d1e0;">
 {% block content %}
-    <div id="app-booth">
-        <!-- Navbar -->
-        <b-navbar type="dark" variant="secondary">
-            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
-                <b-navbar-nav class="ml-auto" v-if="!signup">
-                    <b-nav-item href="#" v-on:click="decideLogout">
-                        {% trans "logout" %}
-                    </b-nav-item>
-                </b-navbar-nav>
-        </b-navbar>
 
+    <div id="app-booth">
+        
+<div class="text-right mr-5" >
+    <b-button class="botonLogout" v-if="!signup" href="#" v-on:click="decideLogout">
+        {% trans "Logout" %}
+    </b-button>
+
+</div>
+    
         <b-alert :variant="alertLvl" dismissible v-model="alertShow">
             [[ alertMsg ]]
         </b-alert>
@@ -210,4 +221,5 @@
         })
     </script>
 </body>
+</html>
 {% endblock %}
