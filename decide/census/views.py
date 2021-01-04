@@ -12,6 +12,7 @@ from rest_framework.status import (
 
 from base.perms import UserIsStaff
 from .models import Census
+from voting.serializers import VotingSerializer
 
 
 class CensusCreate(generics.ListCreateAPIView):
@@ -49,3 +50,11 @@ class CensusDetail(generics.RetrieveDestroyAPIView):
         except ObjectDoesNotExist:
             return Response('Invalid voter', status=ST_401)
         return Response('Valid voter')
+
+
+class ListVotingsByVoter(generics.ListCreateAPIView):
+    serializer_class = VotingSerializer
+
+    def get(self, request, voter_id, *args, **kwargs):
+        votings = [c.voting_id for c in Census.objects.filter(voter_id=voter_id)]
+        return Response({"votings": votings})
