@@ -2,16 +2,35 @@ from django.contrib import admin
 from django.utils import timezone
 
 from .models import *
+#from visualizer.telegrambot import *
 
 from .filters import StartedFilter
+#Funcion que comienza una votacion
+def comienzaVotacion(modeladmin,request,queryset):
+    for votacion in queryset.all():
+        votacion.fecha_inicio = timezone.now()
+        votacion.save()
+        #enviarMensajeABotDeTelegram
+        #send_telegram_report(v)
+comienzaVotacion.short_description = "Comenzar la votación"
+
+#Funcion que termina una votacion
+def terminaVotacion(modeladmin,request,queryset):
+    for votacion in queryset.all():
+        votacion.fecha_fin = timezone.now()
+        votacion.save()
+        #enviarMensajeABotDeTelegram
+        #send_telegram_report(v)
+terminaVotacion.short_description = "Terminar la votación"
 
 #Votaciones Binarias
 class RespuestaBinariaInline(admin.TabularInline):
     model = RespuestaBinaria
     extra = 1
 class VotacionBinariaAdmin(admin.ModelAdmin):
-    list_display=('id','titulo','descripcion','Numero_De_Trues','Numero_De_Falses')
-    inlines =[RespuestaBinariaInline] 
+    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Trues','Numero_De_Falses')
+    inlines =[RespuestaBinariaInline]
+    actions = [comienzaVotacion, terminaVotacion]
 class RepuestaBinariaAdmin(admin.ModelAdmin):
     list_display = ('id','respuesta','Nombre_Votacion')
 
@@ -25,8 +44,9 @@ class PreguntaInline(admin.TabularInline):
     model = Pregunta
     extra = 1
 class VotacionAdmin(admin.ModelAdmin):
-    list_display=('id','titulo','descripcion','Numero_De_Preguntas')
+    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Preguntas')
     inlines =[PreguntaInline]
+    actions = [comienzaVotacion,terminaVotacion]
 
 class PreguntaAdmin(admin.ModelAdmin):
     list_display = ('id','Nombre_Votacion','textoPregunta','Numero_De_Respuestas','Media_De_Las_Respuestas','Respuesta_Maxima','Respuesta_Minima')
@@ -40,8 +60,10 @@ class PreguntaPreferenciaInline(admin.TabularInline):
     model = PreguntaPreferencia
     extra = 1
 class VotacionPreferenciaAdmin(admin.ModelAdmin):
-    list_display=('id','titulo','descripcion','Numero_De_Preguntas_Preferencia')
+    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Preguntas_Preferencia')
     inlines =[PreguntaPreferenciaInline]
+    actions = [comienzaVotacion, terminaVotacion]
+
 class OpcionRespuestaInline(admin.TabularInline):
     model = OpcionRespuesta
     extra = 1
@@ -65,8 +87,9 @@ class PreguntaMultipleInline(admin.TabularInline):
     model = PreguntaMultiple
     extra = 1
 class VotacionMultipleAdmin(admin.ModelAdmin):
-    list_display=('id','titulo','descripcion','Numero_De_Preguntas_Multiple')
+    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Preguntas_Multiple')
     inlines =[PreguntaMultipleInline]
+    actions = [comienzaVotacion, terminaVotacion]
 
 class PreguntaMultipleAdmin(admin.ModelAdmin):
     list_display = ('id','Nombre_VotacionMultiple','textoPregunta','Numero_De_Opciones','cuentaOpcionesMultiple')
@@ -76,46 +99,47 @@ class OpcionMultipleAdmin(admin.ModelAdmin):
     list_display = ('id','nombre_opcion','n_votado','Nombre_Pregunta_Multiple')
 
 
-def start(modeladmin, request, queryset):
-    for v in queryset.all():
-        v.create_pubkey()
-        v.start_date = timezone.now()
-        v.save()
 
-
-def stop(ModelAdmin, request, queryset):
-    for v in queryset.all():
-        v.end_date = timezone.now()
-        v.save()
-
-
-def tally(ModelAdmin, request, queryset):
-    for v in queryset.filter(end_date__lt=timezone.now()):
-        token = request.session.get('auth-token', '')
-        v.tally_votes(token)
-
-
-class QuestionOptionInline(admin.TabularInline):
-    model = QuestionOption
-
-
-class QuestionAdmin(admin.ModelAdmin):
-    inlines = [QuestionOptionInline]
-
-
-class VotingAdmin(admin.ModelAdmin):
-    list_display = ('name', 'start_date', 'end_date')
-    readonly_fields = ('start_date', 'end_date', 'pub_key',
-                       'tally', 'postproc')
-    date_hierarchy = 'start_date'
-    list_filter = (StartedFilter,)
-    search_fields = ('name', )
-
-    actions = [ start, stop, tally ]
-
-
-admin.site.register(Voting, VotingAdmin)
-admin.site.register(Question, QuestionAdmin)
+# def start(modeladmin, request, queryset):
+#     for v in queryset.all():
+#         v.create_pubkey()
+#         v.start_date = timezone.now()
+#         v.save()
+#
+#
+# def stop(ModelAdmin, request, queryset):
+#     for v in queryset.all():
+#         v.end_date = timezone.now()
+#         v.save()
+#
+#
+# def tally(ModelAdmin, request, queryset):
+#     for v in queryset.filter(end_date__lt=timezone.now()):
+#         token = request.session.get('auth-token', '')
+#         v.tally_votes(token)
+#
+#
+# class QuestionOptionInline(admin.TabularInline):
+#     model = QuestionOption
+#
+#
+# class QuestionAdmin(admin.ModelAdmin):
+#     inlines = [QuestionOptionInline]
+#
+#
+# class VotingAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'start_date', 'end_date')
+#     readonly_fields = ('start_date', 'end_date', 'pub_key',
+#                        'tally', 'postproc')
+#     date_hierarchy = 'start_date'
+#     list_filter = (StartedFilter,)
+#     search_fields = ('name', )
+#
+#     actions = [ start, stop, tally ]
+#
+#
+# admin.site.register(Voting, VotingAdmin)
+# admin.site.register(Question, QuestionAdmin)
 
 admin.site.register(VotacionBinaria,VotacionBinariaAdmin)
 admin.site.register(RespuestaBinaria,RepuestaBinariaAdmin)

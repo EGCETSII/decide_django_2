@@ -14,6 +14,8 @@ class VotacionBinaria(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=60)
     descripcion = models.TextField()
+    fecha_inicio = models.DateTimeField(blank=True, null=True)
+    fecha_fin = models.DateTimeField(blank=True, null=True)
     
     def __str__(self):
         return self.titulo
@@ -26,7 +28,6 @@ class VotacionBinaria(models.Model):
    #DEVUELVE EL NÚMERO DE RESPUESTAS A FALSE QUE TIENE LA BOTACION BINARIA 
     def Numero_De_Falses(self):
         return RespuestaBinaria.objects.filter(respuesta=0,votacionBinaria_id=self.id).count()
-
    #AÑADE UNA RESPUESTA BINARIA A LA VOTACION BINARIA 
    #A LA HORA DE CREAR LA RESPUESTA BINARIA SOLO ES NECESARIO INDICARLE EL ATRIBUTO RESPUESTA
    # LA FUNCION SE ENCARGA DE ASOCIAR LA RESPUESTA BINARIA A LA VOTACION BINARIA QUE SE LE HA INDICADO  
@@ -38,10 +39,11 @@ class VotacionBinaria(models.Model):
 #MODELO DE RESPUESTA BINARIA
 class RespuestaBinaria(models.Model):
     id = models.AutoField(primary_key=True)
-    votacionBinaria = models.ForeignKey(VotacionBinaria,on_delete = models.CASCADE)
+    votacionBinaria = models.ForeignKey(VotacionBinaria,on_delete = models.CASCADE,related_name="respuestasBinarias")
     respuesta = models.BooleanField(choices =[(1,('Sí')),(0,('No'))])
     def Nombre_Votacion(self):
         return self.votacionBinaria.titulo
+
 
 #Votaciones normales
 
@@ -50,6 +52,8 @@ class Votacion(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=60)
     descripcion = models.TextField()
+    fecha_inicio = models.DateTimeField(blank=True, null=True)
+    fecha_fin = models.DateTimeField(blank=True, null=True)
     def __str__(self):
         return self.titulo
 
@@ -66,7 +70,7 @@ class Votacion(models.Model):
 #MODELO DE PREGUNTAS
 class Pregunta(models.Model):
     id = models.AutoField(primary_key=True)
-    votacion = models.ForeignKey(Votacion,on_delete = models.CASCADE)
+    votacion = models.ForeignKey(Votacion,on_delete = models.CASCADE,related_name="preguntas")
     textoPregunta = models.CharField(max_length=50)
     def Nombre_Votacion(self):
         return self.votacion.titulo
@@ -111,7 +115,7 @@ class Pregunta(models.Model):
 #Modelo de Respuesta
 class Respuesta(models.Model):
     id = models.AutoField(primary_key=True)
-    pregunta = models.ForeignKey(Pregunta,on_delete = models.CASCADE)
+    pregunta = models.ForeignKey(Pregunta,on_delete = models.CASCADE,related_name="respuestas")
     respuesta = models.IntegerField(validators=[MaxValueValidator(10), MinValueValidator(0)])
     def Nombre_Pregunta(self):
         return self.pregunta.textoPregunta
@@ -122,6 +126,8 @@ class VotacionMultiple(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=60)
     descripcion = models.TextField()
+    fecha_inicio = models.DateTimeField(blank=True, null=True)
+    fecha_fin = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.titulo
@@ -134,9 +140,10 @@ class VotacionMultiple(models.Model):
     def addPreguntaMultiple(self,preguntaMultiple):
         preguntaMultiple.votacionMultiple = self
         preguntaMultiple.save()
+
 class PreguntaMultiple(models.Model):
     id = models.AutoField(primary_key=True)
-    votacionMultiple = models.ForeignKey(VotacionMultiple,on_delete = models.CASCADE)
+    votacionMultiple = models.ForeignKey(VotacionMultiple,on_delete = models.CASCADE,related_name="preguntasMultiples")
     textoPregunta = models.CharField(max_length=50)
     def Nombre_VotacionMultiple(self):
         return self.votacionMultiple.titulo
@@ -173,7 +180,7 @@ class PreguntaMultiple(models.Model):
 1
 class OpcionMultiple(models.Model):
     id = models.AutoField(primary_key=True)
-    preguntaMultiple = models.ForeignKey(PreguntaMultiple,on_delete = models.CASCADE)
+    preguntaMultiple = models.ForeignKey(PreguntaMultiple,on_delete = models.CASCADE,related_name="opcionesMultiples")
     nombre_opcion = models.CharField(max_length=100)
     n_votado = models.PositiveIntegerField(blank=True, null=True,default=0)
 
@@ -192,6 +199,8 @@ class VotacionPreferencia(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=60)
     descripcion = models.TextField()
+    fecha_inicio = models.DateTimeField(blank=True, null=True)
+    fecha_fin = models.DateTimeField(blank=True, null=True)
     def __str__(self):
         return self.titulo
 
@@ -208,7 +217,7 @@ class VotacionPreferencia(models.Model):
 
 class PreguntaPreferencia(models.Model):
     id = models.AutoField(primary_key=True)
-    votacionPreferencia = models.ForeignKey(VotacionPreferencia,on_delete = models.CASCADE)
+    votacionPreferencia = models.ForeignKey(VotacionPreferencia,on_delete = models.CASCADE,related_name="preguntasPreferencia")
     textoPregunta = models.CharField(max_length=50)
     def Nombre_Votacion_Preferencia(self):
         return self.votacionPreferencia.titulo
@@ -228,7 +237,7 @@ class PreguntaPreferencia(models.Model):
 
 class OpcionRespuesta(models.Model):
     id = models.AutoField(primary_key=True)
-    preguntaPreferencia = models.ForeignKey(PreguntaPreferencia,on_delete = models.CASCADE)
+    preguntaPreferencia = models.ForeignKey(PreguntaPreferencia,on_delete = models.CASCADE,related_name="opcionesRespuesta")
     nombre_opcion = models.CharField(max_length=100)
     def Nombre_Pregunta_Preferencia(self):
         return self.preguntaPreferencia.textoPregunta
@@ -274,122 +283,122 @@ class OpcionRespuesta(models.Model):
 
 class RespuestaPreferencia(models.Model):
     id = models.AutoField(primary_key=True)
-    opcionRespuesta = models.ForeignKey(OpcionRespuesta,on_delete = models.CASCADE)
+    opcionRespuesta = models.ForeignKey(OpcionRespuesta,on_delete = models.CASCADE,related_name="respuestasPreferencia")
     orden_preferencia = models.PositiveIntegerField(blank=True, null=True)
     def Nombre_Opcion_Respuesta(self):
         return self.opcionRespuesta.nombre_opcion
 
-class Question(models.Model):
-    desc = models.TextField()
-
-    def __str__(self):
-        return self.desc
-
-
-class QuestionOption(models.Model):
-    question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE)
-    number = models.PositiveIntegerField(blank=True, null=True)
-    option = models.TextField()
-
-    def save(self):
-        if not self.number:
-            self.number = self.question.options.count() + 2
-        return super().save()
-
-    def __str__(self):
-        return '{} ({})'.format(self.option, self.number)
-
-
-class Voting(models.Model):
-    name = models.CharField(max_length=200)
-    desc = models.TextField(blank=True, null=True)
-    question = models.ForeignKey(Question, related_name='voting', on_delete=models.CASCADE)
-
-    start_date = models.DateTimeField(blank=True, null=True)
-    end_date = models.DateTimeField(blank=True, null=True)
-
-    pub_key = models.OneToOneField(Key, related_name='voting', blank=True, null=True, on_delete=models.SET_NULL)
-    auths = models.ManyToManyField(Auth, related_name='votings')
-
-    tally = JSONField(blank=True, null=True)
-    postproc = JSONField(blank=True, null=True)
-
-    def create_pubkey(self):
-        if self.pub_key or not self.auths.count():
-            return
-
-        auth = self.auths.first()
-        data = {
-            "voting": self.id,
-            "auths": [ {"name": a.name, "url": a.url} for a in self.auths.all() ],
-        }
-        key = mods.post('mixnet', baseurl=auth.url, json=data)
-        pk = Key(p=key["p"], g=key["g"], y=key["y"])
-        pk.save()
-        self.pub_key = pk
-        self.save()
-
-    def get_votes(self, token=''):
-        # gettings votes from store
-        votes = mods.get('store', params={'voting_id': self.id}, HTTP_AUTHORIZATION='Token ' + token)
-        # anon votes
-        return [[i['a'], i['b']] for i in votes]
-
-    def tally_votes(self, token=''):
-        '''
-        The tally is a shuffle and then a decrypt
-        '''
-
-        votes = self.get_votes(token)
-
-        auth = self.auths.first()
-        shuffle_url = "/shuffle/{}/".format(self.id)
-        decrypt_url = "/decrypt/{}/".format(self.id)
-        auths = [{"name": a.name, "url": a.url} for a in self.auths.all()]
-
-        # first, we do the shuffle
-        data = { "msgs": votes }
-        response = mods.post('mixnet', entry_point=shuffle_url, baseurl=auth.url, json=data,
-                response=True)
-        if response.status_code != 200:
-            # TODO: manage error
-            pass
-
-        # then, we can decrypt that
-        data = {"msgs": response.json()}
-        response = mods.post('mixnet', entry_point=decrypt_url, baseurl=auth.url, json=data,
-                response=True)
-
-        if response.status_code != 200:
-            # TODO: manage error
-            pass
-
-        self.tally = response.json()
-        self.save()
-
-        self.do_postproc()
-
-    def do_postproc(self):
-        tally = self.tally
-        options = self.question.options.all()
-
-        opts = []
-        for opt in options:
-            if isinstance(tally, list):
-                votes = tally.count(opt.number)
-            else:
-                votes = 0
-            opts.append({
-                'option': opt.option,
-                'number': opt.number,
-                'votes': votes
-            })
-
-        data = { 'type': 'IDENTITY', 'options': opts }
-        postp = mods.post('postproc', json=data)
-
-        self.postproc = postp
-        self.save()
-
-    def __str__(self):
-        return self.name
+# class Question(models.Model):
+#     desc = models.TextField()
+#
+#     def __str__(self):
+#         return self.desc
+#
+#
+# class QuestionOption(models.Model):
+#     question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE)
+#     number = models.PositiveIntegerField(blank=True, null=True)
+#     option = models.TextField()
+#
+#     def save(self):
+#         if not self.number:
+#             self.number = self.question.options.count() + 2
+#         return super().save()
+#
+#     def __str__(self):
+#         return '{} ({})'.format(self.option, self.number)
+#
+#
+# class Voting(models.Model):
+#     name = models.CharField(max_length=200)
+#     desc = models.TextField(blank=True, null=True)
+#     question = models.ForeignKey(Question, related_name='voting', on_delete=models.CASCADE)
+#
+#     start_date = models.DateTimeField(blank=True, null=True)
+#     end_date = models.DateTimeField(blank=True, null=True)
+#
+#     pub_key = models.OneToOneField(Key, related_name='voting', blank=True, null=True, on_delete=models.SET_NULL)
+#     auths = models.ManyToManyField(Auth, related_name='votings')
+#
+#     tally = JSONField(blank=True, null=True)
+#     postproc = JSONField(blank=True, null=True)
+#
+#     def create_pubkey(self):
+#         if self.pub_key or not self.auths.count():
+#             return
+#
+#         auth = self.auths.first()
+#         data = {
+#             "voting": self.id,
+#             "auths": [ {"name": a.name, "url": a.url} for a in self.auths.all() ],
+#         }
+#         key = mods.post('mixnet', baseurl=auth.url, json=data)
+#         pk = Key(p=key["p"], g=key["g"], y=key["y"])
+#         pk.save()
+#         self.pub_key = pk
+#         self.save()
+#
+#     def get_votes(self, token=''):
+#         # gettings votes from store
+#         votes = mods.get('store', params={'voting_id': self.id}, HTTP_AUTHORIZATION='Token ' + token)
+#         # anon votes
+#         return [[i['a'], i['b']] for i in votes]
+#
+#     def tally_votes(self, token=''):
+#         '''
+#         The tally is a shuffle and then a decrypt
+#         '''
+#
+#         votes = self.get_votes(token)
+#
+#         auth = self.auths.first()
+#         shuffle_url = "/shuffle/{}/".format(self.id)
+#         decrypt_url = "/decrypt/{}/".format(self.id)
+#         auths = [{"name": a.name, "url": a.url} for a in self.auths.all()]
+#
+#         # first, we do the shuffle
+#         data = { "msgs": votes }
+#         response = mods.post('mixnet', entry_point=shuffle_url, baseurl=auth.url, json=data,
+#                 response=True)
+#         if response.status_code != 200:
+#             # TODO: manage error
+#             pass
+#
+#         # then, we can decrypt that
+#         data = {"msgs": response.json()}
+#         response = mods.post('mixnet', entry_point=decrypt_url, baseurl=auth.url, json=data,
+#                 response=True)
+#
+#         if response.status_code != 200:
+#             # TODO: manage error
+#             pass
+#
+#         self.tally = response.json()
+#         self.save()
+#
+#         self.do_postproc()
+#
+#     def do_postproc(self):
+#         tally = self.tally
+#         options = self.question.options.all()
+#
+#         opts = []
+#         for opt in options:
+#             if isinstance(tally, list):
+#                 votes = tally.count(opt.number)
+#             else:
+#                 votes = 0
+#             opts.append({
+#                 'option': opt.option,
+#                 'number': opt.number,
+#                 'votes': votes
+#             })
+#
+#         data = { 'type': 'IDENTITY', 'options': opts }
+#         postp = mods.post('postproc', json=data)
+#
+#         self.postproc = postp
+#         self.save()
+#
+#     def __str__(self):
+#         return self.name
