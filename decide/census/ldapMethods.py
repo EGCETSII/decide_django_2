@@ -11,28 +11,36 @@ class LdapCensus:
         conn = Connection(server, auth, psw, auto_bind=True)
         return conn
 
-    def sacaGrupos(self, urlLdap, dominio, psw):
-        conn = LdapCensus().ldapConnectionMethod(urlLdap, dominio, psw)
-        conn.search('dc=example,dc=com', '(objectclass=posixGroup)',attributes=[ALL_ATTRIBUTES])
-        lista = {}
-        for texto in conn.entries:
-            text = str(texto)
-            grupo = re.search('cn=(.+?),', text)
-            gid = re.search('gidNumber: (.+?)\n', text)
-            if grupo:
-                    lista[grupo.group(1)] = gid.group(1)
-        return lista
+    def LdapGroups(self, LdapUrl, auth, psw, branch):
+        conn = LdapCensus().ldapConnectionMethod(LdapUrl, auth, psw)
+        conn.search(search_base=branch, search_filter='(objectclass=*)', attributes=[ALL_ATTRIBUTES])
+        #conn.search(branch, '(objectclass=posixGroup)',attributes=[ALL_ATTRIBUTES])
+        ldapList = []
+        print(conn.entries)
+        for entries in conn.entries:
+            text = str(entries)
+            #Si cambias por uid te devuelve los nombres de el grupo que pasas como ou
+            group = re.findall('uid=(.+?),', text, re.DOTALL)
+            for element in group:
+                if group and ldapList.count(element) == 0:            
+                    ldapList.append(element)
+        return ldapList
+    """
+    def LdapMembers(self, urlLdap, auth, branch, psw, group):
+        conn = LdapCensus().ldapConnectionMethod(urlLdap, auth, psw)
+        gidNumber = group
+        search_string='(&(objectclass=person)(cn=%s))' %gidNumber
+        conn.search(branch, search_string,attributes=[ALL_ATTRIBUTES])
+        print(conn.entries)
+        ldapList = []
+        for entries in conn.entries:
+            text = str(entries)
+            user = re.search('uid: (.+?)\n', text)
+            if user:
+                    ldapList.append(user.group(1))
+        return ldapList
+    """
 
-    def sacaMiembros(self, urlLdap, dominio, psw, grupo):
-        conn = LdapCensus().ldapConnectionMethod(urlLdap, dominio, psw)
-        gidNumber = LdapCensus().sacaGrupos(urlLdap, dominio, psw)[grupo]
-        search_string='(&(objectclass=person)(gidNumber=%s))' %gidNumber
-        conn.search('dc=example,dc=com', search_string,attributes=[ALL_ATTRIBUTES])
-        
-        lista = []
-        for texto in conn.entries:
-            text = str(texto)
-            usuario = re.search('uid: (.+?)\n', text)
-            if usuario:
-                    lista.append(usuario.group(1))
-        return lista
+
+
+

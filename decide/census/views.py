@@ -37,17 +37,20 @@ def importCensusFromLdap(request):
                     urlLdap = form.cleaned_data['urlLdap']
                     treeSufix = form.cleaned_data['treeSufix']
                     pwd = form.cleaned_data['pwd']
-                    group = form.cleaned_data['group']
+                    branch = form.cleaned_data['branch']
+                    #group = form.cleaned_data['group']
                     voting = form.cleaned_data['voting'].__getattribute__('pk')
 
                     voters = User.objects.all()
-                    usernameList = LdapCensus().sacaMiembros(urlLdap, treeSufix, pwd, group)
+                    usernameList = LdapCensus().LdapGroups(urlLdap, treeSufix, pwd, branch)
                     
                     userList = []
                     for username in usernameList:
                         
-                        user = voters.filter(username=username).values('id')[0]['id']
-                        userList.append(user)
+                        user = voters.filter(username=username)
+                        if user:
+                            user = user.values('id')[0]['id']
+                            userList.append(user)
                         
                 if request.user.is_authenticated:
                     #voters_ids = userList.values_list('id', flat=True, named=False)
@@ -68,9 +71,9 @@ def importCensusFromLdap(request):
             return render(request, template_name='importCensusLdap.html', context=context)
         else:
             messages.add_message(request, messages.ERROR, "permiso denegado")
-            return redirect('listCensus')
+            return redirect('/admin')
                     
-def list_census(request):
+def main_census(request):
 
     census = Census.objects.all()
     votings = Voting.objects.all()

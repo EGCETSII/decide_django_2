@@ -2,7 +2,17 @@
 {% load i18n static %}
 
 {% block title %}{% trans 'Import of census by LDAP' %}{% endblock %}
+{% block extrahead %}
+<link type="text/css" rel="stylesheet"
+href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet"
+href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+<link type="text/css" rel="stylesheet" href="{% static "admin/css/base.css" %}" />
+<link type="text/css" rel="stylesheet" href="{% static "admin/css/changelists.css" %}" />
+<link type="text/css" rel="stylesheet" href="{% static "admin/css/css/fonts.css" %}" />
 
+
+{% endblock %}
 {% block content %}
 
  <div class="container">
@@ -10,7 +20,6 @@
     <div class="nav-wrapper row teal darken-3">
       <div class="col s12">
         <div class="col s12"><a href="/" class="breadcrumb">{% trans 'Home' %}</a>
-        <a href="{% url 'main_census' %}" class="breadcrumb">{% trans 'Census'%}</a>
             <a href="" class="breadcrumb">{% trans "Import LDAP census" %}</a>
       </div>
       </div>
@@ -27,25 +36,22 @@
                     <tr>
                         <td><label>{% trans 'Select voting' %}</label>{{ form.voting }}</td>
                     </tr>
-                </table>
-                <h5>{% trans 'Filtering' %}</h5>
-                <table>
                     <tr>
-                        <td colspan="2"><label>{% trans 'urlLdap' %}</label>{{ form.urlLdap }}</td>
+                        <td colspan="2"><label>{% trans "Admin's Url: " %}</label>{{ form.urlLdap }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2"><label>{% trans 'treeSufix' %}</label>{{ form.treeSufix }}</td>
+                        <td colspan="2"><label>{% trans "Domain's Url: " %}</label>{{ form.treeSufix }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2"><label>{% trans 'pwd' %}</label>{{ form.pwd }}</td>
+                        <td colspan="2"><label>{% trans 'Branch to add: ' %}</label>{{ form.branch }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2"><label>{% trans 'group' %}</label>{{ form.group }}</td>
+                        <td colspan="2"><label>{% trans 'Password: ' %}</label>{{ form.pwd }}</td>
                     </tr>
  
                 </table>
                 <br/>
-                <button class="btn waves-effect waves-light" type="submit" value="Submit">{% trans "Create census" %}<i class="material-icons right">send</i></button>
+                <button class="btn waves-effect waves-light" type="submit" value="Submit">{% trans "Create census" %}<i class="material-icons right"></i></button>
             </form>
             <br/><br/>
         </div>
@@ -54,3 +60,5 @@
 </div>    
 
 {% endblock %}
+
+
