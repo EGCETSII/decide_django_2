@@ -84,10 +84,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'decide.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'booth/decide-react/web-build/')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -157,6 +160,10 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'booth/decide-react/web-build/static/')
+]
 
 # number of bits for the key, all auths should use the same number of bits
 KEYBITS = 256

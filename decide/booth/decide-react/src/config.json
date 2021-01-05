@@ -1,0 +1,9 @@
+{
+    "BASE_URL": "http://localhost:8000",
+    "LOGIN_URL": "http://localhost:8000/authentication/login/",
+    "GETUSER_URL": "http://localhost:8000/authentication/getuser/",
+    "LOGOUT_URL": "http://localhost:8000/authentication/logout/",
+    "STORE_URL": "http://localhost:8000/store/",
+    "VOTING_URL": "http://localhost:8000/voting/",
+    "KEYBITS": 256
+}
