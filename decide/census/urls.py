@@ -7,4 +7,6 @@ urlpatterns = [
     path('<int:voting_id>/', views.CensusDetail.as_view(), name='census_detail'),
     #Url correspondiente al formulario de importación de LDAP
     path('addLDAPcensus', importCensusFromLdap, name='addLDAPcensus'),
+    path('votings/<int:voter_id>/', views.ListVotingsByVoter.as_view(), name='census_votings'),
 ]
+

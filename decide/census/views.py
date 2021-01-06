@@ -12,6 +12,7 @@ from rest_framework.status import (
 
 from base.perms import UserIsStaff
 from .models import Census
+
 from .ldapMethods import LdapCensus
 from django.contrib.auth.models import User
 from voting.models import Voting
@@ -19,6 +20,8 @@ from django.db import models
 from census.forms import CensusAddLdapForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from voting.serializers import VotingSerializer
+
 
 #Metodos propios
 
@@ -110,4 +113,14 @@ class CensusDetail(generics.RetrieveDestroyAPIView):
             Census.objects.get(voting_id=voting_id, voter_id=voter)
         except ObjectDoesNotExist:
             return Response('Invalid voter', status=ST_401)
+
         return Response('Valid voter')
+
+
+class ListVotingsByVoter(generics.ListCreateAPIView):
+    serializer_class = VotingSerializer
+
+    def get(self, request, voter_id, *args, **kwargs):
+        votings = [c.voting_id for c in Census.objects.filter(voter_id=voter_id)]
+        return Response({"votings": votings})
+
