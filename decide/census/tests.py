@@ -17,24 +17,9 @@ class CensusTestCase(BaseTestCase):
         self.census = Census(voting_id=1, voter_id=1)
         self.census.save()
 
-
-
     def tearDown(self):
         super().tearDown()
         self.census = None
-    #Comprueba si se crea una conexion con la base de datos
-    def test_connection_check(self):
-        connection = LdapCensus().ldapConnectionMethod('ldap://localhost:389','cn=admin,dc=example,dc=com', 'admin')
-        self.assert_(connection is not None)
-        
-    # Saca de la base de datos del censo los usuarios del grupo que se ha buscado y los mete en el censo
-    def test_add_census_from_ldap(self):
-        censusLista = LdapCensus().sacaMiembros('ldap://localhost:389','cn=admin,dc=example,dc=com', 'admin',"grupo 1")
-        #census = Census.objects.get(voting_id=23)
-        #user = User.objects.get(first_name='manolo')
-        #print(census)
-        #self.assertEquals(user.username,'noadmin')
-
 
     def test_check_vote_permissions(self):
         response = self.client.get('/census/{}/?voter_id={}'.format(1, 2), format='json')
@@ -46,8 +31,6 @@ class CensusTestCase(BaseTestCase):
         self.assertEqual(response.json(), 'Valid voter')
 
     def test_list_voting(self):
-         response = self.client.post('/census/', data,format='json')
-        self.assertEqual(response.status_code, 201)
         response = self.client.get('/census/?voting_id={}'.format(1), format='json')
         self.assertEqual(response.status_code, 401)
 
@@ -59,8 +42,7 @@ class CensusTestCase(BaseTestCase):
         response = self.client.get('/census/?voting_id={}'.format(1), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'voters': [1]})
-     
-        
+
     def test_add_new_voters_conflict(self):
         data = {'voting_id': 1, 'voters': [1]}
         response = self.client.post('/census/', data, format='json')
@@ -93,3 +75,8 @@ class CensusTestCase(BaseTestCase):
         response = self.client.delete('/census/{}/'.format(1), data, format='json')
         self.assertEqual(response.status_code, 204)
         self.assertEqual(0, Census.objects.count())
+
+    #Comprueba si se crea una conexion con la base de datos
+    def test_connection_check(self):
+        connection = LdapCensus().ldapConnectionMethod('ldap.forumsys.com:389','cn=read-only-admin,dc=example,dc=com', 'password')
+        self.assert_(connection is not None)

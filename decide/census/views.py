@@ -13,7 +13,6 @@ from rest_framework.status import (
 from base.perms import UserIsStaff
 from .models import Census
 from .ldapMethods import LdapCensus
-#from authentication.models import User
 from django.contrib.auth.models import User
 from voting.models import Voting
 from django.db import models
@@ -23,9 +22,9 @@ from django.contrib import messages
 
 #Metodos propios
 
-
-#Formulario
-
+#Este metodo procesa los parametros pasados por el formulario para llamar a los metodos de conexión e importación de LDAP para poder
+#Crear así el censo con los usuarios de la rama de LDAP que se han pasado anteriormente, si y solo si esos usuarios estan registrados
+#previamente en el sistema.
 def importCensusFromLdap(request):
         
         if request.user.is_staff:
@@ -38,7 +37,6 @@ def importCensusFromLdap(request):
                     treeSufix = form.cleaned_data['treeSufix']
                     pwd = form.cleaned_data['pwd']
                     branch = form.cleaned_data['branch']
-                    #group = form.cleaned_data['group']
                     voting = form.cleaned_data['voting'].__getattribute__('pk')
 
                     voters = User.objects.all()
@@ -52,12 +50,8 @@ def importCensusFromLdap(request):
                             user = user.values('id')[0]['id']
                             userList.append(user)
                         
-                if request.user.is_authenticated:
-                    #voters_ids = userList.values_list('id', flat=True, named=False)
-                        
-                    for username in userList:
-                        #if not is_exist_
-                        
+                if request.user.is_authenticated:   
+                    for username in userList:         
                         census = Census(voting_id=voting, voter_id=username)
                         census.save()
 

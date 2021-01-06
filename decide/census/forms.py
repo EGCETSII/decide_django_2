@@ -1,7 +1,8 @@
 from django import forms
 from voting.models import Voting
 from django.forms import ModelMultipleChoiceField
-from django.db.models import Q
+
+#Formulario para introducir los datos necesarios para el metodo de LDAP
 class CensusAddLdapForm(forms.Form):
     #Atributos
     voting = forms.ModelChoiceField(label='Votación a la que desea añadir censo', empty_label="-", queryset=Voting.objects.all().filter(start_date__isnull=True, end_date__isnull=True), required=True,)

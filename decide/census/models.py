@@ -1,8 +1,4 @@
 from django.db import models
-import ldap3
-import re
-
-
 
 
 class Census(models.Model):

@@ -4,8 +4,6 @@ from .models import Census
 from django.urls import reverse
 from django.utils.html import format_html
 
-#from .models import CensusLdap
-
 
 class CensusAdmin(admin.ModelAdmin):
     list_display = ('voting_id', 'voter_id')
