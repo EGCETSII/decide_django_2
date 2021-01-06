@@ -5,6 +5,9 @@
 
 .botonLogout{
     background-color: #d42021;
-    border: #d42021;
-    
+    border: #d42021;    
+}
+
+.fuente{
+    font-family: Arial, Helvetica, sans-serif; 
 }
