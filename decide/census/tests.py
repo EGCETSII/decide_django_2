@@ -6,6 +6,8 @@ from rest_framework.test import APIClient
 from .models import Census
 from base import mods
 from base.tests import BaseTestCase
+from .ldapMethods import LdapCensus
+from .views import *
 
 
 class CensusTestCase(BaseTestCase):
@@ -73,3 +75,8 @@ class CensusTestCase(BaseTestCase):
         response = self.client.delete('/census/{}/'.format(1), data, format='json')
         self.assertEqual(response.status_code, 204)
         self.assertEqual(0, Census.objects.count())
+
+    #Comprueba si se crea una conexion con la base de datos
+    def test_connection_check(self):
+        connection = LdapCensus().ldapConnectionMethod('ldap.forumsys.com:389','cn=read-only-admin,dc=example,dc=com', 'password')
+        self.assert_(connection is not None)

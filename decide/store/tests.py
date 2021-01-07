@@ -170,7 +170,7 @@ class StoreTextCase(BaseTestCase):
             "voter": 1,
             "vote": { "a": 30, "b": 55 }
         }
-        census = Census(voting_id=5001, voter_id=1)
+        census = Census(voting_id=5001, _id=1)
         census.save()
         # not opened
         self.voting.start_date = timezone.now() + datetime.timedelta(days=1)

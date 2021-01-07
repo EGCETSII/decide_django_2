@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans 'Import of census by LDAP' %}{% endblock %}
+{% block extrahead %}
+<link type="text/css" rel="stylesheet"
+href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet"
+href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+<link type="text/css" rel="stylesheet" href="{% static "admin/css/base.css" %}" />
+<link type="text/css" rel="stylesheet" href="{% static "admin/css/changelists.css" %}" />
+<link type="text/css" rel="stylesheet" href="{% static "admin/css/css/fonts.css" %}" />
+
+
+{% endblock %}
+{% block content %}
+
+ <div class="container">
+  <nav>
+    <div class="nav-wrapper row teal darken-3">
+      <div class="col s12">
+        <div class="col s12"><a href="/admin" class="breadcrumb">{% trans 'Home' %}</a>
+            <a href="" class="breadcrumb">{% trans "Import LDAP census" %}</a>
+      </div>
+      </div>
+    </div>
+  </nav>
+
+    <div>
+        <h4>{% trans 'Adding voters on a vote' %}</h4>
+
+        <div>
+            <form action="{% url 'addLDAPcensus' %}" method="POST">
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td><label>{% trans 'Select voting' %}</label>{{ form.voting }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><label>{% trans "Admin's Url: " %}</label>{{ form.urlLdap }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><label>{% trans "Domain's Url: " %}</label>{{ form.treeSufix }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><label>{% trans 'Branch to add: ' %}</label>{{ form.branch }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><label>{% trans 'Password: ' %}</label>{{ form.pwd }}</td>
+                    </tr>
+ 
+                </table>
+                <br/>
+                <button class="btn waves-effect waves-light" type="submit" value="Submit">{% trans "Create census" %}<i class="material-icons right"></i></button>
+            </form>
+            <br/><br/>
+        </div>
+
+    </div>
+</div>    
+
+{% endblock %}
+
+
