@@ -9,9 +9,11 @@ from rest_framework.status import (
         HTTP_401_UNAUTHORIZED as ST_401,
         HTTP_409_CONFLICT as ST_409
 )
+from django.http import HttpResponse, HttpResponseBadRequest
 
 from base.perms import UserIsStaff
 from .models import Census
+from .resources import CensusResource
 from voting.serializers import VotingSerializer
 
 
@@ -58,3 +60,37 @@ class ListVotingsByVoter(generics.ListCreateAPIView):
     def get(self, request, voter_id, *args, **kwargs):
         votings = [c.voting_id for c in Census.objects.filter(voter_id=voter_id)]
         return Response({"votings": votings})
+
+
+def fullExport(request):
+    census_resource = CensusResource()
+    dataset = census_resource.export()
+    if request.GET.get('format') == 'csv' or request.GET.get('format') is None:
+        response = HttpResponse(dataset.csv, content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="census.csv"'
+    elif request.GET.get('format') == 'xls':
+        response = HttpResponse(dataset.xls, content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="census.xls"'
+    elif request.GET.get('format') == 'json':
+        response = HttpResponse(dataset.json, content_type='application/json')
+        response['Content-Disposition'] = 'attachment; filename="census.json"'
+    else:
+        response = HttpResponseBadRequest('Invalid format')
+    return response
+
+
+def export(request, voting_id):
+    census_resourse = CensusResource()
+    dataset = census_resourse.export(Census.objects.filter(voting_id=voting_id))
+    if request.GET.get('format') == 'csv' or request.GET.get('format') is None:
+        response = HttpResponse(dataset.csv, content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="census.csv"'
+    elif request.GET.get('format') == 'xls':
+        response = HttpResponse(dataset.xls, content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="census.xls"'
+    elif request.GET.get('format') == 'json':
+        response = HttpResponse(dataset.json, content_type='application/json')
+        response['Content-Disposition'] = 'attachment; filename="census.json"'
+    else:
+        response = HttpResponseBadRequest('Invalid format')
+    return response
