@@ -8,5 +8,7 @@ urlpatterns = [
     #Url correspondiente al formulario de importación de LDAP
     path('addLDAPcensus', importCensusFromLdap, name='addLDAPcensus'),
     path('votings/<int:voter_id>/', views.ListVotingsByVoter.as_view(), name='census_votings'),
+    path('export/', views.fullExport, name='census_fullexport'),
+    path('export/<int:voting_id>/', views.export, name='centus_export')
 ]
 

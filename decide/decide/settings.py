@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_swagger',
     'gateway',
+    'import_export',
 ]
 
 REST_FRAMEWORK = {
@@ -104,6 +105,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'decide.wsgi.application'
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 
 # Database
