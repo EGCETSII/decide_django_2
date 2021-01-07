@@ -1,6 +1,8 @@
 from django.contrib import admin
 
 from .models import Census
+from django.urls import reverse
+from django.utils.html import format_html
 
 
 class CensusAdmin(admin.ModelAdmin):
