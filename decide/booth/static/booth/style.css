@@ -1,4 +1,13 @@
-.voting {
+.voting{
     margin-top: 20px;
     margin-left: 40px;
+}
+
+.botonLogout{
+    background-color: #d42021;
+    border: #d42021;    
+}
+
+.fuente{
+    font-family: Arial, Helvetica, sans-serif; 
 }
