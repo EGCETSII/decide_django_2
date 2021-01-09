@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_swagger',
     'gateway',
+    'import_export',
 ]
 
 REST_FRAMEWORK = {
@@ -84,10 +85,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'decide.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'booth/decide-react/web-build/')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -101,6 +105,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'decide.wsgi.application'
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 
 # Database
@@ -157,6 +163,10 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'booth/decide-react/web-build/static/')
+]
 
 # number of bits for the key, all auths should use the same number of bits
 KEYBITS = 256
