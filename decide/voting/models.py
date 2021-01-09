@@ -34,6 +34,17 @@ class VotacionBinaria(models.Model):
     def addRespuestaBinaria(self,respuestaBinaria):
         respuestaBinaria.votacionBinaria = self
         respuestaBinaria.save()
+
+    def toJson(self):
+        res = {'titulo': self.titulo,
+               'descripcion': str(self.descripcion),
+               'fecha_inicio': str(self.fecha_inicio),
+               'fecha_fin': str(self.fecha_fin)}
+        respuestas = []
+        for r in self.respuestasBinarias.all():
+            respuestas.append({'id': r.id, 'respuesta': r.respuesta})
+        res['respuestas'] = respuestas
+        return res
         
 
 #MODELO DE RESPUESTA BINARIA
@@ -66,6 +77,20 @@ class Votacion(models.Model):
     def addPregunta(self,pregunta):
         pregunta.votacion = self
         pregunta.save()
+
+    def toJson(self):
+        res = {'titulo': self.titulo,
+               'descripcion': str(self.descripcion),
+               'fecha_inicio': str(self.fecha_inicio),
+               'fecha_fin': str(self.fecha_fin)}
+        preguntas = []
+        for p in self.preguntas.all():
+            respuestas = []
+            for r in p.respuestas.all():
+                respuestas.append({'id': r.id, 'respuesta': r.respuesta})
+            preguntas.append({'id': p.id, 'pregunta': p.textoPregunta, 'respuestas': respuestas})
+        res['preguntas'] = preguntas
+        return res
 
 #MODELO DE PREGUNTAS
 class Pregunta(models.Model):
@@ -131,6 +156,20 @@ class VotacionMultiple(models.Model):
 
     def __str__(self):
         return self.titulo
+
+    def toJson(self):
+        res = {'titulo': self.titulo,
+               'descripcion': str(self.descripcion),
+               'fecha_inicio': str(self.fecha_inicio),
+               'fecha_fin': str(self.fecha_fin)}
+        preguntasMultiples = []
+        for p in self.preguntasMultiples.all():
+            opcionesMultiple = []
+            for om in p.opcionesMultiples.all():
+                opcionesMultiple.append({'id': om.id, 'opcion': om.nombre_opcion, 'n_votado': om.n_votado})
+            preguntasMultiples.append({'id': p.id, 'pregunta': p.textoPregunta, 'opciones': opcionesMultiple})
+        res['preguntas'] = preguntasMultiples
+        return res
       # DEVUELVE EL NÚMERO DE PREGUNTAS QUE TIENE ASOCIDADA UNA VOTACION MULTIPLE
     def Numero_De_Preguntas_Multiple(self):
         return PreguntaMultiple.objects.filter(votacionMultiple_id=self.id).count()
@@ -203,6 +242,24 @@ class VotacionPreferencia(models.Model):
     fecha_fin = models.DateTimeField(blank=True, null=True)
     def __str__(self):
         return self.titulo
+
+    def toJson(self):
+        res = {'titulo': self.titulo,
+               'descripción': str(self.descripcion),
+               'fecha_inicio': str(self.fecha_inicio),
+               'fecha_fin': str(self.fecha_fin)}
+        preguntasPreferencia = []
+        for p in self.preguntasPreferencia.all():
+            opcionesRespuesta = []
+            for op in p.opcionesRespuesta.all():
+                respuestasPreferencia = []
+                for rp in op.respuestasPreferencia.all():
+                    respuestasPreferencia.append({'id': rp.id, 'orden_preferencia': rp.orden_preferencia})
+                opcionesRespuesta.append(
+                    {"id": op.id, 'nombre_opcion': op.nombre_opcion, 'respuestas': respuestasPreferencia})
+            preguntasPreferencia.append({'id': p.id, 'pregunta': p.textoPregunta, 'opciones': opcionesRespuesta})
+        res['preguntas'] = preguntasPreferencia
+        return res
 
     # DEVUELVE EL NÚMERO DE PREGUNTAS QUE TIENE ASOCIDADA UNA VOTACION DE PREFERENCIA
     def Numero_De_Preguntas_Preferencia(self):
