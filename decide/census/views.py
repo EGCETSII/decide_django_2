@@ -122,8 +122,16 @@ class ListVotingsByVoter(generics.ListCreateAPIView):
     serializer_class = VotingSerializer
 
     def get(self, request, voter_id, *args, **kwargs):
-        votings = [c.voting_id for c in Census.objects.filter(voter_id=voter_id)]
-        return Response({"votings": votings})
+        votaciones_binarias = [c.voting_id for c in Census.objects.filter(voter_id=voter_id) if c.type == 'VB']
+        votaciones = [c.voting_id for c in Census.objects.filter(voter_id=voter_id) if c.type == 'V']
+        votaciones_multiples = [c.voting_id for c in Census.objects.filter(voter_id=voter_id) if c.type == 'VM']
+        votaciones_preferencia = [c.voting_id for c in Census.objects.filter(voter_id=voter_id) if c.type == 'VP']
+        votings = [c.voting_id for c in Census.objects.filter(voter_id=voter_id) if c.type == 'Vo']
+        return Response({'votaciones_binarias': votaciones_binarias,
+                         'votaciones': votaciones,
+                         'votaciones_multiples': votaciones_multiples,
+                         'votaciones_preferencia': votaciones_preferencia,
+                         'votings': votings})
 
 def fullExport(request):
     census_resource = CensusResource()
