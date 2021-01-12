@@ -1,5 +1,6 @@
 {% load i18n static %}
 <!DOCTYPE html>
+{% block head %}
 <div class="text-center">
 <div class="container-fluid bg-primary text-white py-3">
     <div class="container">
@@ -10,7 +11,7 @@
 </div>
 <p class="lead bg-info text-white">Selecciona tu respuesta para esta votación</p>
 </div>
-
+{% endblock %}
 
 {% block extrahead %}
     <link type="text/css" rel="stylesheet"
@@ -20,15 +21,18 @@
     <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
 {% endblock %}
 
+
 <body style="background-color:#b4d1e0;">
 {% block content %}
 
     <div id="app-booth">
-        
+       
+        {% block logout %}
 <div class="text-right mr-5" >
     <b-button class="botonLogout" v-if="!signup" href="#" v-on:click="decideLogout">
         {% trans "Logout" %}
     </b-button>
+    {% endblock %}
 
 </div>
     
