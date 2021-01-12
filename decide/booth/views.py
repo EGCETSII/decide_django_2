@@ -63,3 +63,7 @@ def loginPage(request):
 
 def welcome(request):
     return render(request, "booth/welcome.html")
+
+def logoutUser(request):
+	logout(request)
+	return redirect('login')
