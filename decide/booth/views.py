@@ -1,4 +1,6 @@
 import json
+import datetime
+
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.http import Http404
@@ -39,8 +41,22 @@ class BoothView(TemplateView):
             raise Http404
 
         context['KEYBITS'] = settings.KEYBITS
+        context['start_date'] = self.get_format_date(context['voting']['start_date'])
+        context['end_date'] = self.get_format_date(context['voting']['end_date'])
+        
 
         return context
+    
+    def get_format_date(self, fecha):
+        result= None
+
+        if fecha != None:
+            fecha = fecha.replace("T", " ").replace("Z","")
+            date_time = datetime.datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S.%f')
+            result= date_time.strftime('%d/%m/%Y a las %H:%M:%S')
+
+        return result 
+    
 
 def loginPage(request):
 	    if request.user.is_authenticated:
