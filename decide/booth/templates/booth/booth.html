@@ -1,6 +1,19 @@
+{% extends "base.html" %}
 {% load static%}
 {% load i18n %}
-
+<!DOCTYPE html>
+{% block head %}
+<div class="text-center">
+	<div class="container-fluid bg-primary text-white py-3">
+		<div class="container">
+			<h1 class="display-3">
+				<b class="fuente">Decide-Cabina</b>
+			</h1>
+		</div>
+	</div>
+	<p class="lead bg-info text-white">Selecciona tu respuesta para esta votación</p>
+</div>
+{% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <h1 style="left:0; display:inline;">{{ voting.id }} - {{ voting.name }}</h1>
