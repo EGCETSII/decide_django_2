@@ -1,8 +1,60 @@
-<h2>Área para miembros</h2>
+{% load i18n static %}
+<!DOCTYPE html>
+{% block head %}
+<div class="text-center">
+<div class="container-fluid bg-primary text-white py-3">
+    <div class="container">
+        <h1 class="display-3">
+            <b class="fuente">Decide-Cabina</b>
+        </h1>
+    </div>
+</div>
+<p class="lead bg-info text-white">Inicio</p>
+</div>
+{% endblock %}
 
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
+{% endblock %}
+
+<div class="presentacion">
+<h2>¡Bienvenido/a a la cabina de votación de Decide-Rio Tinto.</h2>
 <p>
-    Bienvenido </b>, 
-    esta página es exclusiva para usuarios registrados.
+    Te encuentras en la página de inicio. Si quieres participar en una votación debes logearte primero. Pulsa <a  class="hello-msg" href="{% url 'login' %}">aqui</a> para logearte.
 </p>
+<p>
+    Si no estas registrado, pulsa aquí para registrarte.
+</p>
+<p>
+    Ten en cuenta que solo podrás participar en aquellas votaciones en las que un administrador te haya censado.
+</p>
+<p>
+    Actualmente tenemos estás votaciones abiertas:
+</p>
+</div>
 
+<table class="listaVotos">
+
+    <tr>
+  
+      <td>Celda 1</td>
+  
+
+  
+    </tr>
+  
+    <tr>
+  
+      <td>Celda 4</td>
+  
+    </tr>
+  
+  </table>
+  {% if user.is_authenticated %}
+  <span ><a  class="hello-msg" href="{% url 'logout' %}">Logout</a></span>
+  {% endif %}
 <hr />
