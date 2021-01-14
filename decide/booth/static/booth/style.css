@@ -11,3 +11,15 @@
 .fuente{
     font-family: Arial, Helvetica, sans-serif; 
 }
+
+
+#logo{
+	max-width:100px; 
+	margin-top: -5 px;
+	transition-duration: 0.4s;
+}
+
+
+#logo:hover{	
+	max-width:120px;
+}
