@@ -6,11 +6,15 @@ from django.conf import settings
 from django.http import Http404
 
 from base import mods
+from voting.models import Voting
+from census.models import Census
+from store.models import Vote
 from django.shortcuts import render, redirect 
 from django.http import HttpResponse
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
 from django.contrib import messages
@@ -84,7 +88,10 @@ def loginPage(request):
 
 
 def welcome(request):
-    return render(request, "booth/welcome.html")
+	if request.user.is_authenticated:
+		user_id = request.user.id
+	
+	return render(request, "booth/welcome.html")
 
 
 def logoutUser(request):
@@ -108,3 +115,18 @@ def registerPage(request):
 
 		context = {'form':form}
 		return render(request, 'booth/register.html', context)
+
+
+def votingsByUser(list_votings, user_id):
+	listaVotaciones=[]
+	totalVotaciones = Voting.objects
+	totalVotaciones.filter(id__in=list_votings)
+	totalVotaciones.filter(end_date__isNull=True)
+	for v in totalVotaciones:
+		votos = Vote.objects.filter(voting_id=v.id, user_id=user_id)
+		if votos.count()==0:
+			listaVotaciones.append(v)
+	
+	return votingsByUser
+
+#def mostrarLista(user_id)
