@@ -12,8 +12,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 
 from django.contrib import messages
-
 from django.contrib.auth.decorators import login_required
+
+
+from .forms import CrearUsuario
 
 # Create your views here.
 
@@ -56,7 +58,7 @@ def loginPage(request):
 				    login(request, user)
 				    return redirect('welcome')
 			    else:
-				    messages.info(request, 'Username OR password is incorrect')
+				    messages.info(request, 'Usuario o contraseña incorrectos')
 
 		    context = {}
 		    return render(request, 'booth/login.html', context)
@@ -67,3 +69,21 @@ def welcome(request):
 def logoutUser(request):
 	logout(request)
 	return redirect('login')
+
+
+def registerPage(request):
+	if request.user.is_authenticated:
+		return redirect('welcome')
+	else:
+		form = CrearUsuario()
+		if request.method == 'POST':
+			form = CrearUsuario(request.POST)
+			if form.is_valid():
+				form.save()
+				user = form.cleaned_data.get('username')
+
+				return redirect('login')
+			
+
+		context = {'form':form}
+		return render(request, 'booth/register.html', context)
