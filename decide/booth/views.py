@@ -16,8 +16,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-
 from .forms import CrearUsuario
+from voting import views
 
 # Create your views here.
 
@@ -104,7 +104,6 @@ def registerPage(request):
 				user = form.cleaned_data.get('username')
 
 				return redirect('login')
-			
 
 		context = {'form':form}
 		return render(request, 'booth/register.html', context)

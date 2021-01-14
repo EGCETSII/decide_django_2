@@ -17,16 +17,22 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <h1 style="left:0; display:inline;">{{ voting.id }} - {{ voting.name }}</h1>
-<div id="guideTitle" class="divGuide" style="padding:10px;margin:10px;">
-	{% trans "Title of the voting" %}
-	{% if voting.desc %}
-	<input class="buttonGuide" type="submit" value="{% trans "Accept" %}" onClick="alertDescription()" />
-	{%else%}
+<div id="voting">
+
 	{% if start_date == None%}
-	<input class="buttonGuide" type="submit" value="{% trans "Accept" %}" onClick="alertDateNotStart()" />
+	<p>La votación no ha empezado aún</p>
+
 	{%else%}
-	<input class="buttonGuide" type="submit" value="{% trans "Accept" %}" onClick="alertDateStart()" />
+	<p>La votación empezó el: {{ start_date }}</p>
+
+	{%if end_date == None%}
+	<p>Aún puede votar, no ha finalizado la votación</p>
+	{% else %}
+	<p>Ya no puede votar, la votación se cerró el: {{ end_date }}</p>
 	{% endif %}
+
 	{% endif %}
+	<a href="#" onClick="decideLogout()">{% trans "logout" %}</a>
+	<h2>{{ voting.question.desc }}</h2>
 </div>
 {% endblock %}
