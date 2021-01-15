@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static%}
 {% load i18n %}
+{% load rest_framework %}
 <!DOCTYPE html>
 {% block head %}
 <div class="text-center">
@@ -16,7 +17,7 @@
 {% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
-{% for voting in request %}
+
 <h1 style="left:0; display:inline;">{{ voting.id }} - {{ voting.name }}</h1>
 <div id="voting">
 	{% if start_date == None%}
@@ -35,4 +36,5 @@
 	<a href="#" onClick="decideLogout()">{% trans "logout" %}</a>
 	<h2>{{ voting.question.desc }}</h2>
 </div>
+
 {% endblock %}

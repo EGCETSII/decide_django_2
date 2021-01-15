@@ -61,9 +61,9 @@ class BoothView(TemplateView):
     
 def prueba(request):
     if request.method == 'GET':
-        request = VotingView.get()
+        request = VotingView.get(self, request)
     if request.method == 'POST':
-        request = VotingView.post()
+        request = VotingView.post(self, request)
     return render(request, "booth/booth.html")
 
 

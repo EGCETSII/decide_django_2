@@ -75,7 +75,7 @@ class Voting(models.Model):
     tally = JSONField(blank=True, null=True)
     postproc = JSONField(blank=True, null=True)
 
-    url = models.CharField(max_length=40, help_text=u"http://localhost:8000/booth/")
+    url = models.CharField(max_length=40, help_text=u"http://localhost:8000/booth/", null=True)
 
     def clean_fields(self, exclude=None):
         super(Voting, self).clean_fields(exclude)
