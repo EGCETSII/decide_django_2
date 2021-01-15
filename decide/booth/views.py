@@ -91,7 +91,7 @@ def welcome(request):
 	context={}
 	listaVotaciones=[]
 	listaVotaciones=ultimasVotaciones()
-	context['votaciones'] = listaVotaciones
+	context = {'votaciones':listaVotaciones, 'listaCensada':}
 	if request.user.is_authenticated:
 		user_id = request.user.id
 	
@@ -121,13 +121,13 @@ def registerPage(request):
 		return render(request, 'booth/register.html', context)
 
 
-def votingsByUser(list_votings, user_id):
+def votacionesPorUsuario(votacionesId, user_id):
 	listaVotaciones=[]
-	totalVotaciones = Voting.objects
-	totalVotaciones.filter(id__in=list_votings)
+	totalVotaciones = Voting.objects.all()
 	totalVotaciones.filter(end_date__isnull=True)
 	for v in totalVotaciones:
 		votos = Vote.objects.filter(voting_id=v.id, user_id=user_id)
+		if ()
 		if votos.count()==0:
 			listaVotaciones.append(v)
 	
@@ -140,3 +140,12 @@ def ultimasVotaciones():
 	for v in totalVotaciones:
 		listaVotaciones.append(v)
 	return listaVotaciones
+
+def listaCensadaIds(user_id):
+	listaCensadaIds = []
+	totalListaCensada = Census.objects.all()
+	totalListaCensada.filter(voter_id=user_id)
+	for c in totalListaCensada:
+		listaCensadaIds.append(c.voting_id)
+
+	return listaCensadaIds
