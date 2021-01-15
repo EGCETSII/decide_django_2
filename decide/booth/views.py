@@ -17,7 +17,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from .forms import CrearUsuario
-from voting import views
+from voting.views import VotingView, VotingUpdate
 
 # Create your views here.
 
@@ -60,6 +60,10 @@ class BoothView(TemplateView):
 
     
 def prueba(request):
+    if request.method == 'GET':
+        request = VotingView.get()
+    if request.method == 'POST':
+        request = VotingView.post()
     return render(request, "booth/booth.html")
 
 
