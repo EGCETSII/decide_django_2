@@ -88,10 +88,14 @@ def loginPage(request):
 
 
 def welcome(request):
+	context={}
+	listaVotaciones=[]
+	listaVotaciones=ultimasVotaciones()
+	context['votaciones'] = listaVotaciones
 	if request.user.is_authenticated:
 		user_id = request.user.id
 	
-	return render(request, "booth/welcome.html")
+	return render(request, "booth/welcome.html", context)
 
 
 def logoutUser(request):
@@ -121,12 +125,18 @@ def votingsByUser(list_votings, user_id):
 	listaVotaciones=[]
 	totalVotaciones = Voting.objects
 	totalVotaciones.filter(id__in=list_votings)
-	totalVotaciones.filter(end_date__isNull=True)
+	totalVotaciones.filter(end_date__isnull=True)
 	for v in totalVotaciones:
 		votos = Vote.objects.filter(voting_id=v.id, user_id=user_id)
 		if votos.count()==0:
 			listaVotaciones.append(v)
 	
-	return votingsByUser
+	return listaVotaciones
 
-#def mostrarLista(user_id)
+def ultimasVotaciones():
+	listaVotaciones=[]
+	totalVotaciones = Voting.objects.all()
+	totalVotaciones.filter(end_date__isnull=True)	
+	for v in totalVotaciones:
+		listaVotaciones.append(v)
+	return listaVotaciones

@@ -38,21 +38,27 @@
 </div>
 
 <table class="listaVotos">
-
+    <thead>
     <tr>
   
-      <td>Celda 1</td>
+      <th scope="col">Celda 1</th>
+      <th scope="col">Celda 2</th>
+      <th scope="col">Celda 3</th>
   
 
   
     </tr>
-  
+    </thead>
+    <tbody>
+        {% for v in votaciones %}
     <tr>
   
-      <td>Celda 4</td>
-  
+      <td><a class="btn btn-sm btn-info" href="{% url 'welcome' %}">{{v.name}}</a></td>
+      <td>{{v.end_date}}</td>
+      <td>{{v.name}}</td>
     </tr>
-  
+    {% endfor %}
+</tbody>
   </table>
   {% if user.is_authenticated %}
   <span ><a  class="hello-msg" href="{% url 'logout' %}">Logout</a></span>
