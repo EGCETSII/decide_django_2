@@ -1,4 +1,3 @@
-{% extends "base.html" %}
 {% load static%}
 {% load i18n %}
 {% load rest_framework %}
@@ -33,8 +32,6 @@
 	{% endif %}
 
 	{% endif %}
-	<a href="#" onClick="decideLogout()">{% trans "logout" %}</a>
-	<h2>{{ voting.question.desc }}</h2>
 </div>
 
 {% endblock %}
