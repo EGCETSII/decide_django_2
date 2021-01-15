@@ -69,9 +69,9 @@ class BoothView(TemplateView):
         context['KEYBITS'] = settings.KEYBITS'''
         x['KEYBITS'] = settings.KEYBITS
         print(x)
-        y = json.dumps(x)
-        print(y)
-        return y
+        x['voting'] = json.dumps(x)
+        print(x)
+        return x
 
     
 def prueba(request):
