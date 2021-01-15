@@ -20,6 +20,7 @@ from .forms import CrearUsuario
 from voting.views import VotingView, VotingUpdate
 from voting.models import Voting, Question, PoliticalParty
 from rest_framework.renderers import TemplateHTMLRenderer
+from lib2to3.fixes.fix_input import context
 # Create your views here.
 
 
@@ -45,8 +46,8 @@ class BoothView(TemplateView):
                 "description": "Esto es una fiesta politica",
                 "leader": "Líder de la fiesta",
                 "predident": "Presidente de la fiesta"},
-            "start-date":"2021-01-12 00:00",
-            "end-date":"2021-01-30 00:00",
+            "start_date":"2021-01-08T15:29:52.040435",
+            "end_date":"2021-01-20T15:29:52.040435",
             "url":"http://localhost:8000/booth/4",
             "pub-key": "a1s2d3f4g5h6j7k8l9"
             }
@@ -68,9 +69,25 @@ class BoothView(TemplateView):
             raise Http404
 
         context['KEYBITS'] = settings.KEYBITS'''
+        
+        x['start_date'] = self.format_fecha(x['start_date'])
+        x['end_date'] = self.format_fecha(x['end_date'])
         x['KEYBITS'] = settings.KEYBITS
         x['voting'] = json.dumps(x)
+        
         return x
+    
+    #formateo fecha "2021-01-12 00:00",
+        
+    def format_fecha(self, fecha):
+        result= None
+        
+        if fecha != None:
+            fecha = fecha.replace("T", " ").replace("Z","")
+            date_time = datetime.datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S.%f')
+            result= date_time.strftime('%d/%m/%Y a las %H:%M:%S')
+
+        return result
 
     
 def prueba(request):
