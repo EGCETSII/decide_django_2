@@ -17,7 +17,7 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<h1 style="left:0; display:inline;">{{ voting.id }} - {{ voting.name }}</h1>
+<h1 style="left:0; display:inline;">{{ voting_id }} - {{ name }}</h1>
 <div id="voting">
 	{% if start_date == None%}
 	<p>La votación no ha empezado aún</p>

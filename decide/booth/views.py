@@ -19,12 +19,13 @@ from django.contrib.auth.decorators import login_required
 from .forms import CrearUsuario
 from voting.views import VotingView, VotingUpdate
 from voting.models import Voting, Question, PoliticalParty
-
+from rest_framework.renderers import TemplateHTMLRenderer
 # Create your views here.
 
 
 # TODO: check permissions and census
 class BoothView(TemplateView):
+    renderer_classes = [TemplateHTMLRenderer]
     template_name = 'booth/booth.html'
     '''q = Question.objects.create(desc="¿Esto es un ejemplo?")
     p = PoliticalParty.objects.create(name="Political23313", acronym="P223133", description="Esto es una descripción", leader="Líder2", president="Presidente2")
@@ -68,9 +69,7 @@ class BoothView(TemplateView):
 
         context['KEYBITS'] = settings.KEYBITS'''
         x['KEYBITS'] = settings.KEYBITS
-        print(x)
         x['voting'] = json.dumps(x)
-        print(x)
         return x
 
     
