@@ -37,7 +37,7 @@
 </p>
 </div>
 
-<table class="listaVotos">
+<table class="listaVotaciones">
     <thead>
     <tr>
   
@@ -50,7 +50,7 @@
     </tr>
     </thead>
     <tbody>
-        {% for v in votaciones %}
+        {% for v in allVotaciones %}
     <tr>
   
       <td><a class="btn btn-sm btn-info" href="{% url 'welcome' %}">{{v.name}}</a></td>
@@ -60,6 +60,33 @@
     {% endfor %}
 </tbody>
   </table>
+  {% if user.is_authenticated %}
+  {% if not listaVacia %}
+  <table class="listaVotacionesCensado">
+    <thead>
+    <tr>
+  
+      <th scope="col">Celda 1</th>
+      <th scope="col">Celda 2</th>
+      <th scope="col">Celda 3</th>
+  
+
+  
+    </tr>
+    </thead>
+    <tbody>
+        {% for a in votacionesCensado %}
+    <tr>
+  
+      <td><a class="btn btn-sm btn-info" href="{% url 'welcome' %}">{{a.name}}</a></td>
+      <td>{{a.end_date}}</td>
+      <td>{{a.name}}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+  </table>
+  {% endif %}
+  {% endif %}
   {% if user.is_authenticated %}
   <span ><a  class="hello-msg" href="{% url 'logout' %}">Logout</a></span>
   {% endif %}
