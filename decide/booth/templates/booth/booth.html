@@ -1,22 +1,35 @@
 {% load static%} {% load i18n %} {% load rest_framework %}
 <!DOCTYPE html>
+
 {% block head %}
+<head>
+	<meta charset='utf-8'>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
 <div class="text-center">
 	<div class="container-fluid bg-primary text-white py-3">
 		<div class="container">
 			<h1 class="display-3">
-				<b class="fuente">Decide-Cabina</b>
+				<b class="fuente">Cabina de votación</b>
 			</h1>
 		</div>
 	</div>
 	<p class="lead bg-info text-white">Selecciona tu respuesta para
 		esta votación</p>
 </div>
-{% endblock %} {% block content %}
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %} 
 
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<div class="text-center">
 <h1 style="left: 0; display: inline;">{{ voting_id }} - {{ name }}</h1>
 <div id="voting">
+	
 	{% if voted %}
 	<p class="lead">Usted ya ha votado</p>
 	{% else %} {% if start_date == None%}
@@ -24,27 +37,35 @@
 
 	{%else%}
 	<p>La votación empezó el: {{ start_date }}</p>
+	</div>
+	<div class="text-center">
 	{% if question.yesorno %}
 	<h2>{{question.yesorno}}</h2>
 	<h3>{{desc}}</h3>
-	<p>Options:</p>
-	<form action="">
-		<input type="checkbox" id="yes" name="yes" value="yes"> <label for="yes">Yes</label><br> <input type="checkbox"
-			id="no" name="no" value="no"> <label for="no">No</label><br> <input type="submit" value="Submit">
-	</form>
-
-	{%endif%}
-
-	{% if question.multiple %}
 	{% for o in question.options %}
 	<label for="question{{options.number}}">
-		<input class="button buttonseveral" type="submit" name="question" value="{{question.options.o}}" />
+		<input class="button buttonseveral" type="submit" name="question" value="{{question.options.opt}}" />
+		<div class="guideAnswer divGuide" style="margin:20px;padding:20px;">
+			{% trans "Answer"%} {{question.options.o}}
+		</div>
+	</label>
+	{%endfor%}	
+	{%endif%}
+	</div>
+	<div class="text-center">
+	{% if question.multiple %}
+	<h2>{{question.multiple}}</h2>
+	<h3>{{desc}}</h3>
+	{% for o in question.options %}
+	<label for="question{{options.number}}">
+		<input class="button buttonseveral" type="submit" name="question" value="{{question.options.opt}}" />
 		<div class="guideAnswer divGuide" style="margin:20px;padding:20px;">
 			{% trans "Answer"%} {{question.options.o}}
 		</div>
 	</label>
 	{%endfor%}
 	{%endif%}
+	</div>
 
 	{%if end_date == None%}
 	<p>Aún puede votar, no ha finalizado la votación</p>

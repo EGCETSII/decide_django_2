@@ -34,12 +34,12 @@ class BoothView(TemplateView):
 
     def get_context_data(self, **kwargs):
 
-        x = {
+        y = {
             "voting_id": 4,
-            "name": "Votacion 1",
-            "desc": "Esto es un ejemplo",
+            "name": "EGC",
+            "desc": "Aprobar EGC no es fácil",
             "question": {
-                "yesorno": "¿Esto es un ejemplo?",
+                "yesorno": "¿Vamos a aprobar EGC?",
                 "options": {
                     "y": "Yes",
                     "n": "No"}},
@@ -50,16 +50,16 @@ class BoothView(TemplateView):
             "voted": False
             }
         
-        y = {
+        x = {
             "voting_id": 4,
-            "name": "Votacion 1",
-            "desc": "Esto es un ejemplo",
+            "name": "EGC",
+            "desc": "Aprobar EGC no es facil",
             "question": {
-                "multiple": "¿Esto es un ejemplo?",
+                "multiple": "¿Vamos a aprobar EGC?",
                 "options": {
                     1: "Yes",
                     2: "No",
-                    3: "NS/C"}},
+                    3: "Pa febrero"}},
             "start_date":"2021-01-08T15:29:52.040435",
             "end_date":"2021-01-20T15:29:52.040435",
             "url":"http://localhost:8000/booth/4",
