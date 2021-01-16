@@ -19,11 +19,26 @@
 
 <h1 style="left:0; display:inline;">{{ voting_id }} - {{ name }}</h1>
 <div id="voting">
+	{% if voted %}
+	<p class="lead">Usted ya ha votado</p>
+	{% else %}
 	{% if start_date == None%}
 	<p>La votación no ha empezado aún</p>
 
 	{%else%}
 	<p>La votación empezó el: {{ start_date }}</p>
+	{% if question.yesorno %}
+	<h2> {{question.yesorno}} </h2>
+	<h3> {{desc}} </h3>
+	<p>Options: </p>
+	<form action="">
+		<input type="checkbox" id="yes" name="yes" value="yes">
+		<label for="yes">Yes</label><br>
+		<input type="checkbox" id="no" name="no" value="no">
+		<label for="no">No</label><br>
+		<input type="submit" value="Submit">
+	</form>
+	{% endif %}
 
 	{%if end_date == None%}
 	<p>Aún puede votar, no ha finalizado la votación</p>
@@ -31,6 +46,7 @@
 	<p>Ya no puede votar, la votación se cerró el: {{ end_date }}</p>
 	{% endif %}
 
+	{% endif %}
 	{% endif %}
 </div>
 

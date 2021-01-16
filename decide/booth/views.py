@@ -33,23 +33,38 @@ class BoothView(TemplateView):
     v = Voting.objects.create(name="Votación 1", desc="Esto es un ejemplo", question=q, political_party=p, start_date="2021-01-12 00:00", end_date="2021-01-30 00:00", url="http://localhost:8000/booth/")'''
 
     def get_context_data(self, **kwargs):
-        
+
         x = {
             "voting_id": 4,
             "name": "Votacion 1",
             "desc": "Esto es un ejemplo",
             "question": {
-                "desc": "¿Esto es un ejemplo?"},
-            "political_party": {
-                "name":"Fiesta politica",
-                "acronym": "FP",
-                "description": "Esto es una fiesta politica",
-                "leader": "Líder de la fiesta",
-                "predident": "Presidente de la fiesta"},
+                "yesorno": "¿Esto es un ejemplo?",
+                "options": {
+                    "y": "Yes",
+                    "n": "No"}},
+            "start_date":"2021-01-08T15:29:52.040435",
+            "end_date":None,
+            "url":"http://localhost:8000/booth/4",
+            "pub-key": "a1s2d3f4g5h6j7k8l9",
+            "voted": False
+            }
+        
+        y = {
+            "voting_id": 4,
+            "name": "Votacion 1",
+            "desc": "Esto es un ejemplo",
+            "question": {
+                "multiple": "¿Esto es un ejemplo?",
+                "options": {
+                    "1": "Yes",
+                    "2": "No",
+                    "3": "NS/C"}},
             "start_date":"2021-01-08T15:29:52.040435",
             "end_date":"2021-01-20T15:29:52.040435",
             "url":"http://localhost:8000/booth/4",
-            "pub-key": "a1s2d3f4g5h6j7k8l9"
+            "pub-key": "a1s2d3f4g5h6j7k8l9",
+            "voted": False
             }
         
         '''context = super().get_context_data(**kwargs)
@@ -77,15 +92,15 @@ class BoothView(TemplateView):
         
         return x
     
-    #formateo fecha "2021-01-12 00:00",
+    # formateo fecha "2021-01-12 00:00",
         
     def format_fecha(self, fecha):
-        result= None
+        result = None
         
         if fecha != None:
-            fecha = fecha.replace("T", " ").replace("Z","")
+            fecha = fecha.replace("T", " ").replace("Z", "")
             date_time = datetime.datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S.%f')
-            result= date_time.strftime('%d/%m/%Y a las %H:%M:%S')
+            result = date_time.strftime('%d/%m/%Y a las %H:%M:%S')
 
         return result
 
