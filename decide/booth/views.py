@@ -147,3 +147,6 @@ def listaCensadaIds(user_id):
 			listaCensadaIds.append(c.voting_id)
 
 	return listaCensadaIds
+
+def about(request):
+    return render(request, "booth/about.html")
