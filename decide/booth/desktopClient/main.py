@@ -74,11 +74,25 @@ class GUI:
                     print("Correct user")
                     user_token = user[0]
                     print("User token " + str(user_token))
+                    self.voting(user, voting_id)
                 elif passOk:
                     self.builder.get_object('votingIdLabelError').set_text("No tiene acceso a la votación")
                 else:
                     print("Invalid password")
                     self.builder.get_object('usernameLabelError').set_text("Invalid user or password")
+
+    def logged_user(self, user):
+        self.builder.add_from_file('list_votings.ui')
+        self.cur.execute("SELECT * from voting_voting")
+        votings = self.cur.fetchall()
+
+        self.grid = Gtk.Grid()
+        self.grid.set_column_homogeneous(True)
+        self.grid.set_row_homogeneous(True)
+        self.add(self.grid)
+
+        for voting in votings:
+            print(voting[1] + " - "+ voting[2])
 
     def check_voting(self, user, voting_id):
         start_date_ok = False
@@ -106,6 +120,53 @@ class GUI:
             voting_id_ok = select != None
 
         return start_date_ok and end_date_ok and voting_id_ok
+
+    def voting(self, user, voting_id):
+        # self.builder.add_from_file('voting.ui')
+        self.cur.execute("SELECT * from voting_voting where id = %s", [voting_id])
+        voting = self.cur.fetchone()
+
+        self.cur.execute("SELECT * from voting_question where id = %s", [voting[6]])
+        question = self.cur.fetchone()
+
+        self.cur.execute("SELECT * from voting_questionoption where question_id = %s", [question[0]])
+        question_options = self.cur.fetchall()
+
+        votingWin = VotingWindow(voting, question, question_options)
+        votingWin.show_all()
+        votingWin.fullscreen()
+
+"""
+        self.builder.add_from_file('voting.ui')
+        self.builder.connect_signals(self)
+        self.builder.get_object('votingDescription').set_text(str(voting[0]) + " - " + str(voting[1]))
+
+        label = Gtk.Label()
+        label.set_text("Hola")
+        self.builder.add(label)
+"""
+
+class VotingWindow(Gtk.Window):
+    def __init__(self, voting, question, question_options):
+        Gtk.Window.__init__(self, title=str(voting[0]) + " - " + str(voting[1]))
+
+        self.label = Gtk.Label(label=str(voting[0]) + " - " + str(voting[1]))
+        self.add(self.label)
+
+        self.question_description = Gtk.Label(label=str(question[1]))
+        self.add(self.question_description)
+
+        self.options = Gtk.ListStore(int, int, str, int)
+        for option in question_options:
+            formatted_option = (option[0], option[1], option[2], option[3])
+            self.options.append(formatted_option)
+        self.current_filter_language = None
+
+        for option in self.options:
+            print(str(option[0]) +" - "+ str(option[1])+" - "+ str(option[2])+" - "+ str(option[3]))
+
+    def on_button_clicked(self, widget):
+        print("Hello World")
 
 def main():
     app = GUI()
