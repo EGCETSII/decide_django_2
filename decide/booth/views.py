@@ -57,9 +57,9 @@ class BoothView(TemplateView):
             "question": {
                 "multiple": "¿Esto es un ejemplo?",
                 "options": {
-                    "1": "Yes",
-                    "2": "No",
-                    "3": "NS/C"}},
+                    1: "Yes",
+                    2: "No",
+                    3: "NS/C"}},
             "start_date":"2021-01-08T15:29:52.040435",
             "end_date":"2021-01-20T15:29:52.040435",
             "url":"http://localhost:8000/booth/4",
