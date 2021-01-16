@@ -85,12 +85,12 @@ class BoothView(TemplateView):
 
         context['KEYBITS'] = settings.KEYBITS'''
         
-        x['start_date'] = self.format_fecha(x['start_date'])
-        x['end_date'] = self.format_fecha(x['end_date'])
-        x['KEYBITS'] = settings.KEYBITS
-        x['voting'] = json.dumps(x)
+        y['start_date'] = self.format_fecha(y['start_date'])
+        y['end_date'] = self.format_fecha(y['end_date'])
+        y['KEYBITS'] = settings.KEYBITS
+        y['voting'] = json.dumps(y)
         
-        return x
+        return y
     
     # formateo fecha "2021-01-12 00:00",
         
