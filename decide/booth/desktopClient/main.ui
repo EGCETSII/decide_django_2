@@ -84,6 +84,41 @@
             <property name="position">5</property>
           </packing>
         </child>
+                <child>
+          <object class="GtkLabel" id="votingIdLabel">
+            <property name="label">Voting Identifier</property>
+            <property name="max-width-chars">-1</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="votingId">
+            <property name="visibility">True</property>
+            <property name="can_focus">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="votingIdLabelError">
+            <property name="label"></property>
+            <property name="max-width-chars">-1</property>
+            <property name="visible">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
         <child>
           <object class="GtkButton" id="button1">
             <property name="label" translatable="yes">Login</property>
