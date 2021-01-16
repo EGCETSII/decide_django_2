@@ -22,6 +22,8 @@ from django.contrib.auth.decorators import login_required
 
 
 from .forms import CrearUsuario
+from .forms import PeticionForm
+from .models import PeticionCenso
 
 # Create your views here.
 
@@ -86,7 +88,7 @@ def loginPage(request):
 		    context = {}
 		    return render(request, 'booth/login.html', context)
 
-
+@login_required(login_url='login')
 def welcome(request):
 	context={}
 	listaUltimasVotaciones=[]
@@ -97,6 +99,24 @@ def welcome(request):
 	if len(votacionesUsuarioCensado)==0:
 		context['listaVacia']=True
 	return render(request, "booth/welcome.html", context)
+
+
+
+@login_required(login_url='login')
+def peticionCensoUsuario(request):
+	form = PeticionForm()
+	if request.method == 'POST':
+		form = PeticionForm(request.POST)
+		if form.is_valid():
+			obj = form.save(commit=False)
+			obj.user_id = request.user.id
+			obj.save()
+
+			return redirect('welcome')
+			
+
+	context = {'form':form}
+	return render(request, 'booth/peticionCensoUsuario.html', context)
 
 
 def logoutUser(request):
@@ -147,3 +167,10 @@ def listaCensadaIds(user_id):
 			listaCensadaIds.append(c.voting_id)
 
 	return listaCensadaIds
+
+def ultimasPeticiones():
+	listaPeticiones=[]
+	totalPeticiones = PeticionCenso.objects.all()
+	for t in totalPeticiones:
+		listaPeticiones.append(t)
+	return listaPeticiones
