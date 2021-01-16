@@ -183,3 +183,17 @@ def ultimasPeticiones():
 	for t in totalPeticiones:
 		listaPeticiones.append(t)
 	return listaPeticiones
+
+@login_required(login_url='login')
+def deletePeticion(request, pk):
+	if not request.user.is_superuser:
+		return HttpResponseForbidden()
+	else:
+		peticion = PeticionCenso.objects.get(id=pk)
+		if request.method == "POST":
+			peticion.delete()
+			return redirect('peticionCensoAdmin')
+
+	context = {'item':peticion}
+	return render(request, 'booth/deletePeticion.html', context)
+	
