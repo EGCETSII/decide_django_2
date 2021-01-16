@@ -6,11 +6,15 @@ from django.conf import settings
 from django.http import Http404
 
 from base import mods
+from voting.models import Voting
+from census.models import Census
+from store.models import Vote
 from django.shortcuts import render, redirect 
 from django.http import HttpResponse
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
 from django.contrib import messages
@@ -84,12 +88,20 @@ def loginPage(request):
 
 
 def welcome(request):
-    return render(request, "booth/welcome.html")
+	context={}
+	listaUltimasVotaciones=[]
+	listaUltimasVotaciones=ultimasVotaciones()
+	listaCensada=listaCensadaIds(request.user.id)
+	votacionesUsuarioCensado=votacionesPorUsuario(listaCensada, request.user.id)
+	context = {'allVotaciones':listaUltimasVotaciones, 'votacionesCensado':votacionesUsuarioCensado, 'listaVacia':False}
+	if len(votacionesUsuarioCensado)==0:
+		context['listaVacia']=True
+	return render(request, "booth/welcome.html", context)
 
 
 def logoutUser(request):
 	logout(request)
-	return redirect('login')
+	return redirect('welcome')
 
 
 def registerPage(request):
@@ -108,3 +120,30 @@ def registerPage(request):
 
 		context = {'form':form}
 		return render(request, 'booth/register.html', context)
+
+
+def votacionesPorUsuario(votacionesId, user_id):
+	listaVotaciones=[]
+	totalVotaciones = Voting.objects.all().filter(id__in=votacionesId, end_date__isnull=True)
+	for v in totalVotaciones:
+		votos = Vote.objects.filter(voting_id=v.id, voter_id=user_id)
+		if votos.count()==0:
+			listaVotaciones.append(v)
+	
+	return listaVotaciones
+
+def ultimasVotaciones():
+	listaVotaciones=[]
+	totalVotaciones = Voting.objects.all().filter(end_date__isnull=True).order_by('-start_date')
+	for v in totalVotaciones:
+		listaVotaciones.append(v)
+	return listaVotaciones
+
+def listaCensadaIds(user_id):
+	listaCensadaIds = []
+	totalListaCensada = Census.objects.all().filter(voter_id=user_id)
+	if totalListaCensada.count() != 0:
+		for c in totalListaCensada:
+			listaCensadaIds.append(c.voting_id)
+
+	return listaCensadaIds
