@@ -14,20 +14,19 @@
         .bg1{
             background-color:#b4d1e0;
         }
-
-        .div1{
-            background-color:#b4d1e0;
+        .nombreMetodo{
+            font-size: 23px;
 
         }
 
-        .div2{
-            
-            background-color:#b4d1e0;
+        .nuestrosNombres{
+            font-size: 14px;
         }
-    
-        .div3{
-            margin-bottom: 5px;
+
+        .divBoton{
+            margin-bottom: 10px;
         }
+       
        
 
 
@@ -38,8 +37,8 @@
 
 
 <body>
-    <div class="div1">
-        <div class="div2">
+    <div class="bg1">
+        <div class="bg1">
 
             <img src="https://www.informatica.us.es/docs/imagen-etsii/logo-ETSII-Color.png" class="img-responsive" alt="ETSII">
         </div>
@@ -72,10 +71,58 @@
     </div>
 
 
-    
+    <div>
+
+        <pre>
+            <span style ="color:#ffa600" class="nombreMetodo">.quienesSomos  </span>{ 
+
+                Somos un grupo de estudiantes de la asignatura de Evolución y
+                Gestión de la configuración (EGC) cuyo proyecto práctico a
+                consistido en la realización de una plataforma de voto online
+                llamada Decide basada en Django.
+            
+            }
+
+        </pre>
+
+        <pre>
+            <span style="color:#b01d1d;" class="nombreMetodo">.institución  </span>{
+
+                Todas las personas involucradas en este proyecto pertenecemos
+                a la Universidad de Sevilla, en concreto, a la Escuela Técnica
+                Superior de Ingeniería Informática (ETSII).
+
+            }
+
+        </pre>
+
+        <pre>
+            <span style="color:#3d6cc5;"class="nombreMetodo">.grupoCabina  </span>{
+
+                El subgrupo encargado de la cabina (Perteneciente al grupo mayor 
+                Votación) se ha encargado de aportar utilidades finales y un 
+                estilo apropiado al grueso del proyecto. Sus integrantes son:
+
+                <span class="nuestrosNombres">David: </span>davcacrom@alum.us.es ;
+                <span class="nuestrosNombres">Laura: </span>lauporsol@alum.us.es ;
+                <span class="nuestrosNombres">Elena: </span>eleespgon1@alum.us.es ;
+                <span class="nuestrosNombres">José Joaquín: </span>josrojrom1@alum.us.es ;
+                <span class="nuestrosNombres">Alejandro: </span>emaildealejandro ;
+                <span class="nuestrosNombres">Alvaro: </span>alvafric@alum.us.es ;
 
 
+            }
 
+        </pre>
+
+
+    </div>
+
+    <center>
+        <div class="divBoton">
+            <a  class="btn btn-sm btn-info" href="{% url 'welcome' %}">Volver al inicio de Decide</a>
+        </div>
+    </center>    
     
 
     <!--Separate Popper and Bootstrap JS -->
