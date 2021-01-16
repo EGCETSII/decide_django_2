@@ -1,0 +1,46 @@
+{% load i18n static %}
+<!DOCTYPE html>
+{% block head %}
+<div class="text-center">
+<div class="container-fluid bg-primary text-white py-3">
+    <div class="container">
+        <h1 class="display-3">
+            <b class="fuente">Decide-Cabina</b>
+        </h1>
+    </div>
+</div>
+<p class="lead bg-info text-white">Inicio</p>
+</div>
+{% endblock %}
+
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
+{% endblock %}
+<h2>Estas son las peticiones para ser censado:</h2>
+<table class="listaPeticiones">
+    <thead>
+    <tr>
+  
+      <th scope="col">Id peticion</th>
+      <th scope="col">Id del usuario</th>
+      <th scope="col">Nombre de la votacion</th>
+  
+
+  
+    </tr>
+    </thead>
+    <tbody>
+        {% for p in allPeticiones %}
+    <tr>
+  
+      <td>{{p.id}}</a></td>
+      <td>{{p.user_id}}</td>
+      <td>{{p.desc}}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+  </table>

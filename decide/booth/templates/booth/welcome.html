@@ -23,15 +23,33 @@
 
 <div class="presentacion">
 <h2>¡Bienvenido/a a la cabina de votación de Decide-Rio Tinto.</h2>
+
 <p>
     Te encuentras en la página de inicio. Si quieres participar en una votación debes logearte primero. Pulsa <a  class="hello-msg" href="{% url 'login' %}">aqui</a> para logearte.
 </p>
+
 <p>
     Si no estas registrado, pulsa <a  class="hello-msg" href="{% url 'register' %}">aquí</a> para registrarte.
 </p>
+
 <p>
-    Ten en cuenta que solo podrás participar en aquellas votaciones en las que un administrador te haya censado.
+  Ten en cuenta que solo podrás participar en aquellas votaciones en las que un administrador te haya censado.
 </p>
+
+{% if user.is_authenticated %}
+{% if not user.is_superuser %}
+<p>
+  Si quieres solicitar ser censado en una votación, pulsa <a  class="hello-msg" href="{% url 'peticionCensoUsuario' %}">aquí</a>
+</p>
+{% endif %}
+{% endif %}
+
+{% if user.is_superuser %}
+<p>
+  Como administrador, puedes ver las peticiones actuales pulsando <a  class="hello-msg" href="{% url 'peticionCensoAdmin' %}">aquí</a>
+</p>
+{% endif %}
+
 <p>
     Actualmente tenemos estás votaciones abiertas:
 </p>
@@ -41,9 +59,9 @@
     <thead>
     <tr>
   
-      <th scope="col">Celda 1</th>
-      <th scope="col">Celda 2</th>
-      <th scope="col">Celda 3</th>
+      <th scope="col">Nombre de la votacion</th>
+      <th scope="col">Id de la votacion</th>
+      <th scope="col">Fecha de inicio</th>
   
 
   
@@ -53,9 +71,9 @@
         {% for v in allVotaciones %}
     <tr>
   
-      <td><a class="btn btn-sm btn-info" href="{% url 'welcome' %}">{{v.name}}</a></td>
-      <td>{{v.end_date}}</td>
-      <td>{{v.name}}</td>
+      <td><a class="btn btn-sm btn-info" href="{% url 'booth' v.id%}">{{v.name}}</a></td>
+      <td>{{v.id}}</td>
+      <td>{{v.start_date}}</td>
     </tr>
     {% endfor %}
 </tbody>
@@ -66,9 +84,9 @@
     <thead>
     <tr>
   
-      <th scope="col">Celda 1</th>
-      <th scope="col">Celda 2</th>
-      <th scope="col">Celda 3</th>
+      <th scope="col">Nombre de la votacion</th>
+      <th scope="col">Id de la votacion</th>
+      <th scope="col">Fecha de inicio</th>
   
 
   
@@ -78,9 +96,9 @@
         {% for a in votacionesCensado %}
     <tr>
   
-      <td><a class="btn btn-sm btn-info" href="{% url 'welcome' %}">{{a.name}}</a></td>
-      <td>{{a.end_date}}</td>
-      <td>{{a.name}}</td>
+      <td><a class="btn btn-sm btn-info" href="{% url 'booth' a.id%}">{{a.name}}</a></td>
+      <td>{{a.id}}</td>
+      <td>{{a.start_date}}</td>
     </tr>
     {% endfor %}
 </tbody>

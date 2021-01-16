@@ -20,7 +20,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-
+from django.http import HttpResponseForbidden
 from .forms import CrearUsuario
 from .forms import PeticionForm
 from .models import PeticionCenso
@@ -49,8 +49,6 @@ class BoothView(TemplateView):
             raise Http404
 
         context['KEYBITS'] = settings.KEYBITS
-        context['start_date'] = self.get_format_date(context['voting']['start_date'])
-        context['end_date'] = self.get_format_date(context['voting']['end_date'])
 
         return context
     
@@ -88,7 +86,6 @@ def loginPage(request):
 		    context = {}
 		    return render(request, 'booth/login.html', context)
 
-@login_required(login_url='login')
 def welcome(request):
 	context={}
 	listaUltimasVotaciones=[]
@@ -101,6 +98,18 @@ def welcome(request):
 	return render(request, "booth/welcome.html", context)
 
 
+@login_required(login_url='login')
+def peticionCensoAdmin(request):
+	context={}
+	if not request.user.is_superuser:
+		return HttpResponseForbidden()
+	else:
+		listaUltimasPeticiones=[]
+		listaUltimasPeticiones=ultimasPeticiones()
+		context = {'allPeticiones':listaUltimasPeticiones, 'listaVacia':False}
+		if len(listaUltimasPeticiones)==0:
+			context['listaVacia']=True
+		return render(request, "booth/peticionCensoAdmin.html", context)
 
 @login_required(login_url='login')
 def peticionCensoUsuario(request):
