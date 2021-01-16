@@ -101,7 +101,7 @@ def welcome(request):
 
 def logoutUser(request):
 	logout(request)
-	return redirect('login')
+	return redirect('welcome')
 
 
 def registerPage(request):
@@ -124,7 +124,7 @@ def registerPage(request):
 
 def votacionesPorUsuario(votacionesId, user_id):
 	listaVotaciones=[]
-	totalVotaciones = Voting.objects.all().filter(end_date__isnull=True).filter(id__in=votacionesId).order_by("-start_date")
+	totalVotaciones = Voting.objects.all().filter(id__in=votacionesId, end_date__isnull=True)
 	for v in totalVotaciones:
 		votos = Vote.objects.filter(voting_id=v.id, voter_id=user_id)
 		if votos.count()==0:
@@ -134,17 +134,14 @@ def votacionesPorUsuario(votacionesId, user_id):
 
 def ultimasVotaciones():
 	listaVotaciones=[]
-	totalVotaciones = Voting.objects.all()
-	totalVotaciones.filter(end_date__isnull=True)
-	totalVotaciones.order_by('-start_date')
+	totalVotaciones = Voting.objects.all().filter(end_date__isnull=True).order_by('-start_date')
 	for v in totalVotaciones:
 		listaVotaciones.append(v)
 	return listaVotaciones
 
 def listaCensadaIds(user_id):
 	listaCensadaIds = []
-	totalListaCensada = Census.objects.all()
-	totalListaCensada.filter(voter_id=user_id)
+	totalListaCensada = Census.objects.all().filter(voter_id=user_id)
 	if totalListaCensada.count() != 0:
 		for c in totalListaCensada:
 			listaCensadaIds.append(c.voting_id)
