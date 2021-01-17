@@ -22,16 +22,8 @@ install:
   - wget "https://github.com/mozilla/geckodriver/releases/download/v0.27.0/geckodriver-v0.27.0-linux64.tar.gz"
   - tar xfz geckodriver-v0.27.0-linux64.tar.gz
   - sudo mv -f geckodriver /usr/bin
-  - sudo apt-get install chromium-browser
-  - wget https://chromedriver.storage.googleapis.com/87.0.4280.88/chromedriver_linux64.zip
-  - unzip chromedriver_linux64.zip 
-  - rm chromedriver_linux64.zip
-  - sudo mv -f chromedriver /usr/bin
-  - sudo chmod +x /usr/bin/chromedriver
-  - sudo chmod +x /usr/bin/geckodriver
 script:
   - cd decide
-  - python3 ./manage.py makemigrations
   - python3 ./manage.py migrate
   - coverage run --branch --source=. ./manage.py test booth/ --keepdb --with-xunit
   - coverage xml
