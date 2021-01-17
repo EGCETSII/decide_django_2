@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Question, QuestionOption, Voting
+from .models import Question, QuestionOption, Voting, YesOrNoQuestion, PoliticalParty
 from base.serializers import KeySerializer, AuthSerializer
 
 
@@ -34,3 +34,21 @@ class SimpleVotingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Voting
         fields = ('name', 'desc', 'question', 'start_date', 'end_date')
+
+class YesOrNoQuestionSerializer(serializers.HyperlinkedModelSerializer):
+    desc = serializers.CharField()
+    CHOICES = (
+        ('Y', 'Yes'),
+        ('N', 'No'),
+    )
+    choice = serializers.ChoiceField(choices=CHOICES)
+    class Meta:
+        model = YesOrNoQuestion
+        fields = ('desc', 'choice')
+
+
+
+class PoliticalPartySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = PoliticalParty
+        fields = ('name', 'acronym', 'description', 'leader', 'president')
