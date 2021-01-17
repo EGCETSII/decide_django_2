@@ -15,10 +15,6 @@ class GUI:
         self.builder.add_from_file('main.ui')
         self.builder.connect_signals(self)
 
-        self.builder.get_object('username').set_text("alvaro")
-        self.builder.get_object('votingId').set_text("1")
-
-
         try:
             conn = psycopg2.connect(dbname="decidedb2", user="decide2", password="decide", host="127.0.0.1", port="5432")
             self.cur = conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
@@ -33,11 +29,10 @@ class GUI:
     def on_window_destroy(self, window):
         Gtk.main_quit()
 
-    def button_clicked(self, button, false=None):
+    def on_login_clicked(self, button, false=None):
         username = self.builder.get_object('username').get_text()
         password = self.builder.get_object('password').get_text()
         voting_id = self.builder.get_object('votingId').get_text()
-
 
         COLOR_INVALID = Color(50000, 0, 0)
         self.builder.get_object('usernameLabelError').modify_fg(Gtk.StateFlags.NORMAL, COLOR_INVALID)
@@ -69,14 +64,15 @@ class GUI:
             else:
                 cryptedPassword = user[2]
                 passOk = django.contrib.auth.hashers.check_password(password, cryptedPassword)
-                check_voting = self.check_voting(user, voting_id)
-                if passOk and check_voting:
+                check_voting_access = self.check_voting_access(user, voting_id)
+                check_already_voted = self.check_already_voted(user, voting_id)
+                if passOk and check_voting_access and check_already_voted == False:
                     print("Correct user")
                     user_token = user[0]
                     print("User token " + str(user_token))
                     self.voting(user, voting_id)
                 elif passOk:
-                    self.builder.get_object('votingIdLabelError').set_text("No tiene acceso a la votación")
+                    self.builder.get_object('votingIdLabelError').set_text("You don't have access to the voting")
                 else:
                     print("Invalid password")
                     self.builder.get_object('usernameLabelError').set_text("Invalid user or password")
@@ -94,7 +90,7 @@ class GUI:
         for voting in votings:
             print(voting[1] + " - "+ voting[2])
 
-    def check_voting(self, user, voting_id):
+    def check_voting_access(self, user, voting_id):
         start_date_ok = False
         end_date_ok = False
         voting_id_ok = False
@@ -121,52 +117,76 @@ class GUI:
 
         return start_date_ok and end_date_ok and voting_id_ok
 
+    def check_already_voted(self, user, voting_id):
+
+        self.cur.execute("SELECT * from store_vote where voting_id = %s and voter_id = %s", [voting_id,user[0]])
+        result = self.cur.fetchone()
+
+        return result != None
+
     def voting(self, user, voting_id):
         # self.builder.add_from_file('voting.ui')
         self.cur.execute("SELECT * from voting_voting where id = %s", [voting_id])
         voting = self.cur.fetchone()
 
-        self.cur.execute("SELECT * from voting_question where id = %s", [voting[6]])
-        question = self.cur.fetchone()
-
-        self.cur.execute("SELECT * from voting_questionoption where question_id = %s", [question[0]])
-        question_options = self.cur.fetchall()
-
-        votingWin = VotingWindow(voting, question, question_options)
+        votingWin = VotingWindow(voting)
         votingWin.show_all()
         votingWin.fullscreen()
 
-"""
-        self.builder.add_from_file('voting.ui')
-        self.builder.connect_signals(self)
-        self.builder.get_object('votingDescription').set_text(str(voting[0]) + " - " + str(voting[1]))
-
-        label = Gtk.Label()
-        label.set_text("Hola")
-        self.builder.add(label)
-"""
-
 class VotingWindow(Gtk.Window):
-    def __init__(self, voting, question, question_options):
+    def __init__(self, voting):
         Gtk.Window.__init__(self, title=str(voting[0]) + " - " + str(voting[1]))
 
+        try:
+            conn = psycopg2.connect(dbname="decidedb2", user="decide2", password="decide", host="127.0.0.1", port="5432")
+            self.cur = conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+            print("Conectado")
+        except Exception as e:
+            print(e)
+
+        self.box = Gtk.Box(spacing=6, orientation="vertical")
+        self.add(self.box)
+
         self.label = Gtk.Label(label=str(voting[0]) + " - " + str(voting[1]))
-        self.add(self.label)
+        self.box.pack_start(self.label, True, True, 0)
+        '''
+        self.cur.execute("SELECT question_id from voting_voting_question where voting_id = %s", [voting[0]])
+        questionsIdentifiers = self.cur.fetchall()
 
-        self.question_description = Gtk.Label(label=str(question[1]))
-        self.add(self.question_description)
+        questions = []
+        questionsOptions = []
 
-        self.options = Gtk.ListStore(int, int, str, int)
-        for option in question_options:
-            formatted_option = (option[0], option[1], option[2], option[3])
-            self.options.append(formatted_option)
-        self.current_filter_language = None
+        for questionId in questionsIdentifiers:
+            self.cur.execute("SELECT * from voting_question where id = %s", [questionId[0]])
+            question = self.cur.fetchall()
+            questions.append((question[0][0], question[0][1]))
 
-        for option in self.options:
-            print(str(option[0]) +" - "+ str(option[1])+" - "+ str(option[2])+" - "+ str(option[3]))
+        for q in questions:
+            self.cur.execute("SELECT * from voting_questionoption where question_id = %s", [q[0]])
+            options = self.cur.fetchall()
+            for option in options:
+                questionsOptions.append((option[0], option[1], option[2], option[3]))
 
-    def on_button_clicked(self, widget):
-        print("Hello World")
+        for q in questions:
+            question_description = Gtk.Label(label="Question: "+str(q[1]))
+            self.box.pack_start(question_description, True, True, 0)
+
+            for option in questionsOptions:
+                i = 0
+                if option[3] == q[0]:
+                    if i == 0:
+                        radioButton1 = Gtk.RadioButton("Option: "+str(option[0]))
+                        self.box.pack_start(radioButton1, True, True, 0)
+                    else:
+                        radioButton2 = Gtk.RadioButton(radioButton1,"Option: "+str(option[0]))
+                        self.box.pack_start(radioButton2, True, True, 0)
+        '''
+
+
+    def on_logout_clicked(self, window):
+        user = []
+        Gtk.VotingWindow.destroy()
+
 
 def main():
     app = GUI()
