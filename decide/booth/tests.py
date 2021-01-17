@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from voting.models import Voting
 from voting.serializers import VotingSerializer
+from views import BoothView
 # Create your tests here.
 
 
@@ -122,5 +123,47 @@ def test_raise_error_when_missing_required_field(self):
 
         with pytest.raises(ValidationError):
             serializer.is_valid(raise_exception=True)    
+
             
-            
+def test_list(self, rf, mocker):
+    url = self.client.get('/booth/', follow=True) 
+    request = rf.get(url)
+
+    queryset = MockSet(
+            Voting(
+            voting_id=4,
+            name="EGC",
+            desc="Aprobar EGC no es fácil",
+            question(
+                yesorno="¿Vamos a aprobar EGC?",
+                options(
+                    y="Yes",
+                    n="No")),
+            start_date="2021-01-08T15:29:52.040435",
+            end_date=None,
+            url="http://localhost:8000/booth/4",
+            pubkey="a1s2d3f4g5h6j7k8l9",
+            voted=False
+            ),
+            Voting(
+            voting_id=5,
+            name="EGC",
+            desc="Aprobar EGC no es fácil",
+            question(
+                yesorno="¿Vamos a aprobar EGC?",
+                options(
+                    y="Yes",
+                    n="No")),
+            start_date="2021-01-08T15:29:52.040435",
+            end_date=None,
+            url="http://localhost:8000/booth/4",
+            pubkey="a1s2d3f4g5h6j7k8l9",
+            voted=False
+            )
+        )
+
+    mocker.patch.object(BoothView, 'get_queryset', return_value=queryset)
+    response = BoothView.as_view({'get': 'list'})(request).render()
+
+    assert response.status_code == 200
+    assert len(json.loads(response.content)) == 2
