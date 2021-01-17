@@ -51,24 +51,19 @@
 			<h3>{{desc}}</h3>
 
 
-			<form>
+			<form id="formulario" method="post" action="{% url 'hasVotado' %}">{% csrf_token %}
+				{{formulario}}
 				<fieldset>
 					<legend>Elige una respuesta</legend>
 					<label>
-						<input v-model="selected" type="radio" name="yon"
-							value="{{question.options.y}}">{{question.options.y}}
+						<input type="radio" name="yon" value="{{choice}}">{{question.options.y}}
 					</label>
 					<label>
-						<input v-model="selected" type="radio" name="yon"
-							value="{{question.options.n}}">{{question.options.n}}
+						<input type="radio" name="yon" value="{{choice}}">{{question.options.n}}
 					</label>
 				</fieldset>
+				<input type="submit" value="Vote">
 			</form>
-
-
-			<div class="mt-3">Selected: <strong>{{ selected }}</strong></div>
-
-			<a href="{% url 'hasVotado' %}" class="btn btn-success" v-on:click="decideSend()">{% trans "Vote" %}</a>
 			{%endif%}
 		</div>
 		<div class="text-center">

@@ -16,9 +16,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from .forms import CrearUsuario
+from .forms import CrearUsuario, YesOrNoForm
 from voting.views import VotingView, VotingUpdate
-from voting.models import Voting, Question, PoliticalParty
+from voting.models import Voting, Question, PoliticalParty, YesOrNoQuestion
 from rest_framework.renderers import TemplateHTMLRenderer
 from lib2to3.fixes.fix_input import context
 # Create your views here.
@@ -123,6 +123,18 @@ def loginPage(request):
 
 		    context = {}
 		    return render(request, 'booth/login.html', context)
+
+
+def yesOrNo(request):
+    formulario = YesOrNoForm()
+    choice = None
+    if request.method == 'POST':
+        formulario = YesOrNoForm(request.POST)
+        if formulario.is_valid():
+            choice = YesOrNoQuestion.objects.filter(choice=formulario.cleaned_data['choice'])
+            print(choice)
+            print(formulario)
+    return render(request, 'booth.html', {'formulario':formulario, 'choice':choice})
 
 
 def welcome(request):
