@@ -31,8 +31,8 @@ install:
   - sudo chmod +x /usr/bin/geckodriver
 script:
   - cd decide
-  - python ./manage.py makemigrations
-  - python ./manage.py migrate
+  - python3 ./manage.py makemigrations
+  - python3 ./manage.py migrate
   - coverage run --branch --source=. ./manage.py test booth/ --keepdb --with-xunit
   - coverage xml
   - python-codacy-coverage -r coverage.xml
