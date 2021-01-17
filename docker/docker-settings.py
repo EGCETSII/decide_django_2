@@ -1,4 +1,4 @@
-DEBUG = False
+DEBUG = True
 
 DATABASES = {
     'default': {
@@ -21,20 +21,22 @@ MODULES = [
     'booth',
     'census',
     'mixnet',
-    'post_processed',
+    'postproc',
     'store',
     'visualizer',
     'voting',
 ]
 
+BASEURL = 'http://10.5.0.1:8000'
+
 APIS = {
-    'authentication': 'http://localhost:8000/',
-    'base': 'http://localhost:8000/',
-    'booth': 'http://localhost:8000/',
-    'census': 'http://localhost:8000/',
-    'mixnet': 'http://localhost:8000/',
-    'post_processed': 'http://localhost:8000/',
-    'store': 'http://localhost:8000/',
-    'visualizer': 'http://localhost:8000/',
-    'voting': 'http://localhost:8000/',
+    'authentication': 'http://10.5.0.1:8000',
+    'base': 'http://10.5.0.1:8000',
+    'booth': 'http://10.5.0.1:8000',
+    'census': 'http://10.5.0.1:8000',
+    'mixnet': 'http://10.5.0.1:8000',
+    'postproc': 'http://10.5.0.1:8000',
+    'store': 'http://10.5.0.1:8000',
+    'visualizer': 'http://10.5.0.1:8000',
+    'voting': 'http://10.5.0.1:8000',
 }

@@ -1,0 +1,105 @@
+{% load static%} {% load i18n %} {% load rest_framework %}
+<!DOCTYPE html>
+
+{% block head %}
+
+<head>
+	<meta charset='utf-8'>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<div class="text-center">
+	<div class="container-fluid bg-primary text-white py-3">
+		<div class="container">
+			<h1 class="display-3">
+				<b class="fuente">Cabina de votación</b>
+			</h1>
+		</div>
+	</div>
+	<p class="lead bg-info text-white">Selecciona tu respuesta para
+		esta votación</p>
+</div>
+{% endblock %}
+{% block extrahead %}
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+<link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
+{% endblock %}
+{% block content %}
+
+<body id="bg" style="background-image: url('{%static "img/blanco.jpg"%}');">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	{% if user.is_authenticated %}
+	<div class="text-center">
+		<h1 style="left: 0; display: inline;">{{ voting_id }} - {{ name }}</h1>
+		<div id="voting">
+
+			{% if voted %}
+			<p class="lead">Usted ya ha votado</p>
+			{% else %} {% if start_date == None%}
+			<p>La votación no ha empezado aún</p>
+
+			{%else%}
+			<p>La votación empezó el: {{ start_date }}</p>
+		</div>
+		<div class="text-center">
+			{% if question.yesorno %}
+			<h2>{{question.yesorno}}</h2>
+			<h3>{{desc}}</h3>
+
+
+			<form id="formulario" method="post" action="{% url 'hasVotado' %}">{% csrf_token %}
+				{{formulario}}
+				<fieldset>
+					<legend>Elige una respuesta</legend>
+					<label>
+						<input type="radio" name="yon" value="{{question.options.y}}">{{question.options.y}}
+					</label>
+					<label>
+						<input type="radio" name="yon" value="{{question.options.n}}">{{question.options.n}}
+					</label>
+				</fieldset>
+				<input type="submit" value="Vote">
+			</form>
+			{%endif%}
+		</div>
+		<div class="text-center">
+			{% if question.multiple %}
+			<h2>{{question.multiple}}</h2>
+			<h3>{{desc}}</h3>
+			<form id="formulario" method="post" action="{% url 'hasVotado' %}">{% csrf_token %}
+				{{formulario}}
+				<fieldset>
+					<legend>Elige una respuesta</legend>
+					{% for i in formulario.choices %}
+					<label>
+						<input type="radio" name="opt" value="{{question.options.i}}">{{question.options.i}}
+					</label>
+					{% endfor %}
+				</fieldset>
+				<input type="submit" value="Vote">
+
+			</form>
+			{%endif%}
+		</div>
+
+		{%if end_date == None%}
+		<p>Aún puede votar, no ha finalizado la votación</p>
+		{% else %}
+		<p>Ya no puede votar, la votación se cerró el: {{ end_date }}</p>
+		{% endif %}
+
+		{% endif %}
+		{% endif %}
+	</div>
+	{% endif %}
+	{% if not user.is_authenticated %}
+	<h2>Tiene que iniciar sesión para acceder a esta página.</h2>
+	<a class="btn btn-lg btn-primary" href="{% url 'welcome' %}" role="button">Volver al inicio</a>
+	{% endif %}
+</body>
+{% endblock %}
