@@ -102,3 +102,25 @@ def test_expected_serialized_json(self):
     
     assert results == expected_results
     
+
+def test_raise_error_when_missing_required_field(self):
+        incomplete_data = {
+            "voting_id": 4,
+            "desc": "Aprobar EGC no es fácil",
+            "question": {
+                "yesorno": "¿Vamos a aprobar EGC?",
+                "options": {
+                    "y": "Yes",
+                    "n": "No"}},
+            "start_date":"2021-01-08T15:29:52.040435",
+            "end_date":None,
+            "pub-key": "a1s2d3f4g5h6j7k8l9",
+            "voted": False
+            }
+
+        serializer = VotingSerializer(data=incomplete_data)
+
+        with pytest.raises(ValidationError):
+            serializer.is_valid(raise_exception=True)    
+            
+            
