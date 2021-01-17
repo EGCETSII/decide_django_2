@@ -56,10 +56,10 @@
 				<fieldset>
 					<legend>Elige una respuesta</legend>
 					<label>
-						<input type="radio" name="yon" value="{{choice}}">{{question.options.y}}
+						<input type="radio" name="yon" value="{{question.options.y}}">{{question.options.y}}
 					</label>
 					<label>
-						<input type="radio" name="yon" value="{{choice}}">{{question.options.n}}
+						<input type="radio" name="yon" value="{{question.options.n}}">{{question.options.n}}
 					</label>
 				</fieldset>
 				<input type="submit" value="Vote">
@@ -70,18 +70,18 @@
 			{% if question.multiple %}
 			<h2>{{question.multiple}}</h2>
 			<h3>{{desc}}</h3>
-						<form id="formulario" method="post" action="{% url 'hasVotado' %}">{% csrf_token %}
+			<form id="formulario" method="post" action="{% url 'hasVotado' %}">{% csrf_token %}
 				{{formulario}}
 				<fieldset>
 					<legend>Elige una respuesta</legend>
+					{% for i in formulario.choices %}
 					<label>
-						<input type="radio" name="yon" value="{{choice}}">{{question.options.y}}
+						<input type="radio" name="opt" value="{{question.options.i}}">{{question.options.i}}
 					</label>
-					<label>
-						<input type="radio" name="yon" value="{{choice}}">{{question.options.n}}
-					</label>
+					{% endfor %}
 				</fieldset>
 				<input type="submit" value="Vote">
+
 			</form>
 			{%endif%}
 		</div>

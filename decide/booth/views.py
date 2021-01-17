@@ -21,7 +21,6 @@ from voting.views import VotingView, VotingUpdate
 from voting.models import Voting, Question, PoliticalParty, YesOrNoQuestion
 from rest_framework.renderers import TemplateHTMLRenderer
 from lib2to3.fixes.fix_input import context
-from gi.overrides.GObject import option
 # Create your views here.
 
 
@@ -138,7 +137,7 @@ def yesOrNo(request):
             print(formulario)
     return render(request, 'booth.html', {'formulario':formulario, 'choice':choice})
 
-@login_required(login_url='login')
+'''@login_required(login_url='login')
 def multiple(request):
     formulario = MultipleForm()
     option = None
@@ -148,7 +147,7 @@ def multiple(request):
             option = MultipleQuestion.objects.filter(option=formulario.cleaned_data['option'])
             print(option)
             print(formulario)
-    return render(request, 'booth.html', {'formularioMultiple':formulario, 'option':option})
+    return render(request, 'booth.html', {'formularioMultiple':formulario, 'option':option})'''
 
 
 def welcome(request):
