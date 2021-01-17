@@ -70,14 +70,19 @@
 			{% if question.multiple %}
 			<h2>{{question.multiple}}</h2>
 			<h3>{{desc}}</h3>
-			{% for o in question.options %}
-			<label for="question{{options.number}}">
-				<input class="button buttonseveral" type="submit" name="question" value="{{question.options.o}}" />
-				<div class="guideAnswer divGuide" style="margin:20px;padding:20px;">
-					{% trans "Answer"%} {{question.options.o}}
-				</div>
-			</label>
-			{%endfor%}
+						<form id="formulario" method="post" action="{% url 'hasVotado' %}">{% csrf_token %}
+				{{formulario}}
+				<fieldset>
+					<legend>Elige una respuesta</legend>
+					<label>
+						<input type="radio" name="yon" value="{{choice}}">{{question.options.y}}
+					</label>
+					<label>
+						<input type="radio" name="yon" value="{{choice}}">{{question.options.n}}
+					</label>
+				</fieldset>
+				<input type="submit" value="Vote">
+			</form>
 			{%endif%}
 		</div>
 
@@ -91,146 +96,4 @@
 		{% endif %}
 	</div>
 </body>
-{% endblock %}
-{% block extrabody %}
-<!-- needed to generate big random -->
-<script src="{% static "crypto/sjcl.js" %}"></script>
-
-<!-- Big integer -->
-<script src="{% static "crypto/jsbn.js" %}"></script>
-<script src="{% static "crypto/jsbn2.js" %}"></script>
-<script src="{% static "crypto/bigint.js" %}"></script>
-
-<!-- ElGamal encrypt -->
-<script src="{% static "crypto/elgamal.js" %}"></script>
-
-<!-- Vuejs -->
-<script src="https://unpkg.com/vue"></script>
-<script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-<script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-
-<script>
-	var voting = {{voting| safe}};
-	var app = new Vue({
-		delimiters: ['[[', ']]'],
-		el: '#app-booth',
-		data: {
-			keybits: {{KEYBITS}},
-	voting: voting,
-		selected: "",
-			signup: true,
-				alertShow: false,
-					alertMsg: "",
-						alertLvl: "info",
-							token: null,
-								user: null,
-									form: {
-		username: '',
-			password: ''
-	},
-	bigpk: {
-		p: BigInt.fromJSONObject(voting.pub_key.p.toString()),
-			g: BigInt.fromJSONObject(voting.pub_key.g.toString()),
-				y: BigInt.fromJSONObject(voting.pub_key.y.toString()),
-                }
-            },
-	beforeMount() {
-		this.init()
-		ElGamal.BITS = this.keybits;
-	},
-	methods: {
-		init() {
-			var cookies = document.cookie.split("; ");
-			cookies.forEach((c) => {
-				var cs = c.split("=");
-				if (cs[0] == 'decide' && cs[1]) {
-					this.token = cs[1];
-					this.getUser();
-				}
-			});
-		},
-		postData(url, data) {
-			// Default options are marked with *
-			var fdata = {
-				body: JSON.stringify(data),
-				headers: {
-					'content-type': 'application/json',
-				},
-				method: 'POST',
-			};
-
-			if (this.token) {
-				fdata.headers['Authorization'] = 'Token ' + this.token;
-			}
-
-			return fetch(url, fdata)
-				.then(response => {
-					if (response.status === 200) {
-						return response.json();
-					} else {
-						return Promise.reject(response.statusText);
-					}
-				});
-		},
-		onSubmitLogin(evt) {
-			evt.preventDefault();
-			this.postData("{% url "gateway" "authentication" " / login / " %}", this.form)
-				.then(data => {
-					document.cookie = 'decide=' + data.token + ';';
-					this.token = data.token;
-					this.getUser();
-				})
-				.catch(error => {
-					this.showAlert("danger", '{% trans "Error: " %}' + error);
-				});
-		},
-		getUser(evt) {
-			var data = {token: this.token};
-			this.postData("{% url "gateway" "authentication" " / getuser / " %}", data)
-				.then(data => {
-					this.user = data;
-					this.signup = false;
-				}).catch(error => {
-					this.showAlert("danger", '{% trans "Error: " %}' + error);
-				});
-		},
-		decideLogout(evt) {
-			evt.preventDefault();
-			var data = {token: this.token};
-			this.postData("{% url "gateway" "authentication" " / logout / " %}", data);
-			this.token = null;
-			this.user = null;
-			document.cookie = 'decide=;';
-			this.signup = true;
-		},
-		decideEncrypt() {
-			var bigmsg = BigInt.fromJSONObject(this.selected.toString());
-			var cipher = ElGamal.encrypt(this.bigpk, bigmsg);
-			return cipher;
-		},
-		decideSend(evt) {
-			evt.preventDefault();
-			var v = this.decideEncrypt();
-			var data = {
-				vote: {a: v.alpha.toString(), b: v.beta.toString()},
-				voting: this.voting.id,
-				voter: this.user.id,
-				token: this.token
-			}
-			this.postData("{% url "gateway" "store" " / " %}", data)
-				.then(data => {
-					this.showAlert("success", '{% trans "Conglatulations. Your vote has been sent" %}');
-				})
-				.catch(error => {
-					this.showAlert("danger", '{% trans "Error: " %}' + error);
-				});
-		},
-		showAlert(lvl, msg) {
-			this.alertLvl = lvl;
-			this.alertMsg = msg;
-			this.alertShow = true;
-		}
-	},
-        })
-</script>
 {% endblock %}

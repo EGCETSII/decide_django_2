@@ -18,4 +18,8 @@ class CrearUsuario(UserCreationForm):
         
 class YesOrNoForm(forms.Form):
     lista = [(m.choice) for m in YesOrNoQuestion.objects.all()]
-    choice = forms.ChoiceField(label="Seleccione la materia", choices=lista)
+    choice = forms.ChoiceField(label="Seleccione", choices=lista)
+    
+class MultipleForm(forms.Form):
+    lista = [(m.option) for m in MultipleQuestion.objects.all()]
+    option = forms.ChoiceField(label="Seleccione", choices=lista)
