@@ -149,6 +149,16 @@ class VotingWindow(Gtk.Window):
 
         self.label = Gtk.Label(label=str(voting[0]) + " - " + str(voting[1]))
         self.box.pack_start(self.label, True, True, 0)
+        self.label = Gtk.Label(label="Ejemplo de pregunta")
+        self.box.pack_start(self.label, True, True, 0)
+        radioButton1 = Gtk.RadioButton("Opción 1")
+        self.box.pack_start(radioButton1, True, True, 0)
+        radioButton2 = Gtk.RadioButton.new_from_widget(radioButton1)
+        radioButton2.set_label("Opción 2")
+        self.box.pack_start(radioButton2, True, True, 0)
+        radioButton3 = Gtk.RadioButton.new_from_widget(radioButton1)
+        radioButton3.set_label("Opción 3")
+        self.box.pack_start(radioButton3, True, True, 0)
         '''
         self.cur.execute("SELECT question_id from voting_voting_question where voting_id = %s", [voting[0]])
         questionsIdentifiers = self.cur.fetchall()
@@ -178,14 +188,17 @@ class VotingWindow(Gtk.Window):
                         radioButton1 = Gtk.RadioButton("Option: "+str(option[0]))
                         self.box.pack_start(radioButton1, True, True, 0)
                     else:
-                        radioButton2 = Gtk.RadioButton(radioButton1,"Option: "+str(option[0]))
+                        radioButton2 = Gtk.RadioButton.new_from_widget(radioButton1)
+                        radioButton2.set_label("Option: "+str(option[0]))
                         self.box.pack_start(radioButton2, True, True, 0)
         '''
-
+        sendButton = Gtk.Button.new_with_label("Votar")
+        self.box.pack_start(sendButton, True, True, 0)
 
     def on_logout_clicked(self, window):
         user = []
         Gtk.VotingWindow.destroy()
+
 
 
 def main():
