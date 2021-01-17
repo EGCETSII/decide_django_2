@@ -33,6 +33,7 @@
 
 <body id="bg" style="background-image: url('{%static "img/blanco.jpg"%}');">
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	{% if user.is_authenticated %}
 	<div class="text-center">
 		<h1 style="left: 0; display: inline;">{{ voting_id }} - {{ name }}</h1>
 		<div id="voting">
@@ -95,5 +96,10 @@
 		{% endif %}
 		{% endif %}
 	</div>
+	{% endif %}
+	{% if not user.is_authenticated %}
+	<h2>Tiene que iniciar sesión para acceder a esta página.</h2>
+	<a class="btn btn-lg btn-primary" href="{% url 'welcome' %}" role="button">Volver al inicio</a>
+	{% endif %}
 </body>
 {% endblock %}
