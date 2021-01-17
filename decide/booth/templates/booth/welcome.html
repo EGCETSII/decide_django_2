@@ -29,7 +29,7 @@
   </div>
   {% endif %}
   <div class="pl-3 presentacion">
-    <h2>¡Bienvenido/a a la cabina de votación de Decide-Rio Tinto.</h2>
+    <h2>¡Bienvenido/a a la cabina de votación de Decide-Rio Tinto!</h2>
 
     {% if not user.is_authenticated %}
       <p>
@@ -111,9 +111,9 @@
         </tbody>
       </table>
     {% endif %}
-    {% if listaVacia}
+    {% if listaVacia %}
       <p>Actualmente no estas censado en ninguna votacion.</p>
-    {% endif}
+    {% endif %}
   {% endif %}
   <hr />
 </body>
