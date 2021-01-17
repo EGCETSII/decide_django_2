@@ -24,7 +24,6 @@ install:
   - sudo mv -f geckodriver /usr/bin
 script:
   - cd decide
-  - python3 ./manage.py migrate
   - coverage run --branch --source=. ./manage.py test booth/ --keepdb --with-xunit
   - coverage xml
   - python-codacy-coverage -r coverage.xml
