@@ -1,11 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
 from voting.models import Voting
+from voting.serializers import VotingSerializer
 # Create your tests here.
 
+
 def setUp(self):
-    self.booth = BoothTests()
-    self.booth.setUp()
     options = webdriver.ChromeOptions()
     options.headless = True
     self.driver = webdriver.Chrome(options=options)
@@ -14,7 +14,6 @@ def setUp(self):
 
 def tearDown(self):
     super().tearDown()
-    self.booth.tearDown()
     self.driver.quit()
         
         
@@ -54,6 +53,7 @@ def test_get_votings(self, mocker):
 
     assert result == expected_results
     assert str(result[0]) == expected_results[0].code
+
     
 def test_get_votings_fail(self, mocker):
     expected_results = [
@@ -79,6 +79,26 @@ def test_get_votings_fail(self, mocker):
 
     assert result != expected_results
     assert str(result[0]) != expected_results[0].code
-    
 
+    
+def test_expected_serialized_json(self):
+    expected_results = {
+            "voting_id": 4,
+            "name": "EGC",
+            "desc": "Aprobar EGC no es fácil",
+            "question": {
+                "yesorno": "¿Vamos a aprobar EGC?",
+                "options": {
+                    "y": "Yes",
+                    "n": "No"}},
+            "start_date":"2021-01-08T15:29:52.040435",
+            "end_date":None,
+            "url":"http://localhost:8000/booth/4",
+            "pub-key": "a1s2d3f4g5h6j7k8l9",
+            "voted": False
+            }
+    voting = Voting(**expected_results)
+    results = VotingSerializer(voting).data
+    
+    assert results == expected_results
     
