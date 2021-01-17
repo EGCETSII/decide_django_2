@@ -50,18 +50,25 @@
 			<h2>{{question.yesorno}}</h2>
 			<h3>{{desc}}</h3>
 
-			<b-form-group label="Individual radios" v-slot="{{question.options}}">
-				<b-form-radio v-model="selected" :aria-describedby="{{question.options.y}}" name="yes"
-					value="{{question.options.y}}">Option A</b-form-radio>
-				<b-form-radio v-model="selected" :aria-describedby="{{question.options.n}}" name="no"
-					value="{{question.options.n}}">Option B</b-form-radio>
-			</b-form-group>
+
+			<form>
+				<fieldset>
+					<legend>Elige una respuesta</legend>
+					<label>
+						<input v-model="selected" type="radio" name="yon"
+							value="{{question.options.y}}">{{question.options.y}}
+					</label>
+					<label>
+						<input v-model="selected" type="radio" name="yon"
+							value="{{question.options.n}}">{{question.options.n}}
+					</label>
+				</fieldset>
+			</form>
+
 
 			<div class="mt-3">Selected: <strong>{{ selected }}</strong></div>
 
-			<b-button type="button" h-ref="/hasVotado.html" variant="primary" v-on:click="decideSend">
-				{% trans "Vote" %}
-			</b-button>
+			<a href="{% url 'hasVotado' %}" class="btn btn-success" v-on:click="decideSend()">{% trans "Vote" %}</a>
 			{%endif%}
 		</div>
 		<div class="text-center">

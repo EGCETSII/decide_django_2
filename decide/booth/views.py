@@ -129,6 +129,10 @@ def welcome(request):
     return render(request, "booth/welcome.html")
 
 
+def hasVotado(request):
+    return render(request, "booth/hasVotado.html")
+
+
 def logoutUser(request):
 	logout(request)
 	return redirect('login')
