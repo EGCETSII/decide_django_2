@@ -23,3 +23,23 @@
 #logo:hover{	
 	max-width:120px;
 }
+
+#bg {
+	background-repeat: no-repeat;
+	background-size: 1800px 900px;
+	background-position: top;
+	background-attachment: fixed;
+	-webkit-background-size: cover;
+  	-moz-background-size: cover;
+  	-o-background-size: cover;
+}
+
+.text-center {
+	font-family: sans-serif; 
+	font-size: 18px; 
+	font-weight: 400; 
+	color: #ffffff; 
+	background:rgb(114, 159, 207);
+	padding: 20px;
+	text-align: center;
+}

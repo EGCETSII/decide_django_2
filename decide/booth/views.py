@@ -104,14 +104,6 @@ class BoothView(TemplateView):
 
         return result
 
-    
-def prueba(request):
-    if request.method == 'GET':
-        request = VotingView.get(self, request)
-    if request.method == 'POST':
-        request = VotingView.post(self, request)
-    return render(request, "booth/booth.html")
-
 
 def loginPage(request):
 	    if request.user.is_authenticated:
