@@ -197,3 +197,5 @@ def deletePeticion(request, pk):
 	context = {'item':peticion}
 	return render(request, 'booth/deletePeticion.html', context)
 	
+def about(request):
+    return render(request, "booth/about.html")
