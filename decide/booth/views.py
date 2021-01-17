@@ -125,6 +125,7 @@ def loginPage(request):
 		    return render(request, 'booth/login.html', context)
 
 
+@login_required(login_url='login')
 def yesOrNo(request):
     formulario = YesOrNoForm()
     choice = None
@@ -141,6 +142,7 @@ def welcome(request):
     return render(request, "booth/welcome.html")
 
 
+@login_required(login_url='login')
 def hasVotado(request):
     return render(request, "booth/hasVotado.html")
 
