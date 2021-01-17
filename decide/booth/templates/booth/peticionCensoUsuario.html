@@ -9,7 +9,7 @@
         </h1>
     </div>
 </div>
-<p class="lead bg-info text-white">Inicio</p>
+<p class="lead bg-info text-white">Panel de usuario para peticiones</p>
 </div>
 {% endblock %}
 
@@ -48,7 +48,7 @@
             {% endfor %}
             </p>
           {% endfor %}
-          <button type="submit" class="botonLogin btn">Sign up</button>
+          <button type="submit" class="botonLogin btn">Registrar petición</button>
         </form>
       </div>
     </div>
@@ -58,10 +58,7 @@
 
 <script>
 var form_fields = document.getElementsByTagName('input')
-form_fields[1].placeholder='Usuario...';
-form_fields[2].placeholder='Email...';
-form_fields[3].placeholder='Contraseña...';
-form_fields[4].placeholder='Confirma Contraseña...';
+form_fields[1].placeholder='Escribe la votación en la que quieres ser censado y porqué...';
 
 
 for (var field in form_fields){	

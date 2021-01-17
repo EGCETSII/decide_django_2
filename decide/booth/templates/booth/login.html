@@ -18,47 +18,59 @@
          href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet"
          href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
-    <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
+	<link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" 
+		integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 {% endblock %}
 
-<body>
+
+<body style="background-color:#b4d1e0;">
+	<div class="wrapper fadeInDown margen">
+	<div id="contenido">
 	<div class="container h-100">
 		<div class="d-flex justify-content-center h-100">
 			<div class="user_card">
 				<div class="d-flex justify-content-center">
+					<div class="d-flex justify-content-center fadeIn zero">
+						<div class="contenedorLogo ">
+							<img src="https://www.us.es/sites/default/files/2019-05/marca-US-principal.jpg" class="logo" alt="LogoUS">
+						</div>
+					</div>
 
-
-					<h3 id="form-title">LOGIN</h3>
 				</div>
-				<div class="d-flex justify-content-center form_container">
+				<div class="d-flex justify-content-center margen fadeIn primero">
+					<h3 id="form-title">Log In</h3>
+				</div>
+				<div class="d-flex justify-content-center form_container mt-3">
 					<form method="POST" action="">
 						{% csrf_token %}
-						<div class="input-group mb-3">
+						<div class="input-group mb-3  fadeIn segundo">
 							<div class="input-group-append">
-								<span class="input-group-text"><i class="fas fa-user"></i></span>
+								<span class="input-group-text"><i class="fas fa-user">
+								</i></span>
 							</div>
 
 							<input type="text" name="username" placeholder="Username..." class="form-control">
                         </div>
-                        <div class="input-group mb-2">
+                        <div class="input-group mb-2 fadeIn tercero">
 							<div class="input-group-append">
 								<span class="input-group-text"><i class="fas fa-key"></i></span>
 							</div>
 
 								<input type="password" name="password" placeholder="Password..." class="form-control" >
 						</div>
-
-							<div class="d-flex justify-content-center mt-3 login_container">
-				 				<input class="btn login_btn" type="submit" value="Login">
-				   			</div>
+							<div class="d-flex justify-content-center mt-3 login_container fadeIn cuarto">
+				 				<input class="btn login_btn botonLogin" type="submit" value="Entrar">
+							</div>
 					</form>
 
 				</div>
 			
 		
-				
+			</div>	
 			</div>
 		</div>
+	</div>
 	</div>
 </body>
 

@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 {% block head %}
 <div class="text-center">
-<div class="container-fluid bg-primary text-white py-3">
+  <div class="container-fluid bg-primary text-white py-3">
     <div class="container">
-        <h1 class="display-3">
-            <b class="fuente">Decide-Cabina</b>
-        </h1>
+      <h1 class="display-3">
+        <b class="fuente">Decide-Cabina</b>
+      </h1>
     </div>
-</div>
-<p class="lead bg-info text-white">Inicio</p>
+  </div>
+  <p class="lead bg-info text-white">Inicio</p>
 </div>
 {% endblock %}
 
@@ -20,41 +20,103 @@
          href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
     <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
 {% endblock %}
+<body style="background-color:#b4d1e0;">
+  {% if user.is_authenticated %}
+  <div class="pr-3">
+    <span>
+      <a class="hello-msg botonLogout btn float-right" href="{% url 'logout' %}">Logout</a>
+    </span>
+  </div>
+  {% endif %}
+  <div class="pl-3 presentacion">
+    <h2>¡Bienvenido/a a la cabina de votación de Decide-Rio Tinto!</h2>
 
-<div class="presentacion">
-<h2>¡Bienvenido/a a la cabina de votación de Decide-Rio Tinto.</h2>
-<p>
-    Te encuentras en la página de inicio. Si quieres participar en una votación debes logearte primero. Pulsa <a  class="hello-msg" href="{% url 'login' %}">aqui</a> para logearte.
-</p>
-<p>
-    Si no estas registrado, pulsa <a  class="hello-msg" href="{% url 'register' %}">aquí</a> para registrarte.
-</p>
-<p>
-    Ten en cuenta que solo podrás participar en aquellas votaciones en las que un administrador te haya censado.
-</p>
-<p>
-    Actualmente tenemos estás votaciones abiertas:
-</p>
-</div>
+    {% if not user.is_authenticated %}
+      <p>
+        Te encuentras en la página de inicio. Si quieres participar en una votación debes logearte primero. Pulsa <a  class="hello-msg" href="{% url 'login' %}">aqui</a> para logearte.
+      </p>
 
-<table class="listaVotos">
+      <p>
+        Si no estas registrado, pulsa <a  class="hello-msg" href="{% url 'register' %}">aquí</a> para registrarte.
+      </p>
+    {% endif %}
 
-    <tr>
-  
-      <td>Celda 1</td>
-  
+    <p>
+      Ten en cuenta que solo podrás participar en aquellas votaciones en las que un administrador te haya censado.
+    </p>
 
+    {% if user.is_authenticated %}
+      {% if not user.is_superuser %}
+        <p>
+          Si quieres solicitar ser censado en una votación, pulsa <a  class="hello-msg" href="{% url 'peticionCensoUsuario' %}">aquí</a>
+        </p>
+      {% endif %}
+    {% endif %}
+
+    {% if user.is_superuser %}
+      <p>
+        Como administrador, puedes ver las peticiones actuales pulsando <a  class="hello-msg" href="{% url 'peticionCensoAdmin' %}">aquí</a>
+      </p>
+    {% endif %}
+
+    <p>
+      Actualmente tenemos estás votaciones abiertas:
+    </p>
+
+  <table class="table table-striped table-bordered anchoTabla listaVotaciones">
+    <thead class="thead-light">
+      <tr>
   
-    </tr>
+        <th scope="col">Nombre de la votacion</th>
+        <th scope="col">Id de la votacion</th>
+        <th scope="col">Fecha de inicio</th>
   
-    <tr>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in allVotaciones %}
+        <tr>
   
-      <td>Celda 4</td>
-  
-    </tr>
-  
+          <td><a class="hello-msg" href="{% url 'booth' v.id%}">{{v.name}}</a></td>
+          <td>{{v.id}}</td>
+          <td>{{v.start_date}}</td>
+
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
   {% if user.is_authenticated %}
-  <span ><a  class="hello-msg" href="{% url 'logout' %}">Logout</a></span>
+    {% if not listaVacia %}
+      <p>Estas son las votaciones en las que estas censado:</p>
+      <table class="table table-striped table-bordered anchoTabla listaVotacionesCensado">
+        <thead class="thead-light">
+          <tr>
+  
+            <th scope="col">Nombre de la votacion</th>
+            <th scope="col">Id de la votacion</th>
+            <th scope="col">Fecha de inicio</th>
+  
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in votacionesCensado %}
+            <tr>
+  
+              <td><a class="hello-msg" href="{% url 'booth' a.id%}">{{a.name}}</a></td>
+              <td>{{a.id}}</td>
+              <td>{{a.start_date}}</td>
+
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+    {% if listaVacia %}
+      <p>Actualmente no estas censado en ninguna votacion.</p>
+    {% endif %}
   {% endif %}
+</body>
 <hr />
+<center>
+  <a  style="margin-top: 20px;" class="btn btn-sm btn-info" href="{% url 'about' %}">Sobre nosotros</a>
+</center>
