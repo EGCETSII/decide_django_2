@@ -58,3 +58,4 @@ admin.site.register(Question, QuestionAdmin)
 #Añadido register para preguntas YesOrNoQuestion
 admin.site.register(YesOrNoQuestion, YesOrNoQuestionAdmin)
 admin.site.register(PoliticalParty,PoliticalPartyAdmin)
+

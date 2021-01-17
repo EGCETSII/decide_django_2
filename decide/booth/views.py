@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.http import Http404
 
+from voting.models import Voting
 from base import mods
 from voting.models import Voting
 from census.models import Census
@@ -80,8 +81,8 @@ class BoothView(TemplateView):
         vid = kwargs.get('voting_id', 0)
         print(vid)
         try:
-            r = mods.get('voting', params={'id': vid})
-
+            voting = Voting.objects.get(url=voting_url)
+            r = mods.get('voting', params={'id': voting.id})
             # Casting numbers to string to manage in javascript with BigInt
             # and avoid problems with js and big number conversion
             for k, v in r[0]['pub_key'].items():
