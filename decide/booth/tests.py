@@ -3,6 +3,20 @@ from django.urls import reverse
 from voting.models import Voting
 # Create your tests here.
 
+def setUp(self):
+    self.booth = BoothTests()
+    self.booth.setUp()
+    options = webdriver.ChromeOptions()
+    options.headless = True
+    self.driver = webdriver.Chrome(options=options)
+    super().setUp()
+
+
+def tearDown(self):
+    super().tearDown()
+    self.booth.tearDown()
+    self.driver.quit()
+        
         
 def test_call_view_votings_authenticated(self):
     response = self.client.get('/booth/', follow=True) 
@@ -16,7 +30,7 @@ def test_call_view_voted_authenticated(self):
     self.assertTemplateUsed(response, 'booth/hasVotado.html')     
 
 
-def test_get_votings_by_creates(self, mocker):
+def test_get_votings(self, mocker):
     expected_results = [
         Voting(
             voting_id=4,
@@ -40,4 +54,31 @@ def test_get_votings_by_creates(self, mocker):
 
     assert result == expected_results
     assert str(result[0]) == expected_results[0].code
+    
+def test_get_votings_fail(self, mocker):
+    expected_results = [
+        Voting(
+            voting_id=4,
+            name="PGPI",
+            desc="Aprobar PGPI no es fácil",
+            question(
+                yesorno="¿Vamos a aprobar PGPI?",
+                options(
+                    y="Yes",
+                    n="No")),
+            start_date="2021-01-08T15:29:52.040435",
+            end_date=None,
+            url="http://localhost:8000/booth/4",
+            pubkey="a1s2d3f4g5h3j7k8l9",
+            voted=False
+            )]
+    qs = MockSet(expected_results[0])
+    mocker.patch.object(Voting.objects, 'get_queryset', return_value=qs)
+
+    result = list(Voting.objects.get_id(4))
+
+    assert result != expected_results
+    assert str(result[0]) != expected_results[0].code
+    
+
     
