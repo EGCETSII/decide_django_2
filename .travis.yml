@@ -4,18 +4,32 @@ services:
   - postgresql
 addons:
   postgresql: "9.4"
+  chrome: stable
+  firefox: latest
 before_script:
   - psql -U postgres -c "create user decide password 'decide'"
   - psql -U postgres -c "create database test_decide owner decide"
   - psql -U postgres -c "ALTER USER decide CREATEDB"
+  - psql -U postgres -c "create database decide owner decide"
 language: python
 python:
   - "3.6"
 install:
   - pip install -r requirements.txt
   - pip install codacy-coverage
+  - pip install selenium
+  - sudo apt-get install firefox
+  - wget "https://github.com/mozilla/geckodriver/releases/download/v0.27.0/geckodriver-v0.27.0-linux64.tar.gz"
+  - tar xfz geckodriver-v0.27.0-linux64.tar.gz
+  - sudo mv -f geckodriver /usr/bin
 script:
   - cd decide
-  - coverage run --branch --source=. ./manage.py test --keepdb --with-xunit
+  - coverage run --branch --source=. ./manage.py test booth/ --keepdb --with-xunit
   - coverage xml
   - python-codacy-coverage -r coverage.xml
+notifications:
+  email:
+    recipients:
+      - davcacrom@alum.us.es
+    on_succes: never
+    on_failure: always

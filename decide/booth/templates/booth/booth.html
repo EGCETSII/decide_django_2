@@ -1,213 +1,105 @@
-{% extends "base.html" %}
-{% load i18n static %}
+{% load static%} {% load i18n %} {% load rest_framework %}
+<!DOCTYPE html>
 
+{% block head %}
+
+<head>
+	<meta charset='utf-8'>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<div class="text-center">
+	<div class="container-fluid bg-primary text-white py-3">
+		<div class="container">
+			<h1 class="display-3">
+				<b class="fuente">Cabina de votación</b>
+			</h1>
+		</div>
+	</div>
+	<p class="lead bg-info text-white">Selecciona tu respuesta para
+		esta votación</p>
+</div>
+{% endblock %}
 {% block extrahead %}
-    <link type="text/css" rel="stylesheet"
-         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet"
-         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
-    <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+<link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
 {% endblock %}
-
 {% block content %}
-    <div id="app-booth">
-        <!-- Navbar -->
-        <b-navbar type="dark" variant="secondary">
-            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
-                <b-navbar-nav class="ml-auto" v-if="!signup">
-                    <b-nav-item href="#" v-on:click="decideLogout">
-                        {% trans "logout" %}
-                    </b-nav-item>
-                </b-navbar-nav>
-        </b-navbar>
 
-        <b-alert :variant="alertLvl" dismissible v-model="alertShow">
-            [[ alertMsg ]]
-        </b-alert>
+<body id="bg" style="background-image: url('{%static "img/blanco.jpg"%}');">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	{% if user.is_authenticated %}
+	<div class="text-center">
+		<h1 style="left: 0; display: inline;">{{ voting_id }} - {{ name }}</h1>
+		<div id="voting">
 
-        <div class="voting">
-            <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
+			{% if voted %}
+			<p class="lead">Usted ya ha votado</p>
+			{% else %} {% if start_date == None%}
+			<p>La votación no ha empezado aún</p>
 
-            <!-- Register -->
-            <b-form @submit="onSubmitLogin" v-if="signup">
-                <b-form-group label="{% trans "Username" %}" label-for="username">
-                    <b-form-input
-                        id="username"
-                        type="text"
-                        v-model="form.username"
-                        autocomplete="username"
-                        required />
-                </b-form-group>
-                <b-form-group label="{% trans "Password" %}" label-for="password">
-                    <b-form-input
-                        id="password"
-                        type="password"
-                        autocomplete="current-password"
-                        v-model="form.password"
-                        required />
-                </b-form-group>
-                <b-button type="submit" variant="primary">{% trans "Login" %}</b-button>
-            </b-form>
+			{%else%}
+			<p>La votación empezó el: {{ start_date }}</p>
+		</div>
+		<div class="text-center">
+			{% if question.yesorno %}
+			<h2>{{question.yesorno}}</h2>
+			<h3>{{desc}}</h3>
 
-            <!-- Voting -->
-            <div v-if="!signup">
-                <h2>[[ voting.question.desc ]]</h2>
-                <b-form-group v-for="opt in voting.question.options" :key="opt.number">
-                    <b-form-radio v-model="selected"
-                                  :id="'q' + opt.number"
-                                  name="question"
-                                  :value="opt.number">
-                        [[ opt.option ]]
-                    </b-form-radio>
-                </b-form-group>
-                <b-button type="button" variant="primary" v-on:click="decideSend">
-                    {% trans "Vote" %}
-                </b-button>
-            </div>
-        </div>
-    </div>
-{% endblock %}
 
-{% block extrabody %}
-    <!-- needed to generate big random -->
-    <script src="{% static "crypto/sjcl.js" %}"></script>
+			<form id="formulario" method="post" action="{% url 'hasVotado' %}">{% csrf_token %}
+				{{formulario}}
+				<fieldset>
+					<legend>Elige una respuesta</legend>
+					<label>
+						<input type="radio" name="yon" value="{{question.options.y}}">{{question.options.y}}
+					</label>
+					<label>
+						<input type="radio" name="yon" value="{{question.options.n}}">{{question.options.n}}
+					</label>
+				</fieldset>
+				<input type="submit" value="Vote">
+			</form>
+			{%endif%}
+		</div>
+		<div class="text-center">
+			{% if question.multiple %}
+			<h2>{{question.multiple}}</h2>
+			<h3>{{desc}}</h3>
+			<form id="formulario" method="post" action="{% url 'hasVotado' %}">{% csrf_token %}
+				{{formulario}}
+				<fieldset>
+					<legend>Elige una respuesta</legend>
+					{% for i in formulario.choices %}
+					<label>
+						<input type="radio" name="opt" value="{{question.options.i}}">{{question.options.i}}
+					</label>
+					{% endfor %}
+				</fieldset>
+				<input type="submit" value="Vote">
 
-    <!-- Big integer -->
-    <script src="{% static "crypto/jsbn.js" %}"></script>
-    <script src="{% static "crypto/jsbn2.js" %}"></script>
-    <script src="{% static "crypto/bigint.js" %}"></script>
+			</form>
+			{%endif%}
+		</div>
 
-    <!-- ElGamal encrypt -->
-    <script src="{% static "crypto/elgamal.js" %}"></script>
+		{%if end_date == None%}
+		<p>Aún puede votar, no ha finalizado la votación</p>
+		{% else %}
+		<p>Ya no puede votar, la votación se cerró el: {{ end_date }}</p>
+		{% endif %}
 
-    <!-- Vuejs -->
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-
-    <script>
-        var voting = {{voting|safe}};
-        var app = new Vue({
-            delimiters: ['[[', ']]'],
-            el: '#app-booth',
-            data: {
-                keybits: {{ KEYBITS }},
-                voting: voting,
-                selected: "",
-                signup: true,
-                alertShow: false,
-                alertMsg: "",
-                alertLvl: "info",
-                token: null,
-                user: null,
-                form: {
-                    username: '',
-                    password: ''
-                },
-                bigpk: {
-                    p: BigInt.fromJSONObject(voting.pub_key.p.toString()),
-                    g: BigInt.fromJSONObject(voting.pub_key.g.toString()),
-                    y: BigInt.fromJSONObject(voting.pub_key.y.toString()),
-                }
-            },
-            beforeMount() {
-                this.init()
-                ElGamal.BITS = this.keybits;
-            },
-            methods: {
-                init() {
-                    var cookies = document.cookie.split("; ");
-                    cookies.forEach((c) => {
-                        var cs = c.split("=");
-                        if (cs[0] == 'decide' && cs[1]) {
-                            this.token = cs[1];
-                            this.getUser();
-                        }
-                    });
-                },
-                postData(url, data) {
-                    // Default options are marked with *
-                    var fdata = {
-                        body: JSON.stringify(data),
-                        headers: {
-                            'content-type': 'application/json',
-                        },
-                        method: 'POST',
-                    };
-
-                    if (this.token) {
-                        fdata.headers['Authorization'] = 'Token ' + this.token;
-                    }
-
-                    return fetch(url, fdata)
-                        .then(response => {
-                            if (response.status === 200) {
-                                return response.json();
-                            } else {
-                                return Promise.reject(response.statusText);
-                            }
-                        });
-                },
-                onSubmitLogin(evt) {
-                    evt.preventDefault();
-                    this.postData("{% url "gateway" "authentication" "/login/" %}", this.form)
-                        .then(data => {
-                            document.cookie = 'decide='+data.token+';';
-                            this.token = data.token;
-                            this.getUser();
-                        })
-                        .catch(error => {
-                            this.showAlert("danger", '{% trans "Error: " %}' + error);
-                        });
-                },
-                getUser(evt) {
-                    var data = {token: this.token};
-                    this.postData("{% url "gateway" "authentication" "/getuser/" %}", data)
-                        .then(data => {
-                            this.user = data;
-                            this.signup = false;
-                        }).catch(error => {
-                            this.showAlert("danger", '{% trans "Error: " %}' + error);
-                        });
-                },
-                decideLogout(evt) {
-                    evt.preventDefault();
-                    var data = {token: this.token};
-                    this.postData("{% url "gateway" "authentication" "/logout/" %}", data);
-                    this.token = null;
-                    this.user = null;
-                    document.cookie = 'decide=;';
-                    this.signup = true;
-                },
-                decideEncrypt() {
-                    var bigmsg = BigInt.fromJSONObject(this.selected.toString());
-                    var cipher = ElGamal.encrypt(this.bigpk, bigmsg);
-                    return cipher;
-                },
-                decideSend(evt) {
-                    evt.preventDefault();
-                    var v = this.decideEncrypt();
-                    var data = {
-                        vote: {a: v.alpha.toString(), b: v.beta.toString()},
-                        voting: this.voting.id,
-                        voter: this.user.id,
-                        token: this.token
-                    }
-                    this.postData("{% url "gateway" "store" "/" %}", data)
-                        .then(data => {
-                            this.showAlert("success", '{% trans "Conglatulations. Your vote has been sent" %}');
-                        })
-                        .catch(error => {
-                            this.showAlert("danger", '{% trans "Error: " %}' + error);
-                        });
-                },
-                showAlert(lvl, msg) {
-                    this.alertLvl = lvl;
-                    this.alertMsg = msg;
-                    this.alertShow = true;
-                }
-            },
-        })
-    </script>
+		{% endif %}
+		{% endif %}
+	</div>
+	{% endif %}
+	{% if not user.is_authenticated %}
+	<h2>Tiene que iniciar sesión para acceder a esta página.</h2>
+	<a class="btn btn-lg btn-primary" href="{% url 'welcome' %}" role="button">Volver al inicio</a>
+	{% endif %}
 </body>
 {% endblock %}
