@@ -10,6 +10,8 @@ before_script:
   - psql -U postgres -c "create user decide password 'decide'"
   - psql -U postgres -c "create database test_decide owner decide"
   - psql -U postgres -c "ALTER USER decide CREATEDB"
+  - psql -U postgres -c "create database decide owner decide"
+  - psql -U postgres -c "ALTER USER test_decide CREATEDB"
 language: python
 python:
   - "3.6"
@@ -30,6 +32,8 @@ install:
   - sudo chmod +x /usr/bin/geckodriver
 script:
   - cd decide
+  - python ./manage.py makemigrations
+  - python ./manage.py migrate
   - coverage run --branch --source=. ./manage.py test booth/ --keepdb --with-xunit
   - coverage xml
   - python-codacy-coverage -r coverage.xml
