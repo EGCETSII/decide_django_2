@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang='es'>
+
+<head>
+	<meta charset='utf-8'>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body id="bg" style="background-image: url('{%static "img/bg.jpg"%}');">
+	<header>
+		
+			<div class="nav-header">
+						<a id="logo" class="navbar-brand" rel="home" href='/booth' title="Decide"><img
+						src="{%static "img/logo.png"%}" /></a>
+			</div>
+			{% block encabezado %}{% endblock %}
+	</header>
+	<section>
+		{% block contenido %}
+		
+		<div class="jumbotron text-center">
+  			<h1 class="display-3">Thank You!</h1>
+  			<p class="lead"><strong>Muchas gracias por votar</strong> </p>
+  			<hr>
+  			<p>
+ 			   Having trouble? <a href="">Contact us</a>
+ 			 </p>
+ 			 <p class="lead">
+    		<a class="btn btn-primary btn-sm" href='/booth' role="button">Continue to homepage</a>
+  			</p>
+		</div>
+		
+		{% endblock %}
+	</section>
+	{% block pie %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+{% load i18n static %}
+<!DOCTYPE html>
+{% block head %}
+<div class="text-center">
+<div class="container-fluid bg-primary text-white py-3">
+    <div class="container">
+        <h1 class="display-3">
+            <b class="fuente">Decide-Cabina</b>
+        </h1>
+    </div>
+</div>
+<p class="lead bg-info text-white">Panel de usuario para peticiones</p>
+</div>
+{% endblock %}
+
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
+{% endblock %}
+
+{% block content %}
+<body style="background-color:#b4d1e0;">
+  <div class="wrapper margen">
+    <div id="contenido">
+      <div class="container h-100">
+        <div class="d-flex justify-content-center">
+					<div class="d-flex justify-content-center fadeIn zero">
+						<div class="contenedorLogo ">
+							<img src="https://www.us.es/sites/default/files/2019-05/marca-US-principal.jpg" class="logo" alt="LogoUS">
+						</div>
+					</div>
+
+        </div>
+        <div class="d-flex justify-content-center margen pb-2">
+          <h2>Sign up</h2>
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+            <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% for error in field.errors %}
+              <p style="color: red">{{ error }}</p>
+            {% endfor %}
+            </p>
+          {% endfor %}
+          <button type="submit" class="botonLogin btn">Registrar petición</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+{% endblock %}
+
+<script>
+var form_fields = document.getElementsByTagName('input')
+form_fields[1].placeholder='Escribe la votación en la que quieres ser censado y porqué...';
+
+
+for (var field in form_fields){	
+form_fields[field].className += ' form-control'
+}
+</script>

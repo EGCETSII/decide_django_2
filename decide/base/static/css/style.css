@@ -1,0 +1,12 @@
+#bg {
+	background-repeat: no-repeat;
+	background-size: 1800px 900px;
+	background-position: top;
+	background-attachment: fixed;
+	-webkit-background-size: cover;
+  	-moz-background-size: cover;
+  	-o-background-size: cover;
+}
+
+
+
