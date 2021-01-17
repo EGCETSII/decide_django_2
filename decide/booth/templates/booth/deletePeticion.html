@@ -1,0 +1,40 @@
+{% load i18n static %}
+<!DOCTYPE html>
+{% block head %}
+<div class="text-center">
+<div class="container-fluid bg-primary text-white py-3">
+    <div class="container">
+        <h1 class="display-3">
+            <b class="fuente">Decide-Cabina</b>
+        </h1>
+    </div>
+</div>
+<p class="lead bg-info text-white">Borrar Peticion</p>
+</div>
+{% endblock %}
+
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
+{% endblock %}
+<br>
+<div class="row">
+	<div class="col-md-6">
+		<div class="card card-body">
+
+
+			<p>¿Estás seguro de que quieres borrar esta petición?</p>
+
+			<form action="{% url 'deletePeticion' item.id  %}" method="POST">
+				
+				{% csrf_token %}
+				<a class="btn btn-warning" href="{% url 'peticionCensoAdmin' %}">Cancel</a>
+
+				<input class="btn btn-danger" type="submit" name="Confirm">
+			</form>
+		</div>
+	</div>
+</div>

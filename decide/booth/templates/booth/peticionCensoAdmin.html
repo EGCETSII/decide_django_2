@@ -1,0 +1,53 @@
+{% load i18n static %}
+<!DOCTYPE html>
+{% block head %}
+<div class="text-center">
+<div class="container-fluid bg-primary text-white py-3">
+    <div class="container">
+        <h1 class="display-3">
+            <b class="fuente">Decide-Cabina</b>
+        </h1>
+    </div>
+</div>
+<p class="lead bg-info text-white">Panel de administrador para peticiones</p>
+</div>
+{% endblock %}
+
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
+{% endblock %}
+{% if not listaVacia %}
+<h2>Estas son las peticiones para ser censado:</h2>
+<table class="listaPeticiones">
+    <thead>
+    <tr>
+  
+      <th scope="col">Id peticion</th>
+      <th scope="col">Id del usuario</th>
+      <th scope="col">Nombre de la votacion</th>
+      <th scope="col">¿Borrar?</th>
+  
+
+  
+    </tr>
+    </thead>
+    <tbody>
+        {% for p in allPeticiones %}
+    <tr>
+  
+      <td>{{p.id}}</a></td>
+      <td>{{p.user_id}}</td>
+      <td>{{p.desc}}</td>
+      <td><a class="btn btn-sm btn-danger" href="{% url 'deletePeticion' p.id %}">Borrar</a></td>
+    </tr>
+    {% endfor %}
+</tbody>
+  </table>
+  {%endif%}
+  {% if listaVacia %}
+  <h2>Actualmente no hay peticiones para ser censado</h2>
+  {%endif%}
