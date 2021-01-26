@@ -40,6 +40,7 @@ class YesOrNoQuestion(models.Model):
     CHOICES = (
         ('Y', 'Yes'),
         ('N', 'No'),
+        ('M', 'Maybe'),
     )
     choice = models.CharField(max_length=1, choices=CHOICES, blank=True)
 

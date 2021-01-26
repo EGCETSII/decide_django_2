@@ -40,6 +40,7 @@ class YesOrNoQuestionSerializer(serializers.HyperlinkedModelSerializer):
     CHOICES = (
         ('Y', 'Yes'),
         ('N', 'No'),
+        ('M', 'Maybe'),
     )
     choice = serializers.ChoiceField(choices=CHOICES)
     class Meta:
