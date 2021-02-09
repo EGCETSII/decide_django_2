@@ -5,17 +5,22 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from .models import Question, QuestionOption, Voting
+from .models import Question, QuestionOption, Voting, YesOrNoQuestion
 from .serializers import SimpleVotingSerializer, VotingSerializer
 from base.perms import UserIsStaff
 from base.models import Auth
+from rest_framework.renderers import TemplateHTMLRenderer
 
 
 class VotingView(generics.ListCreateAPIView):
+    
+    '''renderer_classes = [TemplateHTMLRenderer]
+    template_name = './booth/booth.html'''
+
     queryset = Voting.objects.all()
     serializer_class = VotingSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
-    filter_fields = ('id', )
+    filter_fields = ('id',)
 
     def get(self, request, *args, **kwargs):
         version = request.version
@@ -35,9 +40,7 @@ class VotingView(generics.ListCreateAPIView):
 
         question = Question(desc=request.data.get('question'))
         question.save()
-        for idx, q_opt in enumerate(request.data.get('question_opt')):
-            opt = QuestionOption(question=question, option=q_opt, number=idx)
-            opt.save()
+
         voting = Voting(name=request.data.get('name'), desc=request.data.get('desc'),
                 question=question)
         voting.save()
@@ -99,3 +102,4 @@ class VotingUpdate(generics.RetrieveUpdateDestroyAPIView):
             msg = 'Action not found, try with start, stop or tally'
             st = status.HTTP_400_BAD_REQUEST
         return Response(msg, status=st)
+

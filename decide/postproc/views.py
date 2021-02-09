@@ -29,10 +29,17 @@ class PostProcView(APIView):
            ]
         """
 
-        t = request.data.get('type', 'IDENTITY')
-        opts = request.data.get('options', [])
+        typeOfData = request.data.get('type', 'IDENTITY')
+        options = request.data.get('options', [])
 
-        if t == 'IDENTITY':
-            return self.identity(opts)
+        if typeOfData == 'IDENTITY':
+            return self.identity(options)
+
+        elif typeOfData == 'PARIDAD':
+            check = self.check_json(options)
+            if check:
+                return Response(self.paridad(options))
+            else:
+                return Response({'message' : 'No se cumplen los ratios de paridad 60%-40%'})
 
         return Response({})
