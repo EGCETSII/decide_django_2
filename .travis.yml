@@ -1,21 +1,28 @@
 dist: xenial
-
 services:
   - postgresql
+  - xvfb
 addons:
   postgresql: "9.4"
+  chrome: stable
+  firefox: latest
 before_script:
   - psql -U postgres -c "create user decide password 'decide'"
   - psql -U postgres -c "create database test_decide owner decide"
   - psql -U postgres -c "ALTER USER decide CREATEDB"
+  - cp decide/local_settings.travis.py decide/local_settings.py
+  - "export DISPLAY=:99.0"
+  - sleep 3
 language: python
 python:
-  - "3.6"
+- '3.6'
 install:
   - pip install -r requirements.txt
   - pip install codacy-coverage
-script:
-  - cd decide
-  - coverage run --branch --source=. ./manage.py test --keepdb --with-xunit
-  - coverage xml
-  - python-codacy-coverage -r coverage.xml
+jobs:
+  include:
+    - script:
+      - cd decide
+      - coverage run --branch --source=. ./manage.py test postproc/ --keepdb
+      - coverage xml
+      - python-codacy-coverage -r coverage.xml
