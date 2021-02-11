@@ -13,23 +13,23 @@ Autenticación
 -------------
 
 Autenticación de votantes. En una votación debemos autenticar a los
-votantes y asegurarnos de que no se vota más de una vez o de que el votatne
+votantes y asegurarnos de que no se vota más de una vez o de que el votante
 puede votar en esa votación. Para ello debemos autenticar a la persona y
 esta autenticación ha de ser segura, de tal forma que se reduzca la
 posibilidad de fraude, suplantación de identidad, etc.
 
 Posibles formas de autenticación:
-    * Usuario / Contraseña
-    * Enlace único por correo electrónico
-    * Enlace único por SMS o sistema de mensajería (whatsapp, telegram, etc)
-    * Certificado FNMT
-    * Redes sociales (twitter, facebook, google)
+— Usuario / Contraseña
+— Enlace único por correo electrónico
+— Enlace único por SMS o sistema de mensajería (whatsapp, telegram, etc)
+— Certificado FNMT
+— Redes sociales (twitter, facebook, google)
 
 Censo
 -----
 
-Una parte impmortante de una votación es el censo, que es el grupo de
-personas que pueden votar en una votación. Gestoniar el censo es una tarea
+Una parte importante de una votación es el censo, que es el grupo de
+personas que pueden votar en una votación. Gestionar el censo es una tarea
 importante a la hora de definir una votación y de controlar quién ha
 votado y quién no.
 
@@ -47,7 +47,7 @@ Cabina de votación
 ------------------
 
 Interfaz para votar. Este subsistema se encarga de mostrar la interfaz de
-voto de una votación en concreto, perimtiendo al votante votar de la forma
+voto de una votación en concreto, permitiendo al votante votar de la forma
 más sencilla posible.
 
 Almacenamiento de votos (cifrados)
@@ -61,7 +61,7 @@ información de quién ha votado y quién no.
 Recuento / MixNet
 -----------------
 
-Susbsistema que se encarga de la parte criptográfica de una votación. La
+Subsistema que se encarga de la parte criptográfica de una votación. La
 mixnet es una red de ordenadores que generarán una clave compartida para
 cifrar los votos. De esta manera sólo se podrá descifrar un voto cuando
 todas las autoridades se pongan de acuerdo, a la hora de hacer el recuento.
@@ -75,7 +75,7 @@ Post-procesado
 --------------
 
 Una vez realizado el recuento, tenemos una lista de números, este
-subsistema de encarga de traducir esa lista de números a un resultado
+subsistema se encarga de traducir esa lista de números a un resultado
 coherente con el tipo de votación.
 
 Por ejemplo, si es una votación de tipo simple, simplemente habrá que
