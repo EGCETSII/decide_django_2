@@ -18,8 +18,9 @@ class StoreView(generics.ListAPIView):
     filter_fields = ('voting_id', 'voter_id')
 
     def get(self, request):
-        self.permission_classes = (UserIsStaff,)
-        self.check_permissions(request)
+        #self.permission_classes = (UserIsStaff,)
+        #self.check_permissions(request)
+        
         return super().get(request)
 
     def post(self, request):

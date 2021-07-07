@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %} - Visualización{% endblock %}
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="../../static/booth/style.css" />
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../static/css/contactUs.css/" >
+{% endblock %}
+
+{% block content %}
+    <div id="app-visualizer">
+
+        <!-- Header -->
+        <b-navbar class="navbar navbar-dark" style="background-color: #6c757d;">
+            <a class="navbar-brand navbar-dark">{% trans "Decide Visualization" %}</a>
+
+            <b-navbar-nav class="ml-auto">
+                <!-- Return to principal display view -->
+                <button class="btn btn-secondary" type="submit" onclick="window.history.go(-1);">{% trans "Return" %}</button>
+            </b-navbar-nav>
+        </b-navbar>
+
+        <!-- Contact us -->
+        <section>
+            <div class="containerr">
+                <div class="contactInfo">
+                    <div>
+                        <h2>{% trans "Contact Info" %}</h2>
+                        <ul class="info">
+                            <li>
+                                <span><a href="https://www.google.es/maps/place/Escuela+T%C3%A9cnica+Superior+de+Ingenier%C3%ADa+Inform%C3%A1tica/@37.358389,-5.9901688,17z/data=!3m1!4b1!4m5!3m4!1s0xd126dd4a3055555:0x29c3f634f8a021b8!8m2!3d37.358389!4d-5.9879801" target="_blank"><img src="{% static '/images/location.png' %}"></a></span>
+                                <span><a href="https://www.google.es/maps/place/Escuela+T%C3%A9cnica+Superior+de+Ingenier%C3%ADa+Inform%C3%A1tica/@37.358389,-5.9901688,17z/data=!3m1!4b1!4m5!3m4!1s0xd126dd4a3055555:0x29c3f634f8a021b8!8m2!3d37.358389!4d-5.9879801" target="_blank" style="color:white">{% trans "Higher Technical School of Computer Engineering," %}<br>
+                                    {% trans "Sevilla University, 41012" %}<br>
+                                    Sevilla
+                                </a>    
+                                </span>  
+                            </li>
+                            <li>
+                                <span><img src="../../static/images/mail.png"></span>
+                                <span>decideVisualizacion@picaro.es</span>
+                            </li>
+                            <li>
+                                <span><img src="../../static/images/phone.png"></span>
+                                <span>+34 954 55 38 66 (David)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <ul class="sci">
+                        <li><a href="https://m.facebook.com/garrybetijuelo/videos/583311158798950/?refsrc=http%3A%2F%2Fwww.google.com%2F&_rdr" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+                        <li><a href="https://twitter.com/search?q=%23r%C3%ADop%C3%ADcaro" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="https://www.instagram.com/explore/locations/1031691769/rio-picaro/" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                        <li><a href="https://www.pinterest.es/pin/259660734753203061/" target="_blank"><i class="fa fa-pinterest-p"></i></a></li>
+                        <li><a href="https://www.youtube.com/watch?v=p3mPgfSSPw0" target="_blank"><i class="fa fa-youtube-play"></i></a></li>
+                        <li><a href="https://github.com/pabfrasan/decide" target="_blank"><i class="fa fa-github-alt"></i></a></li>
+                        <li><a href="https://es.wikipedia.org/wiki/R%C3%ADo_P%C3%ADcaro" target="_blank"><i class="fa fa-wikipedia-w"></i></a></li>
+                    </ul>
+                </div>
+                <div class="contactForm">
+                    <h2>{% trans "Send a Message" %}</h2>
+                    <form action="mailto:decideVisualizacion@picaro.es" method="post" enctype="text/plain">
+                        <div class="formBox">
+                            <div class="inputBox w50">
+                                <input type="text" name="name" required>
+                                <span>{% trans "Full name" %} *</span>
+                            </div>
+                            <div class="inputBox w50">
+                                <input type="text" name="subject" required>
+                                <span>{% trans "Subject" %} *</span>
+                            </div>
+                            <div class="inputBox w100">
+                                <input type="text" name="mail" required>
+                                <span>{% trans "Email address" %} *</span>
+                            </div>
+                            <div class="inputBox w100">
+                                <textarea name="Comment" required></textarea>
+                                <span>{% trans "Write your message here" %} *</span>
+                            </div>
+                            <div class="inputBox w100">
+                                <input type="submit" value="{% trans 'Send' %}">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <b-navbar class="navbar navbar-dark" style="background-color: #6c757d; width: 100%; position: fixed; bottom:0px;">
+            <div class="container">
+                <span class="navbar-text" style="color: white;">{% trans "Evolution and Configuration Management" %} · <em>Decide</em></span>
+                <span class="navbar-text navbar-right" style="color: white;">Decide Pícaro · Visualización &copy; 2021</span>
+            </div>
+        </b-navbar>
+    </div>
+{% endblock %}
+
+{% block extrabody %}
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="http://java.sun.com/jsp/jstl/core"></script>
+    <script>
+        var voting = {{voting|safe}};
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app-visualizer',
+            data: {
+                voting: voting
+            }
+        })
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="../../static/js/mfb.js"></script>
+
+    <script>
+        // Web site cookies
+        function getCookie(cookieName) {
+            var name = cookieName + "=";
+            var cookies = decodeURIComponent(document.cookie).split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var c = cookies[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            if (getCookie("theme") == "dark") {
+                activateDarkMode();
+            }
+        }
+
+        function activateDarkMode() {
+            document.body.className = "bg-dark"
+            document.getElementById("text").style.color = "white"
+            setCookie("theme", "dark", 365);
+        }
+        window.onload = checkCookie();
+    </script>
+    
+{% endblock %}

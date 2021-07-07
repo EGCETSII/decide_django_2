@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %} - Visualización{% endblock %}
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="../../static/css/visualizer.css" />
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../static/css/mfb.css" >
+
+    <!--Librerias necesarias para exportar a PDF y PNG-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://superal.github.io/canvas2image/canvas2image.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="http://java.sun.com/jsp/jstl/core"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <script src="../../static/js/mfb.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="app-visualizer">
+
+        <!-- Header -->
+        <b-navbar class="navbar navbar-dark" style="background-color: #6c757d;">
+            <a class="navbar-brand navbar-dark">{% trans "Decide Visualization" %}</a>
+            
+            <b-navbar-nav class="ml-auto">
+                <!-- Links to contactUs and aboutUs views -->
+                <div class="btn-group" role="group" aria-label="Basic example" style="margin-right: 4px;">
+                    
+                    <a class="btn btn-secondary" href="https://t.me/decidePicaro">Telegram</a>
+                    <button class="btn btn-secondary" type="submit" onclick="window.location.href=getURLContactUs();">{% trans "Contact us" %}</button>
+                    <button class="btn btn-secondary" type="submit" onclick="window.location.href=getURLAboutUs();">{% trans "About us" %}</button>
+                </div>
+
+            </b-navbar-nav>
+        </b-navbar>
+
+        <div class="voting container">
+
+            <div v-else>
+
+                </head>
+               
+            </body>
+                <div class="theTable">
+
+                    <table class="tb table" id="table">
+                        <thead>
+                            <tr>
+                                <th><h5 class="heading" style="font-style: italic; text-align: left;" id="question"> {% trans "Votings" %}</h5></th>
+                                <th><h5 class="heading" style="font-style: italic; text-align: left;" id="question"> {% trans "Start date" %}</h5></th>
+                                <th><h5 class="heading" style="font-style: italic; text-align: left;" id="question"> {% trans "End date" %}</h5></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <td>
+                                {% for voting in votings %}
+                                <tr>   
+                                    <td class="options" style="text-align: left;"><a href="./{{voting.id}}">{{ voting.name }}</a></td>
+                                    <td style="text-align: left;">{{ voting.start_date }}</td>
+                                    <td style="text-align: left;">{{ voting.end_date }}</td>  
+                                </tr>
+                                {% endfor %}
+
+                            </td>
+                        </tbody>
+                    </table>
+                </div>
+                <section>
+                    <table class="tb table-responsive" id="table">
+                        <thead>
+                            <tr>
+                                <th><h5 class="heading"><i class="fa fa-bar-chart"></i> {% trans "Bar Chart" %}</h5>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><canvas id="myChart" width="1000" height="500"></canvas></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;"><button class="btn btn-outline-dark" onclick="saveAsPNG();">
+                                    <i class="fa fa-file-photo-o"></i> {% trans "Save as PNG" %}</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>        
+
+        <!-- Footer -->
+        <b-navbar class="navbar navbar-dark" style="background-color: #6c757d; width: 100%; position: fixed; bottom:0px;">
+            <div class="container">
+                <span class="navbar-text" style="color: white;">{% trans "Evolution and Configuration Management" %} · <em>Decide</em></span>
+                <span class="navbar-text navbar-right" style="color: white;">Decide Pícaro · Visualización &copy; 2021</span>
+            </div>
+        </b-navbar>
+    </div>
+{% endblock %}
+
+{% block extrabody %}
+
+    
+    <script>
+       function setCookie(cookieName, cookieValue, expiresDays) {
+            var today = new Date();
+            today.setTime(today.getTime() + (expiresDays * 24 * 60 * 60 * 1000));
+            var expires = "expires=" + today.toGMTString();
+            document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cookieName) {
+            var name = cookieName + "=";
+            var cookies = decodeURIComponent(document.cookie).split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var c = cookies[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            if (getCookie("theme") == "dark") {
+                activateDarkMode();
+            } 
+        }
+        window.onload = checkCookie();
+        
+        // Light mode and dark mode scripts
+        function activateLightMode() {
+            document.body.className = "bg-light"
+            document.getElementById("lightButton").style.display = "none"
+            document.getElementById("darkButton").style.display = "inline"
+            document.getElementById("text").style.color = "black"
+            setCookie("theme", "light", 365);
+        }
+
+        function activateDarkMode() {
+            document.body.className = "bg-dark"
+            document.getElementById("lightButton").style.display = "inline"
+            document.getElementById("darkButton").style.display = "none"
+            document.getElementById("text").style.color = "white"
+            setCookie("theme", "dark", 365);
+        }
+    </script>
+    <script>
+        // URLs to ContactUs and AboutUs views
+        function getURLContactUs() {
+            var url = document.location.href;
+            var newURL = url+"contactUs"
+            return newURL
+        }
+        function getURLAboutUs() {
+            var url = document.location.href;
+            var newURL = url+"aboutUs"
+            return newURL
+        }
+
+        
+    </script>
+    <script>
+        // Pop up message when window load
+        function popUp() {
+            var mensaje='{% trans "This visualization page is pretty cool. Do you want to continue?" %}'
+            
+            if(confirm(mensaje)) {
+            } else {
+                    window.onload = popUp();
+                }
+        }
+        window.onload = popUp();
+    </script>
+    <script>
+        function saveAsPNG() {
+            var canvas = document.getElementById('myChart');
+            Canvas2Image.saveAsPNG(canvas);
+        }
+    </script>
+
+<!--Bar chart script for votings comparison (gabgutpri, visualización)-->
+<script>
+    var data=[];var labels=[]; var numeros="0123456789ABCDEF";var almohadilla="#";var color="";
+    var votaciones = {{votaciones|safe}};
+    var votos = {{votos|safe}};
+
+    function getColoresRandom(){
+        var colorRandom='#'+Math.random().toString(16).substr(-6);
+       return colorRandom;
+    }
+
+    for(var i=0;i<votaciones.length;i++){
+        data.push(votos[i])
+        labels.push(votaciones[i].name)
+        color= getColoresRandom()
+    }
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data:{
+            datasets: [{
+                data: data,
+                borderWidth: '2',
+                borderColor: '#6c757d',
+                backgroundColor: getColoresRandom(),
+                hoverBackgroundColor: '#242330',
+                label: '{% trans "Number of votes" %}'}],
+                labels: labels},
+        options: {
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    stacked: true
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            }
+           }
+        });
+</script>
+
+{% endblock %}

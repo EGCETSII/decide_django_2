@@ -1,0 +1,250 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-01-16 12:57+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: booth/templates/booth/booth.html:19
+#, fuzzy
+#| msgid "logout"
+msgid "Logout"
+msgstr "Fermer session"
+
+#: booth/templates/booth/booth.html:33
+msgid "Username"
+msgstr "Utilisateur"
+
+#: booth/templates/booth/booth.html:41
+msgid "Password"
+msgstr "Mot de passe"
+
+#: booth/templates/booth/booth.html:49
+msgid "Login"
+msgstr "S'identifier"
+
+#: booth/templates/booth/booth.html:64
+msgid "Vote"
+msgstr "Voter"
+
+#: booth/templates/booth/booth.html:160 booth/templates/booth/booth.html:170
+#: booth/templates/booth/booth.html:201
+msgid "Error: "
+msgstr "Erreur: "
+
+#: booth/templates/booth/booth.html:198
+msgid "Conglatulations. Your vote has been sent"
+msgstr "Felicitations. Votre vote a été envoyé"
+
+#: decide/settings.py:162
+msgid "English"
+msgstr "Anglais"
+
+#: decide/settings.py:163
+msgid "Spanish"
+msgstr "Espagnol"
+
+#: decide/settings.py:164
+msgid "French"
+msgstr "Français"
+
+#: decide/settings.py:165
+msgid "German"
+msgstr "Deutsch"
+
+#: visualizer/templates/visualizer/aboutUs.html:16
+#: visualizer/templates/visualizer/contactUs.html:20
+#: visualizer/templates/visualizer/visualizer.html:38
+#: visualizer/templates/visualizer/visualizer_home.html:37
+msgid "Decide Visualization"
+msgstr "Decide Visualization"
+
+#: visualizer/templates/visualizer/aboutUs.html:20
+#: visualizer/templates/visualizer/contactUs.html:24
+#: visualizer/templates/visualizer/visualizer.html:60
+#: visualizer/templates/visualizer/visualizer.html:93
+#: visualizer/templates/visualizer/visualizer.html:176
+msgid "Return"
+msgstr "Retour"
+
+#: visualizer/templates/visualizer/aboutUs.html:26
+msgid "Visualization Team"
+msgstr "Equipe de visualization"
+
+#: visualizer/templates/visualizer/aboutUs.html:35
+#: visualizer/templates/visualizer/aboutUs.html:43
+#: visualizer/templates/visualizer/aboutUs.html:51
+#: visualizer/templates/visualizer/aboutUs.html:59
+#: visualizer/templates/visualizer/aboutUs.html:67
+#: visualizer/templates/visualizer/aboutUs.html:75
+msgid "Computer Engineering student in Software Engineering"
+msgstr "Etudiant en Ingénierie Informatique en Ingénerie de Software"
+
+#: visualizer/templates/visualizer/aboutUs.html:37
+#: visualizer/templates/visualizer/aboutUs.html:45
+#: visualizer/templates/visualizer/aboutUs.html:53
+#: visualizer/templates/visualizer/aboutUs.html:61
+#: visualizer/templates/visualizer/aboutUs.html:69
+#: visualizer/templates/visualizer/aboutUs.html:77
+msgid "GitHub Profile"
+msgstr "Profile GitHub"
+
+#: visualizer/templates/visualizer/aboutUs.html:86
+#: visualizer/templates/visualizer/contactUs.html:95
+#: visualizer/templates/visualizer/visualizer.html:181
+#: visualizer/templates/visualizer/visualizer_home.html:106
+msgid "Evolution and Configuration Management"
+msgstr "Evolution et Gestion de la Configuration"
+
+#: visualizer/templates/visualizer/contactUs.html:33
+msgid "Contact Info"
+msgstr "Information de contact"
+
+#: visualizer/templates/visualizer/contactUs.html:37
+msgid "Higher Technical School of Computer Engineering,"
+msgstr "Ecole Technique Supérieur d'Ingénerie Informatique,"
+
+#: visualizer/templates/visualizer/contactUs.html:38
+msgid "Sevilla University, 41012"
+msgstr "Universiter de Seville, 41012"
+
+#: visualizer/templates/visualizer/contactUs.html:64
+msgid "Send a Message"
+msgstr "Envoyer en méssage"
+
+#: visualizer/templates/visualizer/contactUs.html:69
+msgid "Full name"
+msgstr "Nom et prénom"
+
+#: visualizer/templates/visualizer/contactUs.html:73
+msgid "Subject"
+msgstr "Sujet"
+
+#: visualizer/templates/visualizer/contactUs.html:77
+msgid "Email address"
+msgstr "Adresse email"
+
+#: visualizer/templates/visualizer/contactUs.html:81
+msgid "Write your message here"
+msgstr "Ecrivez votre méssage ici"
+
+#: visualizer/templates/visualizer/contactUs.html:84
+msgid "Send"
+msgstr "Evoyer"
+
+#: visualizer/templates/visualizer/visualizer.html:44
+#: visualizer/templates/visualizer/visualizer_home.html:44
+msgid "Contact us"
+msgstr "Contacter nous"
+
+#: visualizer/templates/visualizer/visualizer.html:45
+#: visualizer/templates/visualizer/visualizer_home.html:45
+msgid "About us"
+msgstr "A propos de nous"
+
+#: visualizer/templates/visualizer/visualizer.html:46
+#, fuzzy
+#| msgid "Visualization Team"
+msgid "Visualizer"
+msgstr "Equipe de visualization"
+
+#: visualizer/templates/visualizer/visualizer.html:51
+msgid "Light mode"
+msgstr "Mode clair"
+
+#: visualizer/templates/visualizer/visualizer.html:53
+msgid "Dark mode"
+msgstr "Mode sombre"
+
+#: visualizer/templates/visualizer/visualizer.html:59
+msgid "Voting not started"
+msgstr "Le vote n'a pas commencé"
+
+#: visualizer/templates/visualizer/visualizer.html:64
+msgid "Voting in progress"
+msgstr "Vote en cours"
+
+#: visualizer/templates/visualizer/visualizer.html:78
+#: visualizer/templates/visualizer/visualizer.html:240
+#: visualizer/templates/visualizer/visualizer_home.html:224
+msgid "Number of votes"
+msgstr "Nombre de votes"
+
+#: visualizer/templates/visualizer/visualizer.html:97
+msgid "Results"
+msgstr "Résultats"
+
+#: visualizer/templates/visualizer/visualizer.html:105
+msgid "2nd place"
+msgstr "2ème place"
+
+#: visualizer/templates/visualizer/visualizer.html:106
+msgid "WINNER"
+msgstr "GAGNANT"
+
+#: visualizer/templates/visualizer/visualizer.html:107
+msgid "3rd place"
+msgstr "3ème place"
+
+#: visualizer/templates/visualizer/visualizer.html:126
+msgid "Option"
+msgstr "Option"
+
+#: visualizer/templates/visualizer/visualizer.html:127
+msgid "Punctuation"
+msgstr "Score"
+
+#: visualizer/templates/visualizer/visualizer.html:128
+#, fuzzy
+#| msgid "Vote"
+msgid "Votes"
+msgstr "Vote"
+
+#: visualizer/templates/visualizer/visualizer.html:151
+msgid "Donut Chart"
+msgstr "Graphique en anneau"
+
+#: visualizer/templates/visualizer/visualizer.html:152
+#: visualizer/templates/visualizer/visualizer_home.html:86
+msgid "Bar Chart"
+msgstr "Graphique à barres"
+
+#: visualizer/templates/visualizer/visualizer.html:162
+#: visualizer/templates/visualizer/visualizer.html:164
+#: visualizer/templates/visualizer/visualizer_home.html:95
+msgid "Save as PNG"
+msgstr "Sauver comme PNG"
+
+#: visualizer/templates/visualizer/visualizer.html:168
+msgid "Save as PDF"
+msgstr "Sauver comme PDF"
+
+#: visualizer/templates/visualizer/visualizer.html:402
+#: visualizer/templates/visualizer/visualizer_home.html:181
+msgid "This visualization page is pretty cool. Do you want to continue?"
+msgstr "Cette page de visualisation est plutôt cool. Voulez-vous continuer?"
+
+#: visualizer/templates/visualizer/visualizer_home.html:63
+msgid "Votings"
+msgstr "Votations"
+
+#: visualizer/templates/visualizer/visualizer_home.html:64
+msgid "Start date"
+msgstr "Date de commencement"
+
+#: visualizer/templates/visualizer/visualizer_home.html:65
+msgid "End date"
+msgstr "Date de finalization"

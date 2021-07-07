@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %} - Visualización{% endblock %}
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <link rel="stylesheet" href="../../static/css/aboutUs.css" >
+{% endblock %}
+
+{% block content %}
+    <!-- Header -->
+    <b-navbar class="navbar navbar-dark" style="background-color: #6c757d;">
+        <a class="navbar-brand navbar-dark">{% trans "Decide Visualization" %}</a>
+            
+        <b-navbar-nav class="ml-auto">
+            <!-- Return to principal display view -->
+            <button class="btn btn-secondary" type="submit" onclick="window.history.go(-1);">{% trans "Return" %}</button>
+        </b-navbar-nav>
+    </b-navbar>
+
+    <!-- Personal info cards -->
+    <div class="au container">
+        <h2 id="text" class="heading"><i class="fa fa-eye"></i> {% trans "Visualization Team" %}</h2>
+    </div>
+    <section>
+        <div class="containerr" style="text-align: center;">
+            <div class="personalInfo">
+                <div class="columna card">
+                    <img src="../../static/images/PabloF.jpeg" class="card-img-top" alt="Pablo">
+                    <h5 class="card-title">Pablo</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Franco Sánchez</h6>
+                    <p class="card-text">{% trans "Computer Engineering student in Software Engineering" %}</p>
+                    <a href="https://github.com/pabfrasan" target="_blank" class="btn btn-outline-dark">
+                        <i class="fa fa-github-alt"></i> {% trans "GitHub Profile" %}</a>
+                </div>
+                <div class="columna card">
+                    <img src="../../static/images/AbrahamG.jpg" class="card-img-top"  alt="Abraham">
+                    <h5 class="card-title">Abraham</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">García Villalobos</h6>
+                    <p class="card-text">{% trans "Computer Engineering student in Software Engineering" %}</p>
+                    <a href="https://github.com/AbrahamSFC" target="_blank" class="btn btn-outline-dark">
+                        <i class="fa fa-github-alt"></i> {% trans "GitHub Profile" %}</a>
+                </div>
+                <div class="columna card">
+                    <img src="../../static/images/MartinA.jpeg" class="card-img-top" alt="Martin">
+                    <h5 class="card-title">Martín Arturo</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Guerrero Romero</h6>
+                    <p class="card-text">{% trans "Computer Engineering student in Software Engineering" %}</p>
+                    <a href="https://github.com/Martinagr32" target="_blank" class="btn btn-outline-dark">
+                        <i class="fa fa-github-alt"></i> {% trans "GitHub Profile" %}</a>
+                </div>
+                <div class="columna col card">
+                    <img src="../../static/images/GabrielG.jpg" class="card-img-top" alt="Gabriel">
+                    <h5 class="card-title">Gabriel</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Gutiérrez Prieto</h6>
+                    <p class="card-text">{% trans "Computer Engineering student in Software Engineering" %}</p>
+                    <a href="https://github.com/gabgutpri" target="_blank" class="btn btn-outline-dark">
+                        <i class="fa fa-github-alt"></i> {% trans "GitHub Profile" %}</a>
+                </div> 
+                <div class="columna col card">
+                    <img src="../../static/images/ThibautL.jpeg" class="card-img-top" alt="Thibaut">
+                    <h5 class="card-title">Thibaut</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Lopez</h6>
+                    <p class="card-text">{% trans "Computer Engineering student in Software Engineering" %}</p>
+                    <a href="https://github.com/Thiloparn" target="_blank" class="btn btn-outline-dark">
+                        <i class="fa fa-github-alt"></i> {% trans "GitHub Profile" %}</a>
+                </div>
+                <div class="columna col card">
+                    <img src="../../static/images/DavidS.jpeg" class="card-img-top" alt="David">
+                    <h5 class="card-title">David</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Soto Ponce</h6>
+                    <p class="card-text">{% trans "Computer Engineering student in Software Engineering" %}</p>
+                    <a href="https://github.com/davsotpon" target="_blank" class="btn btn-outline-dark">
+                        <i class="fa fa-github-alt"></i> {% trans "GitHub Profile" %}</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+     <!-- Footer -->
+     <b-navbar class="navbar navbar-dark" style="background-color: #6c757d; width: 100%; position: fixed; bottom:0px; ">
+        <div class="container">
+            <span class="navbar-text" style="color: white;">{% trans "Evolution and Configuration Management" %} · <em>Decide</em></span>
+            <span class="navbar-text navbar-right" style="color: white;">Decide Pícaro · Visualización &copy; 2021</span>
+        </div>
+    </b-navbar>
+    
+{% endblock %}
+
+{% block extrabody %}
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="http://java.sun.com/jsp/jstl/core"></script>
+    <script>
+        var voting = {{voting|safe}};
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app-visualizer',
+            data: {
+                voting: voting
+            }
+        })
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="../../static/js/mfb.js"></script>
+    
+    <script>
+        // Cookies to change dark mode
+        function setCookie(cookieName, cookieValue, expiresDays) {
+            var today = new Date();
+            today.setTime(today.getTime() + (expiresDays * 24 * 60 * 60 * 1000));
+            var expires = "expires=" + today.toGMTString();
+            document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cookieName) {
+            var name = cookieName + "=";
+            var cookies = decodeURIComponent(document.cookie).split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var c = cookies[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            if (getCookie("theme") == "dark") {
+                activateDarkMode();
+            }
+        }
+
+        function activateDarkMode() {
+            document.body.className = "bg-dark"
+            document.getElementById("text").style.color = "white"
+            setCookie("theme", "dark", 365);
+        }
+        window.onload = checkCookie();
+    </script> 
+{% endblock %}

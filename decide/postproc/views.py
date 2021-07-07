@@ -11,7 +11,7 @@ class PostProcView(APIView):
             out.append({
                 **opt,
                 'postproc': opt['votes'],
-            });
+            })
 
         out.sort(key=lambda x: -x['postproc'])
         return Response(out)

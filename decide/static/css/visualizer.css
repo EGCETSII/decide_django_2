@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins' ,sans-serif;
+}
+.voting {
+    margin-top: 20px;
+    margin-left: 40px;
+}
+.voting h2 {
+    margin-bottom: 25px;
+}
+.voting .podium {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 30%;
+    margin-right: 30%;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 50px 50px rgba(0, 0, 0, 0.5);
+}
+.voting .theTable, .voting section {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    margin-left: 15%;
+    margin-right: 15%;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 50px 50px rgba(0, 0, 0, 0.5);
+}
+.voting .theTable .tb, .voting section .tb {
+    margin: 20px;
+}
+.voting .theTable .tb th, td {
+    border-bottom: 2px solid #ddd;
+}
+.voting section {
+    position: relative;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 100px;
+    margin-left: 11%;
+    margin-right: 7%;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 50px 50px rgba(0, 0, 0, 0.5);
+}
+.podio{
+    height: 300px;
+    vertical-align: bottom;
+    padding: 5px;
+    }
+    #response{
+    font-family: courier-new, courier;
+    }
+    #podium0, #podium1, #podium2{
+    width: 150px;
+    font-size: 5mm;
+    text-align: center;
+    font-weight: 700;
+    }
+    #winner{
+    width: 150px;
+    font-size: 7mm;
+    text-align: center;
+    font-weight: 700;   
+    }
+
+    #podium0 { /* gold */
+        height: 250px;
+        background: rgb(255, 215, 0);
+    }
+    #podium1 { /* silver */
+        height: 200px;
+        background: rgb(192, 192, 192);
+    }
+    #podium2 { /* bronze */
+        height: 150px;
+        background: rgb(205,127,50);
+    }

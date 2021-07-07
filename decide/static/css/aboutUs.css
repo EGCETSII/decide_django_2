@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins' ,sans-serif;
+}
+.au {
+    margin-top: 20px;
+    margin-left: 40px;
+}
+section {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 140vh;
+}
+section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+}
+section .containerr {
+    position: relative;
+    min-width: 1100px;
+    min-height: 1000px;
+    display: flex;
+    
+}
+section .containerr .personalInfo {
+    position: absolute;
+    padding: 70px 50px;
+    background: white;
+    margin-left: 0px;
+    padding-left: 50px;
+    border-radius: 30px;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 50px 50px rgba(0, 0, 0, 0.5);
+}
+section .containerr .personalInfo .columna {
+    width: 14rem;
+    margin-right: 75px;
+    display: inline-block;
+    border-radius: 20px;
+    border-color: #6c757d;
+    border-width: 2px;
+    box-shadow: 0 50px 50px rgba(0, 0, 0, 0.5);
+}
+section .containerr .personalInfo .columna img {
+    width: 180px;
+    height: 170px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
+section .containerr .personalInfo .columna h5 {
+    margin-top: 5px;
+}
+section .containerr .personalInfo .columna a {
+    margin-bottom: 4px;
+}
+section .containerr .personalInfo .col {
+    margin-top: 50px;
+}

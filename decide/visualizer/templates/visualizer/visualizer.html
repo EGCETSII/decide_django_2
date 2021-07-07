@@ -1,57 +1,191 @@
 {% extends "base.html" %}
 {% load i18n static %}
 
+{% block title %} - Visualización{% endblock %}
 {% block extrahead %}
-    <link type="text/css" rel="stylesheet"
-         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet"
-         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
-    <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="../../static/css/visualizer.css" />
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Required imports to use icons and float button -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../static/css/mfb.css" >
+
+    <!-- Required scripts to export to PDF and PNG-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://superal.github.io/canvas2image/canvas2image.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="http://java.sun.com/jsp/jstl/core"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <script src="../../static/js/mfb.js"></script>
 {% endblock %}
 
 {% block content %}
     <div id="app-visualizer">
-        <!-- Navbar -->
-        <b-navbar type="dark" variant="secondary">
-            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
+        <!-- Header -->
+        <b-navbar class="navbar navbar-dark" style="background-color: #6c757d;">
+            <a class="navbar-brand navbar-dark">{% trans "Decide Visualization" %}</a>
+
+            <b-navbar-nav class="ml-auto">
+                <!-- Links to contactUs and aboutUs views -->
+                <div class="btn-group" role="group" aria-label="Basic example" style="margin-right: 4px;">
+                    <a class="btn btn-secondary" href="https://t.me/decidePicaro">Telegram</a>
+                    <button class="btn btn-secondary" type="submit" onclick="window.location.href=getURLContactUs();">{% trans "Contact us" %}</button>
+                    <button class="btn btn-secondary" type="submit" onclick="window.location.href=getURLAboutUs();">{% trans "About us" %}</button>
+                    <a class="btn btn-secondary" type="submit" href="/visualizer">{% trans "Visualizer" %}</a>
+                </div>
+
+                <!-- Dark mode and light mode buttons -->
+                <button id="lightButton" type="button" class="btn btn-light btn-sm pull-xs-right" style="display: none"
+                    onclick="activateLightMode()">{% trans "Light mode" %}</button>
+                <button id="darkButton" type="button" class="btn btn-dark btn-sm pull-xs-right" style="display: inline"
+                    onclick="activateDarkMode()">{% trans "Dark mode" %}</button>
+            </b-navbar-nav>
         </b-navbar>
 
         <div class="voting container">
-            <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
+            <div v-if="!voting.start_date">
+                <h2 id="text" ><i class="fa fa-ban"></i> {% trans "Voting not started" %}</h2>
+                <button class="btn btn-secondary" type="submit" style="position: fixed; bottom: 10%; right: 5%" onclick="window.history.go(-1);">{% trans "Return" %}</button>
+            </div>
 
-            <h2 v-if="!voting.start_date">Votación no comenzada</h2>
-            <h2 v-else-if="!voting.end_date">Votación en curso</h2>
+            <div v-else-if="!voting.end_date">
+                <h2 id="text" ><i class="fa fa-cog fa-spin"></i> {% trans "Voting in progress" %}</h2>
+                <div class="theTable">
+                    <table class="tb table" id="table">
+                        <thead>
+                            <tr>
+                                <th><h5 class="heading" style="font-style: italic;"><i class="fa fa-question-circle-o"></i> [[voting.question.desc]]</h5></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <td>
+                                <div id="exportarTab">
+                                <table class="tb table table-striped" id="table">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;"><i class="fa fa-envelope-o"></i>  {% trans "Number of votes" %}</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th style="text-align: center;">{{numero_votos}}</th>
+                                    </tr>
+                                </tbody>
+                                </table>
+                                </div>
+                            </td>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-secondary" type="submit" style="position: fixed; bottom: 10%; right: 5%" onclick="window.history.go(-1);">{% trans "Return" %}</button>
+            </div>
+
             <div v-else>
-                <h2 class="heading">Resultados:</h2>
+                <h2 id="text" class="heading"><i class="fa fa-pencil-square-o"></i> {% trans "Results" %}</h2>
+                <!-- Podium -->
+                <div class="result">
+                    <pre id="response"></pre>
+                </div>
+                <div class="podium">
+                    <table id="ladder">
+                    <tr>
+                        <td class="podio"><div id="winner"> {% trans "2nd place"%}</div><div id="podium1"></div></td>
+                        <td class="podio"><div id="winner"> {% trans "WINNER" %}</div><div id="podium0"></div></td>
+                        <td class="podio"><div id="winner"> {% trans "3rd place" %}</div><div id="podium2"></div></td>
+                    </tr>
+                    </table>
+                </div>
 
-                <table class="table table-bordered table-striped">
+                <!-- Table -->
+                <div class="theTable">
+                    <table class="tb table" id="table">
+                        <thead>
+                            <tr>
+                                <th><h5 class="heading" style="font-style: italic;" id="question"><i class="fa fa-question-circle-o"></i> [[voting.question.desc]]</h5></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <td>
+                                <div id="exportarTab">
+                                <table class="tb table table-striped" id="table">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;"><i class="fa fa-comment-o"></i>  {% trans "Option" %}</th>
+                                        <th style="text-align: center;"><i class="fa fa-balance-scale"></i>  {% trans "Punctuation" %}</th>
+                                        <th style="text-align: center;"><i class="fa fa-envelope-o"></i>  {% trans "Votes" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="opt in voting.postproc" :key="opt.number">
+                                        <th>[[opt.option]]</th>
+                                        <td style="text-align: center;">[[opt.postproc]]</td>
+                                        <td style="text-align: center;">[[opt.votes]]</td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                                </div>
+                            </td>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <!-- Charts -->
+                <section>
+                <table class="tb table-responsive" id="table">
                     <thead>
                         <tr>
-                            <th>Opción</th>
-                            <th>Puntuación</th>
-                            <th>Votos</th>
+                            <th><h5 class="heading"><i class="fa fa-pie-chart"></i> {% trans "Donut Chart" %}</h5></th>
+                            <th><h5 class="heading"><i class="fa fa-bar-chart"></i> {% trans "Bar Chart" %}</h5></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="opt in voting.postproc" :key="opt.number">
-                            <th>[[opt.option]]</th>
-                            <td>[[opt.postproc]]</td>
-                            <td class="text-muted">[[opt.votes]]</td>
+                        <tr>
+                            <td><canvas id="myChart" width="500" height="500"></canvas></td>
+                            <td><canvas  id="myChart2" width="500" height="500"></canvas></td>
                         </tr>
+                        <tr>
+                            <td style="text-align: center;"><button class="btn btn-outline-dark" onclick="saveAsPNG();">
+                                <i class="fa fa-file-photo-o"></i> {% trans "Save as PNG" %}</button></td>
+                            <td style="text-align: center;"><button class="btn btn-outline-dark" onclick="saveAsPNG2();">
+                                <i class="fa fa-file-photo-o"></i> {% trans "Save as PNG" %}</button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: center;"><button class="btn btn-outline-dark" onclick="saveAsPDF();">
+                                <i class="fa fa-file-pdf-o"></i> {% trans "Save as PDF" %}</button></td>
+                        </tr>
+
                     </tbody>
                 </table>
+                </section>
             </div>
-
         </div>
+        <button class="btn btn-secondary" type="submit" style="position: fixed; bottom: 10%; right: 5%" onclick="window.history.go(-1);">{% trans "Return" %}</button>
+
+        <!-- Footer -->
+        <b-navbar class="navbar navbar-dark" style="background-color: #6c757d; width: 100%; position: fixed; bottom:0px;">
+            <div class="container">
+                <span class="navbar-text" style="color: white;">{% trans "Evolution and Configuration Management" %} · <em>Decide</em></span>
+                <span class="navbar-text navbar-right" style="color: white;">Decide Pícaro · Visualización &copy; 2021</span>
+            </div>
+        </b-navbar>
     </div>
 {% endblock %}
 
 {% block extrabody %}
-    <!-- Vuejs -->
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-
     <script>
         var voting = {{voting|safe}};
         var app = new Vue({
@@ -62,5 +196,253 @@
             }
         })
     </script>
-</body>
+
+    <!-- CHARTS -->
+    <script>
+        var data=[];var labels=[];var colores=[]; var numeros="0123456789ABCDEF";var almohadilla="#";var color="";
+        var postproc=voting.postproc;
+
+        function getColoresRandom(){
+            var colorRandom='#'+Math.random().toString(16).substr(-6);
+           return colorRandom;
+        }
+
+        for(var i=0;i<postproc.length;i++){
+            data.push(postproc[i].votes)
+            labels.push(postproc[i].option)
+            color= getColoresRandom()
+            colores.push(color)
+        }
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        var chart = new Chart(ctx, {
+            type: 'doughnut',
+            data:{
+                datasets: [{
+                    data: data,
+                    backgroundColor: colores,
+                    label: 'Número de votos'}],
+                    labels: labels},
+            options: {responsive: true}
+            });
+
+        var ctx2 = document.getElementById('myChart2').getContext('2d');
+        var chart2 = new Chart(ctx2, {
+            type: 'bar',
+            data:{
+                datasets: [{
+                    data: data,
+                    borderWidth: '2',
+                    borderColor: '#6c757d',
+                    backgroundColor: '#9d9c9f',
+                    hoverBackgroundColor: '#242330',
+                    label: '{% trans "Number of votes" %}'}],
+                    labels: labels},
+            options: {
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+               }
+            });
+    </script>
+
+
+    <!-- EXPORTS -->
+    <script>    
+
+        function saveAsPDF() {
+            //Creo el documento PDF (jsPDF)
+            var doc = new jsPDF('p', 'pt');
+            //Paso la tabla a tipo html
+            var elementHTML = $('#exportarTab').html();
+            var specialElementHandlers = {
+                '#elementH': function (element, renderer) {
+                    return true;
+                }
+            };
+
+            //Añade las propiedades basicas del pdf
+            doc.setProperties({
+            title: 'Datos votaciones',
+            subject: 'Votaciones',
+            author: 'Decide-Picaro-Visualizacion',
+            });
+
+            margins = {
+                    top: 30,
+                    bottom: 60,
+                    left: 15,
+                    width: 522
+                };
+            //Modifico algunas características sobre como se verá la tabla en el documento
+            doc.setFont("times");
+            doc.setTextColor(0,0,0);
+            doc.setFontSize(25);
+            doc.setFontStyle("italic");
+            doc.text(15, 25, $('#question').text())
+
+            doc.fromHTML(elementHTML, margins.left, margins.top, {
+                'width': 170,
+                'elementHandlers': specialElementHandlers
+            });
+            
+            var canvas = document.getElementById('myChart');
+            var dataURL2 = canvas.toDataURL();
+            var canvas = document.getElementById('myChart2');
+            var dataURL3 = canvas.toDataURL();
+
+            //Añado las gráficas al documento, insertando antes de cada gráfica una nueva página
+            doc.addPage();
+            doc.addImage(dataURL2,'PNG', 8, 8);
+            doc.addPage();
+            doc.addImage( dataURL3, 'PNG', 10, 10);
+
+            //Guardo el documento
+            doc.save('Datos-Votacion.pdf');
+        }
+
+        function saveAsPNG() {
+            var canvas = document.getElementById('myChart');
+            Canvas2Image.saveAsPNG(canvas);
+        }
+
+        function saveAsPNG2() {
+            var canvas = document.getElementById('myChart2');
+            Canvas2Image.saveAsPNG(canvas);
+        }
+    </script>
+
+    <!-- OTHER VIEWS -->
+    <script>
+        // URLs to ContactUs and AboutUs views
+        function getURLContactUs() {
+            var url = document.location.href;
+            partes = url.split('/');
+            var page = partes[partes.length-2];
+            var newURL = url.replace(page,"contactUs")
+            return newURL
+        }
+        function getURLAboutUs() {
+            var url = document.location.href;
+            partes = url.split('/');
+            var page = partes[partes.length-2];
+            var newURL = url.replace(page,"aboutUs")
+            return newURL
+        }
+        // function getURLVisualizer() {
+        //     var url = document.location.href;
+        //     partes = url.split('/');
+        //     var page = partes[partes.length-2];
+        //     var newURL = url.replace(page,"")
+        //     ultimateURL=newURL.substring(0, newULR().length-2)
+        //     return ultimateURL
+        // }
+    </script>
+
+    <!-- VIEW MODES WITH COOKIES -->
+    <script>
+       function setCookie(cookieName, cookieValue, expiresDays) {
+            var today = new Date();
+            today.setTime(today.getTime() + (expiresDays * 24 * 60 * 60 * 1000));
+            var expires = "expires=" + today.toGMTString();
+            document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cookieName) {
+            var name = cookieName + "=";
+            var cookies = decodeURIComponent(document.cookie).split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var c = cookies[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            if (getCookie("theme") == "dark") {
+                activateDarkMode();
+            } 
+        }
+        window.onload = checkCookie();
+
+        // Light mode and dark mode scripts
+        function activateLightMode() {
+            document.body.className = "bg-light"
+            document.getElementById("lightButton").style.display = "none"
+            document.getElementById("darkButton").style.display = "inline"
+            document.getElementById("text").style.color = "black"
+            setCookie("theme", "light", 365);
+        }
+
+        function activateDarkMode() {
+            document.body.className = "bg-dark"
+            document.getElementById("lightButton").style.display = "inline"
+            document.getElementById("darkButton").style.display = "none"
+            document.getElementById("text").style.color = "white"
+            setCookie("theme", "dark", 365);
+        }
+    </script>
+    
+    
+    <script>
+        // Pop up message when window load
+        function popUp() {
+            var mensaje='{% trans "This visualization page is pretty cool. Do you want to continue?" %}'
+            
+            if(confirm(mensaje)) {
+            } else {
+                    window.onload = popUp();
+                }
+        }
+        window.onload = popUp();
+    </script>
+
+
+    <!-- PODIUM -->
+    <script>
+        function podium() {
+
+            var lista = voting.postproc;
+            var n, i, k, aux;
+            n = lista.length;
+            for (k = 1; k < n; k++) {
+                for (i = 0; i < (n - k); i++) {
+                    if (lista[i].postproc > lista[i + 1].postproc) {
+                        aux = lista[i];
+                        lista[i] = lista[i + 1];
+                        lista[i + 1] = aux;
+                    }
+                }
+            }
+
+            for (var i = 0; i < 3; i++) {
+                var p = document.getElementById('podium'+i.toString());
+                p.innerHTML  = lista[n-i-1].option.toString()+"<br>"+lista[n-i-1].postproc.toString();
+            }
+        }
+
+        window.onload = podium();
+    </script>
+
+    <script>
+        function getNumeroVotos(){
+            for(var i=0; i< voting.postproc.length; i++){
+                voting.postproc[i]["votes"]
+
+            }
+        }
+    </script>
+
 {% endblock %}
