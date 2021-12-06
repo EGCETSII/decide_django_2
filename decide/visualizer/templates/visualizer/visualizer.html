@@ -6,23 +6,145 @@
          href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet"
          href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
-    <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+    <link type="text/css" rel="stylesheet" href="{% static "booth/  " %}" />
+      <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+        // Create the data table.
+         var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+   
+
+ myObj2 = JSON.parse(JSON.stringify(voting.postproc));
+ for (var opt in myObj2) {
+  data.addRows([[myObj2[opt].option,myObj2[opt].postproc]]);
+} 
+
+ 
+        // Set chart options
+     
+        var options = {'title':voting.question.desc,
+                       'width':500,
+                       'height':600};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
 {% endblock %}
 
 {% block content %}
+<style type="text/css">
+    .bg-secondary{
+        background-color: #0d4577 !important;
+    }
+    .navbar-dark .navbar-brand{
+        color: rgb(255, 255, 255);
+        font-weight: bolder; 
+    }
+    .titulo-votacion{
+        text-align: center;
+        font-weight: bolder;
+        padding-top: 2%;
+    }
+    .pregunta-votacion{
+        text-align: center;
+        font-weight: bolder;
+    }
+    .voting .container{
+        border-right-style: solid;
+        border-right-width: 0px;
+        padding-right: 5%;
+        padding-left: 5%;
+        margin-bottom: 20px;
+        margin-right: 40px;
+    }
+    .container{
+        max-width: 95%;
+    }
+    .heading {
+        font-size: 24px;
+        font-weight: bold;
+    }
+    thead{
+        color: white !important;
+        background-color: #0d4577 !important;
+        text-align: center !important;
+    }
+    
+    .column{
+        float: left;
+        width: 50%;
+        border-style: ridge;
+        border-color: #a8a8a863;
+        border-width: thin;
+    }
+
+    #qr-result{
+        font-weight: bolder;
+    }
+    .redes{
+        text-align: center;
+        font-weight: bolder;
+        padding-top: 2%;
+    }
+    .rrss {
+        text-align: center;
+        padding-top: 4%;
+        padding-bottom: 4%;
+    }
+    .sin-empezar{
+        text-align: center;
+        padding-top: 4%;
+        font-weight: bolder;
+    }
+
+    .en_curso{
+        text-align: center;
+        padding-top: 4%;
+        font-weight: bolder;
+    }
+
+    .procesandose{
+        text-align: center;
+        padding-top: 4%;
+        font-weight: bolder;
+    }
+
+</style>
+
+
     <div id="app-visualizer">
+   
         <!-- Navbar -->
         <b-navbar type="dark" variant="secondary">
             <b-navbar-brand tag="h1">Decide</b-navbar-brand>
         </b-navbar>
+    
 
         <div class="voting container">
-            <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
-
-            <h2 v-if="!voting.start_date">Votación no comenzada</h2>
-            <h2 v-else-if="!voting.end_date">Votación en curso</h2>
+            <h1 class="titulo-votacion">[[ voting.name ]]</h1>
+            <h1 class="pregunta-votacion">[[voting.question.desc]]</h1>
+            <hr color="black" size=200>
+            <h2 v-if="!voting.start_date" class="sin-empezar">La votación no ha comenzado aún</h2>
+            <h2 v-else-if="!voting.end_date" class="en_curso">La votación está en curso</h2>
+            <h2 v-else-if="!voting.tally" class="procesandose">La votación se encuentra terminada y se están procesando los votos</h2>
             <div v-else>
-                <h2 class="heading">Resultados:</h2>
+                <h2 class="heading">Resultados de la votación:</h2>
 
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -40,8 +162,27 @@
                         </tr>
                     </tbody>
                 </table>
+                <hr color="black" size=200>
+                <div class="row">
+                    <div class="column">
+                        <div v-if="voting.end_date" id="chart_div" style="padding-left: 22%;"></div>
+                    </div>
+                    <div class="column" style="padding-top: 4.1%;">
+                        <p v-if="voting.end_date" id="qr-result" style="text-align:center; text-">Puedes compartir los resultados de está votación mediante el siguiente código QR:</p>
+                        <canvas v-if="voting.end_date" id="qr-code" style="padding-left: 45%; padding-bottom:4%"></canvas>
+                        <hr>
+                        <p class="redes">¡También puedes compartir los resultados en las redes sociales!</p>
+                        <p class="rrss">
+                            <a href="javascript:var dir=window.document.URL;var tit=window.document.title;var tit2=encodeURIComponent(tit);var dir2= encodeURIComponent(dir);window.location.href=('http://www.facebook.com/share.php?u='+dir2);"><img src="https://i2.wp.com/www.alexborras.com/wp-content/uploads/2011/04/facebook-logo.png?resize=256%2C256" border="0" width="75" height="75" alt="Compartir" /></a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a href="javascript:var dir=window.document.URL;var tit=window.document.title;var tit2=encodeURIComponent(tit);window.location.href=('http://twitter.com/?status='+'%20'+dir+'');"><img src="https://norfipc.com/img/icon/share-twitter.png" border="0" width="100" height="30" alt="Compartir" /></a>
+                        </p>
+                        <hr>
+                    </div>
+                </div>
+                 
             </div>
-
+           
         </div>
     </div>
 {% endblock %}
@@ -51,9 +192,11 @@
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
     <script>
         var voting = {{voting|safe}};
+      
         var app = new Vue({
             delimiters: ['[[', ']]'],
             el: '#app-visualizer',
@@ -61,6 +204,20 @@
                 voting: voting
             }
         })
+      
+        
     </script>
-</body>
+
+    <script>
+        var qr;
+        (function() {
+                qr = new QRious({
+                element: document.getElementById('qr-code'),
+                size: 100,
+                value: window.location.href
+            });
+        })();
+    </script>
+
+
 {% endblock %}

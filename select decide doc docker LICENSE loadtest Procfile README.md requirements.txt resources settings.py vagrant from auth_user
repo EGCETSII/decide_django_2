@@ -1,0 +1,45 @@
+                           List of relations
+ Schema |               Name                |   Type   |     Owner      
+--------+-----------------------------------+----------+----------------
+ public | auth_group                        | table    | mgiiqvojvjclpp
+ public | auth_group_id_seq                 | sequence | mgiiqvojvjclpp
+ public | auth_group_permissions            | table    | mgiiqvojvjclpp
+ public | auth_group_permissions_id_seq     | sequence | mgiiqvojvjclpp
+ public | auth_permission                   | table    | mgiiqvojvjclpp
+ public | auth_permission_id_seq            | sequence | mgiiqvojvjclpp
+ public | auth_user                         | table    | mgiiqvojvjclpp
+ public | auth_user_groups                  | table    | mgiiqvojvjclpp
+ public | auth_user_groups_id_seq           | sequence | mgiiqvojvjclpp
+ public | auth_user_id_seq                  | sequence | mgiiqvojvjclpp
+ public | auth_user_user_permissions        | table    | mgiiqvojvjclpp
+ public | auth_user_user_permissions_id_seq | sequence | mgiiqvojvjclpp
+ public | authtoken_token                   | table    | mgiiqvojvjclpp
+ public | base_auth                         | table    | mgiiqvojvjclpp
+ public | base_auth_id_seq                  | sequence | mgiiqvojvjclpp
+ public | base_key                          | table    | mgiiqvojvjclpp
+ public | base_key_id_seq                   | sequence | mgiiqvojvjclpp
+ public | census_census                     | table    | mgiiqvojvjclpp
+ public | census_census_id_seq              | sequence | mgiiqvojvjclpp
+ public | django_admin_log                  | table    | mgiiqvojvjclpp
+ public | django_admin_log_id_seq           | sequence | mgiiqvojvjclpp
+ public | django_content_type               | table    | mgiiqvojvjclpp
+ public | django_content_type_id_seq        | sequence | mgiiqvojvjclpp
+ public | django_migrations                 | table    | mgiiqvojvjclpp
+ public | django_migrations_id_seq          | sequence | mgiiqvojvjclpp
+ public | django_session                    | table    | mgiiqvojvjclpp
+ public | mixnet_mixnet                     | table    | mgiiqvojvjclpp
+ public | mixnet_mixnet_auths               | table    | mgiiqvojvjclpp
+ public | mixnet_mixnet_auths_id_seq        | sequence | mgiiqvojvjclpp
+ public | mixnet_mixnet_id_seq              | sequence | mgiiqvojvjclpp
+ public | store_vote                        | table    | mgiiqvojvjclpp
+ public | store_vote_id_seq                 | sequence | mgiiqvojvjclpp
+ public | voting_question                   | table    | mgiiqvojvjclpp
+ public | voting_question_id_seq            | sequence | mgiiqvojvjclpp
+ public | voting_questionoption             | table    | mgiiqvojvjclpp
+ public | voting_questionoption_id_seq      | sequence | mgiiqvojvjclpp
+ public | voting_voting                     | table    | mgiiqvojvjclpp
+ public | voting_voting_auths               | table    | mgiiqvojvjclpp
+ public | voting_voting_auths_id_seq        | sequence | mgiiqvojvjclpp
+ public | voting_voting_id_seq              | sequence | mgiiqvojvjclpp
+(40 rows)
+
