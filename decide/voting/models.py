@@ -6,6 +6,42 @@ from django.dispatch import receiver
 from base import mods
 from base.models import Auth, Key
 
+#Votaciones binarias
+
+#Modelo votación binaria
+class VotacionBinaria(models.Model):
+    id = models.AutoField(primary_key=True)
+    titulo = models.CharField(max_length=60)
+    descripcion = models.TextField()
+
+    def str(self):
+        return self.titulo
+        
+    #Contea el número de Si (true) emitido en la votación binaria
+    def Numero_De_Trues(self):
+        return RespuestaBinaria.objects.filter(respuesta=1,votacionBinaria_id=self.id).count()
+
+    #Contea el número de No (false) emitido en la votación binaria
+    def Numero_De_Falses(self):
+        return RespuestaBinaria.objects.filter(respuesta=0,votacionBinaria_id=self.id).count()
+
+    #Añade una respuesta binaria a la votación del mismo tipo 
+    #Cuando creemos la respuesta binaria solo le tendremos que indicar los atributos de la respuesta en sí (el sentir del voto)
+    #La función entonces asociará la respuesta binaria emitida a la pregunta binaria en cuestión  
+    def addRespuestaBinaria(self,respuestaBinaria):
+        respuestaBinaria.votacionBinaria = self
+        respuestaBinaria.save()
+
+
+#Modelo respuesta binaria
+class RespuestaBinaria(models.Model):
+    id = models.AutoField(primary_key=True)
+    votacionBinaria = models.ForeignKey(VotacionBinaria,on_delete = models.CASCADE)
+    respuesta = models.BooleanField(choices =[(1,('Sí')),(0,('No'))])
+
+    def Nombre_Votacion(self):
+        return self.votacionBinaria.titulo
+
 
 class Question(models.Model):
     desc = models.TextField()
