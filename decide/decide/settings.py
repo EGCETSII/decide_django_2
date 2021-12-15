@@ -180,3 +180,9 @@ if os.path.exists("config.jsonnet"):
 
 
 INSTALLED_APPS = INSTALLED_APPS + MODULES
+
+NOSE_ARGS = [
+    '--with-xunit'
+    ]
+import django_heroku
+django_heroku.settings(locals(),test_runner=false)
