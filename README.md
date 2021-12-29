@@ -5,6 +5,8 @@ Unos cambios de otra rama
 Vamos a hacer un nuevo cambio para commit
 CAMBIO DE MASTER
 
+/n
+cherry prueba 1
 Plataforma voto electrónico educativa
 =====================================
 
