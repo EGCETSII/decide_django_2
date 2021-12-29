@@ -3,6 +3,7 @@
 cambio 2
 Unos cambios de otra rama
 Vamos a hacer un nuevo cambio para commit
+CAMBIO DE MASTER
 
 Plataforma voto electrónico educativa
 =====================================
