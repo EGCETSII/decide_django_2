@@ -4,6 +4,10 @@ on: [push]
 
 jobs:
   build:
+    strategy:
+      matrix:
+        pyversion: ['3.5','3.8']
+        
     runs-on: ubuntu-latest
 
     services:
@@ -20,10 +24,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python 3.8
+    - name: Set up Python ${{matrix.pyversion}}
       uses: actions/setup-python@v1
       with:
-        python-version: 3.8
+        python-version: ${{matrix.pyversion}}
     - name: psycopg2 prerequisites
       run: sudo apt-get install libpq-dev
     - name: Install dependencies
