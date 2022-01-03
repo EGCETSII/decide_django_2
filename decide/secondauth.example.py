@@ -12,4 +12,5 @@ DATABASES = {
     }
 }
 
+
 BASEURL = 'http://localhost:9000'

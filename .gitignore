@@ -24,7 +24,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
+decide-enviroment/
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -45,6 +45,8 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+loadtest/gen_census.py
+loadtest/locustfile.py
 
 # Translations
 *.mo
