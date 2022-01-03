@@ -1,0 +1,22 @@
+name: release
+
+on:
+  push: 
+    tags:
+      - '*'
+
+jobs:
+  buildTest:
+    uses: <tu org>/<tu repo>/.github/workflows/django.yml@master
+    secrets: 
+      CODACY_PROJECT_TOKEN: ${{secrets.CODACY_PROJECT_TOKEN}}
+      HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
+
+  release:
+    needs: buildTest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Release
+        uses: softprops/action-gh-release@v1
