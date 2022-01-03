@@ -1,6 +1,13 @@
 name: Python application
 
-on: [push]
+on:
+  push:
+     branches:
+     - master
+  workflow_call:
+    secrets:
+      CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+      HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
 
 jobs:
   build:
