@@ -7,6 +7,7 @@ jobs:
     strategy:
       matrix:
         pyversion: ['3.5','3.8']
+        postgres: ['12', '10.8']
         
     runs-on: ubuntu-latest
 
