@@ -4,16 +4,11 @@ on: [push]
 
 jobs:
   build:
-    strategy:
-      matrix:
-        pyversion: ['3.5','3.8']
-        postgres: ['12', '10.8']
-        
     runs-on: ubuntu-latest
 
     services:
       postgres:
-        image: postgres:${{matrix.postgres}}
+        image: postgres:10.8
         env:
           POSTGRES_USER: decide
           POSTGRES_PASSWORD: decide
@@ -25,10 +20,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python ${{matrix.pyversion}}
+    - name: Set up Python 3.8
       uses: actions/setup-python@v1
       with:
-        python-version: ${{matrix.pyversion}}
+        python-version: 3.8
     - name: psycopg2 prerequisites
       run: sudo apt-get install libpq-dev
     - name: Install dependencies
@@ -46,7 +41,6 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: decide/coverage.xml
   deploy:
-    needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
