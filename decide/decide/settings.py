@@ -193,6 +193,7 @@ DEFAULT_VERSION = 'v1'
 try:
     from local_settings import *
 except ImportError:
+
     
     deploy_type= env("DEPLOY_TYPE")
     print("Tipo de despliegue: ", deploy_type)
@@ -235,6 +236,7 @@ except ImportError:
             'voting': BASEURL,
         }
         print("settings.py configured for the GitHub virtual machine ")
+
 
 # loading jsonnet config
 if os.path.exists("config.jsonnet"):
