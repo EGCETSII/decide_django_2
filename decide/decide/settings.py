@@ -87,7 +87,7 @@ MODULES = [
     'store',
     'visualizer',
     'voting',
-    'scheduler',
+   
 ]
 
 BASEURL = 'http://127.0.0.1:8000'
@@ -193,25 +193,48 @@ DEFAULT_VERSION = 'v1'
 try:
     from local_settings import *
 except ImportError:
-    APIS = {
-    'authentication': 'https://egc-part-chullo-decide.herokuapp.com/',
-    'base': 'https://egc-part-chullo-decide.herokuapp.com/',
-    'booth': 'https://egc-part-chullo-decide.herokuapp.com/',
-    'census': 'https://egc-part-chullo-decide.herokuapp.com/',
-    'mixnet': 'https://egc-part-chullo-decide.herokuapp.com/',
-    'postproc': 'https://egc-part-chullo-decide.herokuapp.com/',
-    'store': 'https://egc-part-chullo-decide.herokuapp.com/',
-    'visualizer': 'https://egc-part-chullo-decide.herokuapp.com/',
-    'voting': 'https://egc-part-chullo-decide.herokuapp.com/',
-    }
+    
+    deploy_type= env("DEPLOY_TYPE")
+    print("Tipo de despliegue: ", deploy_type)
+    if deploy_type=='heroku':
+        
+        APIS = {
+            'authentication': 'https://decide-part-chullo-2.herokuapp.com',
+            'base': 'https://decide-part-chullo-2.herokuapp.com',
+            'booth': 'https://decide-part-chullo-2.herokuapp.com',
+            'census': 'https://decide-part-chullo-2.herokuapp.com',
+            'mixnet': 'https://decide-part-chullo-2.herokuapp.com',
+            'postproc': 'https://decide-part-chullo-2.herokuapp.com',
+            'store': 'https://decide-part-chullo-2.herokuapp.com',
+            'visualizer': 'https://decide-part-chullo-2.herokuapp.com',
+            'voting': 'https://decide-part-chullo-2.herokuapp.com',
+        }
 
-    BASEURL =  'https://egc-part-chullo-decide.herokuapp.com/'
+        BASEURL =  'https://decide-part-chullo-2.herokuapp.com'
 
-    DATABASES = dict()
+        DATABASES = dict()
 
-    DATABASES['default'] =  dj_database_url.config()
-    django_heroku.settings(locals())
-    print("local_settings.py not found")
+        DATABASES['default'] =  dj_database_url.config()
+        django_heroku.settings(locals())
+        print("settings.py configured for heroku")
+
+    elif deploy_type=='github':
+        print("Configurando settings.py para github")
+
+        BASEURL = 'http://localhost:8000'
+
+        APIS = {
+            'authentication': BASEURL,
+            'base': BASEURL,
+            'booth': BASEURL,
+            'census': BASEURL,
+            'mixnet': BASEURL,
+            'postproc': BASEURL,
+            'store': BASEURL,
+            'visualizer': BASEURL,
+            'voting': BASEURL,
+        }
+        print("settings.py configured for the GitHub virtual machine ")
 
 # loading jsonnet config
 if os.path.exists("config.jsonnet"):

@@ -23,7 +23,7 @@ import re
 from selenium.webdriver.support.ui import Select
 import time
 from django.core import mail
-
+'''
 class VotingTestCase(BaseTestCase):
 
     def setUp(self):
@@ -930,3 +930,4 @@ class SeleniumNotificationTestCase(SeleniumBaseTestCase):
         self.assertEqual(mail.outbox[0].to,['testuser2@gmail.com'])      #Se envía el correo al usuario que puede participar
         self.assertNotEqual(mail.outbox[0].to, ['testuser@gmail.com'])   #Se envía un correo pero no al usuario que no puede participar                             
 
+'''

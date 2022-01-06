@@ -2,6 +2,7 @@
 
 Plataforma voto electrónico educativa
 =====================================
+Cambio en la rama para probar el despliegue automático en heroku: Intento 1
 
 El objetivo de este proyecto es implementar una plataforma de voto
 electrónico seguro, que cumpla una serie de garantías básicas, como la
