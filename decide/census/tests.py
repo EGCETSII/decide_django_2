@@ -2,7 +2,6 @@ import time
 import random
 from django.contrib.auth.models import User, UserManager, Group
 from django.test import TestCase, Client
-from base.tests import SeleniumBaseTestCase
 from rest_framework.test import APIClient
 
 from .models import Census, ParentGroup
@@ -14,12 +13,11 @@ import logging as log
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from django.contrib.auth.models import User
 
 from base import mods
 from base.tests import BaseTestCase, SeleniumBaseTestCase
 
-from django.contrib.auth.models import User, Group
+
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.common.keys import Keys
 import os
@@ -33,7 +31,6 @@ from selenium.webdriver.common.by import By
 from census.import_and_export import * 
 
 import re
-'''
 
 class CensusTestCase(BaseTestCase):
 
@@ -777,8 +774,9 @@ class ImportAndExportGroupSeleniumTestCase(SeleniumBaseTestCase):
         self.driver.get(f"{self.live_server_url}/census/groups/export/")
         self.assertFalse(re.fullmatch(f'{self.live_server_url}/census/groups/export/', self.driver.current_url))
 
-'''
+
 class JoinPublicGroup(BaseTestCase):
+
 
     def setUp(self):
         super().setUp()
@@ -840,6 +838,7 @@ class JoinPublicGroup(BaseTestCase):
         response = self.client.post('/census/joinGroup/', data, format='json')
         self.assertEqual(response.status_code, 401)
 
+
 class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
 
 
@@ -853,17 +852,24 @@ class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
         user4.set_password('user4')
         user4.save()
 
+
         group1 = ParentGroup.objects.create(name='group1', isPublic=True, pk=100)
+
+
         group1.voters.set([user1])
 
         self.groups = [group1]
         self.users = [user1, user4]
+<<<<<<< HEAD
         
         return super().setUp()  
+=======
+
+        return super().setUp()    
+>>>>>>> 1c0f72d3579b5ad65c540d18f0654a1c4f295e1e
 
     def tearDown(self):
         super().tearDown()
-    
     
     def test_add_group_public_exito(self):
 
@@ -875,12 +881,12 @@ class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
         # El usuario se logea
         self.driver.find_element_by_id('username').send_keys('user4')
         self.driver.find_element_by_id('password').send_keys('user4',Keys.ENTER)
-        
+
         # El usuario se encuentra con un formulario de tipo RADIO
 
         wait = WebDriverWait(self.driver, 10)
         botonRadio= wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='100']")))
-        
+
         self.assertEquals(botonRadio.get_attribute("type"),"radio")
 
         # El usuario selecciona el grupo al que desea unirse
@@ -892,7 +898,9 @@ class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
         self.driver.find_element_by_xpath("//button[@class='close']").click()
 
 
-    def test_add_group_public_error(self):
+
+    def test_add_group_private_error(self):
+
 
 
         # Intentamos acceder a la vista para seleccionar grupo
@@ -902,12 +910,12 @@ class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
         # El usuario se logea
         self.driver.find_element_by_id('username').send_keys('user1')
         self.driver.find_element_by_id('password').send_keys('user1',Keys.ENTER)
-        
+
         # El usuario se encuentra con un formulario de tipo RADIO
 
         wait = WebDriverWait(self.driver, 10)
         botonRadio= wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='100']")))
-        
+
         self.assertEquals(botonRadio.get_attribute("type"),"radio")
 
         # El usuario selecciona el grupo al que desea unirse
@@ -918,6 +926,3 @@ class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
         self.assertEquals(mensaje_exito,'× No puedes unirte a un grupo al que ya perteneces o a un grupo privado || Error:Unauthorized')
         self.driver.find_element_by_xpath("//button[@class='close']").click()
 
-        
-    
-    
