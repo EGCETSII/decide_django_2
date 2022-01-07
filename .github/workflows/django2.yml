@@ -63,8 +63,14 @@ jobs:
         pip install codacy-coverage
     - name: print secrets
       run: |
-        echo $DEV_ENV_FILE >> decide/decide/.env
         echo "DEPLOY_TYPE=github" >> decide/decide/.env
+        echo "EMAIL_HOST=${{secrets.EMAIL_HOST}}" >> decide/decide/.env
+        echo "EMAIL_HOST_USER=${{secrets.EMAIL_HOST_USER}}" >> decide/decide/.env
+        echo "EMAIL_HOST_PASSWORD=${{secrets.EMAIL_HOST_PASSWORD}}" >> decide/decide/.env
+        echo "client_id_discord=${{secrets.CLIENT_ID_DISCORD}}" >> decide/decide/.env
+        echo "client_id_github=${{secrets.CLIENT_ID_GITHUB}}" >> decide/decide/.env
+        echo "secret_key_github=${{secrets.SECRET_KEY_GITHUB}}" >> decide/decide/.env
+        echo "secret_key_discord=${{secrets.SECRET_KEY_DISCORD}}" >> decide/decide/.env
     - name: Run migrations        
       run: cd decide;python manage.py migrate
     - name: Run tests     
