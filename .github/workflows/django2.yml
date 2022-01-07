@@ -89,6 +89,7 @@ jobs:
         echo "client_id_discord=${{secrets.CLIENT_ID_DISCORD}}" >> decide/decide/.env
         echo "client_id_github=${{secrets.CLIENT_ID_GITHUB}}" >> decide/decide/.env
         echo "secret_key_github=${{secrets.SECRET_KEY_GITHUB}}" >> decide/decide/.env
+        echo "secret_key_discord=${{secrets.SECRET_KEY_DISCORD}}" >> decide/decide/.env
     - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
       with:
           heroku_api_key: "${{secrets.HEROKU_API_KEY_2}}"
