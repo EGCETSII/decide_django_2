@@ -30,27 +30,3 @@ class BoothView(TemplateView):
         context['KEYBITS'] = settings.KEYBITS
 
         return context
-    
-class ChildBoothView(TemplateView):
-    template_name = 'booth/booth.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        vid = kwargs.get('voting_id', 0)
-        cid = kwargs.get('child_id', 1)
-
-        try:
-            r = mods.get('child_voting', params={'id': cid})
-            # Casting numbers to string to manage in javascript with BigInt
-            # and avoid problems with js and big number conversion
-            for k, v in r[0]['parent_voting.pk'].items():
-                r[0]['parent_voting.pk'][k] = str(v)
-
-            context['child_voting'] = json.dumps(r[0])
-            
-        except:
-            raise Http404
-
-        context['KEYBITS'] = settings.KEYBITS
-
-        return context

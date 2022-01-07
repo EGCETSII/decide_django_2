@@ -83,7 +83,7 @@ def vote(filename):
 
     print('Votaciones: ')
     options = webdriver.ChromeOptions()
-    #options.headless = True
+    options.headless = True
     driver = webdriver.Chrome(options=options)
     for username, password in voters.items():
         print(f'{username} está votando...')

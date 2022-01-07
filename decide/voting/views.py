@@ -12,7 +12,7 @@ from rest_framework.status import (
 from django.db.utils import IntegrityError
 
 
-from .models import Question, QuestionOption, Voting
+from .models import ChildVoting, Question, QuestionOption, Voting
 from .serializers import SimpleVotingSerializer, VotingSerializer
 from base.perms import UserIsStaff
 from base.models import Auth
@@ -58,11 +58,6 @@ class VotingView(generics.ListCreateAPIView):
                     ParentGroup.objects.get(pk=int(id))
                 except:
                     return Response({}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            try:
-                groups = ParentGroup.objects.get(name='Users with no group' + str(request.data.get('pk')))
-            except:
-                return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
         #Creación de la pregunta
         question_type= request.data.get('question_type')
@@ -93,8 +88,9 @@ class VotingView(generics.ListCreateAPIView):
 
             # Obtener todos los usuarios que pertenecen al grupo
             for id in ids:
-                group = Group.objects.get(pk=int(id))
+                group = ParentGroup.objects.get(pk=int(id))
                 voters = User.objects.filter(groups=group)
+                ChildVoting.objects.create(parent_voting=Voting.objects.get(pk=voting_id),group=group)
 
                 # Por cada usuario
                 # Añadir al censo de dicha votación
@@ -107,6 +103,10 @@ class VotingView(generics.ListCreateAPIView):
                     return Response('Error try to create census', status=ST_409)
                 
             ###############
+        else:
+            group = ParentGroup.objects.create(name='Users with no group ' + str(voting_id), isPublic=True)
+            ChildVoting.objects.create(parent_voting=Voting.objects.get(pk=voting_id),group=group)
+
 
 
         return Response(data={'id': voting_id}, status=status.HTTP_201_CREATED)
@@ -132,7 +132,7 @@ class VotingUpdate(generics.RetrieveUpdateDestroyAPIView):
                 st = status.HTTP_400_BAD_REQUEST
             else:
                 voting.start_date = timezone.now()
-                # voting.create_pubkey()
+                voting.create_pubkey()
                 voting.save()
                 msg = 'Voting started'
         elif action == 'stop':

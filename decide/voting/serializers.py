@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Question, QuestionOption, Voting
+from .models import ChildVoting, Question, QuestionOption, Voting
 from base.serializers import KeySerializer, AuthSerializer
 
 

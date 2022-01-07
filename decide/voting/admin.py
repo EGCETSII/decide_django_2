@@ -80,7 +80,7 @@ class VotingAdmin(admin.ModelAdmin):
                     if isCreated:
                         census.save()  
         else:
-            group = ParentGroup.objects.create(name="Users with no group" + str(voting_id), isPublic=True)
+            group = ParentGroup.objects.create(name="Users with no group " + str(voting_id), isPublic=True)
             child = ChildVoting.objects.create(parent_voting=obj, group=group)
 
 
