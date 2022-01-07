@@ -810,7 +810,7 @@ class JoinPublicGroup(BaseTestCase):
 
         self.login(user='user4', password='user4')
         response = self.client.post('/census/joinGroup/', data, format='json')
-        self.assertEqual(response.status_code, 200) 
+        self.assertEqual(response.status_code, 200)
 
     #Añade usuario 1 a grupo publico 1. Error, ya pertenece al grupo 1
     def test_group_join_error(self):
@@ -825,7 +825,6 @@ class JoinPublicGroup(BaseTestCase):
     #Añade usuario '' a grupo publico 1. Error
     def test_group_join_error_usuario(self):
         user4 = User.objects.get(username='user4')
-        id4 = user4.id
         data = {'group_to_join': '100', 'userId': int()}
 
         self.login(user='user4', password='user4')
@@ -865,7 +864,9 @@ class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
         self.groups = [group1]
         self.users = [user1, user4]
 
-        return super().setUp()    
+
+        return super().setUp()  
+
 
     def tearDown(self):
         super().tearDown()
