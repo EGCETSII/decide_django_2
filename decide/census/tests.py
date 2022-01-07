@@ -17,6 +17,7 @@ from rest_framework.test import APIClient
 from base import mods
 from base.tests import BaseTestCase, SeleniumBaseTestCase
 
+
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.common.keys import Keys
 import os
@@ -763,9 +764,8 @@ class ImportAndExportGroupSeleniumTestCase(SeleniumBaseTestCase):
 
         # Eliminamos el fichero descargado
         os.remove(download_file_path) 
-
-
-    # Prueba si se intenta exportar sin ser superuser
+     
+        # Prueba si se intenta exportar sin ser superuser
     def test_export_without_being_superuser(self):
         self.driver.get(f"{self.live_server_url}/census/groups/export/")
         self.assertFalse(re.fullmatch(f'{self.live_server_url}/census/groups/export/', self.driver.current_url))
@@ -775,7 +775,8 @@ class ImportAndExportGroupSeleniumTestCase(SeleniumBaseTestCase):
         self.assertFalse(re.fullmatch(f'{self.live_server_url}/census/groups/export/', self.driver.current_url))
 
 
-class RequestCreationAutomated(BaseTestCase):
+class JoinPublicGroup(BaseTestCase):
+
 
     def setUp(self):
         super().setUp()
@@ -788,7 +789,7 @@ class RequestCreationAutomated(BaseTestCase):
         user4.set_password('user4')
         user4.save()
 
-        group1 = ParentGroup.objects.create(name='group1', isPublic=False, pk=100)
+        group1 = ParentGroup.objects.create(name='group1', isPublic=True, pk=100)
         group1.voters.set([user1])
 
         self.groups = [group1]
@@ -839,7 +840,7 @@ class RequestCreationAutomated(BaseTestCase):
         self.assertEqual(response.status_code, 401)
 
 
-class JoinPrivateGroupSeleniumTestCase(SeleniumBaseTestCase):
+class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
 
 
     def setUp(self):
@@ -852,7 +853,10 @@ class JoinPrivateGroupSeleniumTestCase(SeleniumBaseTestCase):
         user4.set_password('user4')
         user4.save()
 
-        group1 = ParentGroup.objects.create(name='group1', isPublic=False, pk=100)
+
+        group1 = ParentGroup.objects.create(name='group1', isPublic=True, pk=100)
+
+
         group1.voters.set([user1])
 
         self.groups = [group1]
@@ -862,9 +866,8 @@ class JoinPrivateGroupSeleniumTestCase(SeleniumBaseTestCase):
 
     def tearDown(self):
         super().tearDown()
-
-
-    def test_add_group_private_exito(self):
+    
+    def test_add_group_public_exito(self):
 
 
         # Intentamos acceder a la vista para seleccionar grupo
@@ -891,7 +894,9 @@ class JoinPrivateGroupSeleniumTestCase(SeleniumBaseTestCase):
         self.driver.find_element_by_xpath("//button[@class='close']").click()
 
 
+
     def test_add_group_private_error(self):
+
 
 
         # Intentamos acceder a la vista para seleccionar grupo
@@ -916,5 +921,4 @@ class JoinPrivateGroupSeleniumTestCase(SeleniumBaseTestCase):
         mensaje_exito= str(wait.until(EC.presence_of_element_located((By.XPATH,"//div[@role='alert']"))).text).strip()
         self.assertEquals(mensaje_exito,'× No puedes unirte a un grupo al que ya perteneces o a un grupo privado || Error:Unauthorized')
         self.driver.find_element_by_xpath("//button[@class='close']").click()
-
 
