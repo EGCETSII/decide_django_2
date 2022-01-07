@@ -82,11 +82,16 @@ jobs:
     - uses: actions/checkout@v1
     - name: print secrets
       run: |
-        echo $DEV_ENV_FILE >> decide/decide/.env
         echo "DEPLOY_TYPE=heroku" >> decide/decide/.env
+        echo "EMAIL_HOST=${{secrets.EMAIL_HOST}}" >> decide/decide/.env
+        echo "EMAIL_HOST_USER=${{secrets.EMAIL_HOST_USER}}" >> decide/decide/.env
+        echo "EMAIL_HOST_PASSWORD=${{secrets.EMAIL_HOST_PASSWORD}}" >> decide/decide/.env
+        echo "client_id_discord=${{secrets.CLIENT_ID_DISCORD}}" >> decide/decide/.env
+        echo "client_id_github=${{secrets.CLIENT_ID_GITHUB}}" >> decide/decide/.env
+        echo "secret_key_github=${{secrets.SECRET_KEY_GITHUB}}" >> decide/decide/.env
     - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
       with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY_2}}
+          heroku_api_key: "${{secrets.HEROKU_API_KEY_2}}"
           heroku_app_name: "decide-part-chullo-2"
           heroku_email: "vicdiacor@alum.us.es"
           env_file: "decide/decide/.env"
