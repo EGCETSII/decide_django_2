@@ -33,7 +33,6 @@ from census.import_and_export import *
 
 import re
 
-'''
 
 class CensusTestCase(BaseTestCase):
 
@@ -923,8 +922,7 @@ class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
         # El usuario selecciona el grupo al que desea unirse
 
         botonRadio.click()
-        
-     '''   
+
 
 class JoinPrivateGroup(BaseTestCase):
 
