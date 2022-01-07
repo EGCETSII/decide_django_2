@@ -3,7 +3,7 @@
   become: yes
   become_user: decide
   git:
-    repo: 'https://github.com/wadobo/decide.git'
+    repo: 'https://github.com/decide-part-chullo/decide.git'
     dest: /home/decide/decide
     version: master
 

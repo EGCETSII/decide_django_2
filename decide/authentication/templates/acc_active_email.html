@@ -1,0 +1,8 @@
+{% autoescape off %}  
+Hola {{ user.first_name }} {{ user.last_name }}.  
+Por favor haga click en el siguiente enlace para completar su registro en la aplicación de voto electrónico DECIDE:  
+http://{{ domain }}{% url 'activate' id=uid token=token %}  
+
+Muchas gracias por confiar en nosotros.
+
+{% endautoescape %}  

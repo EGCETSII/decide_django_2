@@ -1,0 +1,43 @@
+{% extends 'master.html' %}
+
+
+
+{% block contenido %} 
+
+<table class="table table-hover"> 
+	<h2>Nuevas votaciones</h2>
+	<tr>
+		<th>Nombre</th>
+		<th>Descripción</th>
+		<th>Grupos</th>
+		<th>Fecha de inicio</th>
+	</tr>
+
+	{% for v in votings %}
+	<tr>
+		<td>{{v.name}}</td>
+		<td>{{v.desc}}</td>
+		<td>
+			{% if v.groups == None %}		
+			No hay grupos asignados
+			{% else %}
+			{{v.groups}}
+			{% endif %}
+		</td>
+		<td>
+			{% if v.start_date == None %}		
+			Esta votación no ha comenzado
+			{% else %}
+			{{v.start_date}}
+			{% endif %}
+		</td>
+	</tr>
+
+	{% endfor %}
+
+</table>
+
+
+
+
+{% endblock %}

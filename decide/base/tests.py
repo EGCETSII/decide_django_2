@@ -46,7 +46,8 @@ class SeleniumBaseTestCase(StaticLiveServerTestCase):
         self.base.setUp()
 
         options = webdriver.ChromeOptions()
-        options.headless = True
+        options.headless = False
+        options.add_argument("--incognito")
         self.driver = webdriver.Chrome(options=options)
 
         super().setUp()            
@@ -59,5 +60,10 @@ class SeleniumBaseTestCase(StaticLiveServerTestCase):
     
     def login(self, username='admin', password='qwerty'):
         self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element_by_id('id_username').send_keys(username)
+        self.driver.find_element_by_id('id_password').send_keys(password, Keys.ENTER)
+
+    def auth_login(self, username='admin', password='qwerty'):
+        self.driver.get(f'{self.live_server_url}/authentication/iniciar_sesion')
         self.driver.find_element_by_id('id_username').send_keys(username)
         self.driver.find_element_by_id('id_password').send_keys(password, Keys.ENTER)

@@ -4,6 +4,7 @@ from django.utils import timezone
 from .models import QuestionOption
 from .models import Question
 from .models import Voting
+from django.core.mail import send_mail
 
 from .filters import StartedFilter
 
@@ -13,7 +14,16 @@ from census.models import Census
 
 
 def start(modeladmin, request, queryset):
+    
+    
     for v in queryset.all():
+    # #IDs de los usuarios que puede participar en la votación
+        users_id=list(Census.objects.filter(voting_id=v.id).values_list('voter_id', flat=True))
+        users_email = []
+        for u in users_id:
+            users_email.extend(list(User.objects.filter(id=u).values_list('email',flat = True)))
+        send_mail('Nueva votación creada', 'Ha comenzado una nueva votación en la que puedes participar',
+        'decidepartchullo@gmail.com', users_email, fail_silently=False)  
         v.create_pubkey()
         v.start_date = timezone.now()
         v.save()
@@ -26,7 +36,9 @@ def stop(ModelAdmin, request, queryset):
 
 
 def tally(ModelAdmin, request, queryset):
+   
     for v in queryset.filter(end_date__lt=timezone.now()):
+        
         token = request.session.get('auth-token', '')
         v.tally_votes(token)
 
@@ -40,7 +52,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 
 class VotingAdmin(admin.ModelAdmin):
-    list_display = ('name', 'start_date', 'end_date')
+    list_display = ('name', 'start_date', 'end_date', 'deadline')
     readonly_fields = ('start_date', 'end_date', 'pub_key',
                        'tally', 'postproc')
     date_hierarchy = 'start_date'
@@ -53,7 +65,7 @@ class VotingAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
         # Borro todos los censos de la votacion (actualizar la votacion)
-        voting_id = Voting.objects.all()[Voting.objects.all().count()-1].pk
+        voting_id = Voting.objects.get(pk=obj.pk).pk
         Census.objects.filter(voting_id=voting_id).delete()
 
         groups = obj.groups
@@ -69,10 +81,10 @@ class VotingAdmin(admin.ModelAdmin):
 
                 # Por cada usuario
                 # Añadir al censo de dicha votación
-                voting_id = Voting.objects.all()[Voting.objects.all().count()-1].pk
                 for voter in voters:
-                    census = Census(voting_id=voting_id, voter_id=voter.pk)
-                    census.save()                   
+                    census, isCreated = Census.objects.get_or_create(voting_id=voting_id, voter_id=voter.pk)  
+                    if isCreated:
+                        census.save()           
                     
 
 
