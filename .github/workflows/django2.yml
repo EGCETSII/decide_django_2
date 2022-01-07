@@ -15,14 +15,14 @@ on:
     branches:
       - master
       - develop
+      - hotfix/V2.0.0
       
   pull_request:
     branches:
       - master
       - develop
+      - hotfix/V2.0.0
       
-
-
   workflow_call:
     secrets:
       CODACY_PROJECT_TOKEN:
@@ -75,18 +75,26 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: decide/coverage.xml
   deploy_2:
-    if: ${{github.ref == 'refs/heads/master' }}
+    if: ${{github.ref == 'refs/heads/hotfix/V2.0.0' }}
     needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: print secrets
-      run: |
-        echo $DEV_ENV_FILE >> decide/decide/.env 
-        echo "DEPLOY_TYPE=heroku" >> decide/decide/.env
     - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
       with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY_2}}
           heroku_app_name: "decide-part-chullo-2"
           heroku_email: "vicdiacor@alum.us.es"
+          env_file: ".env"
+      env:
+        DEV_ENV_FILE: ${{secrets.ENV_SECRETS}}
+        EMAIL_HOST_USER: ${{secrets.EMAIL_HOST_USER}}
+        EMAIL_HOST_PASSWORD: ${{secrets.EMAIL_HOST_PASSWORD}}
+        EMAIL_HOST: ${{secrets.EMAIL_HOST}}
+        client_id_discord: ${{secrets.CLIENT_ID_DISCORD}}
+        secret_key_discord: ${{secrets.SECRET_KEY_DISCORD}}
+        client_id_github: ${{secrets.CLIENT_ID_GITHUB}}
+        secret_key_github: ${{secrets.SECRET_KEY_GITHUB}}
+        DEPLOY_TYPE: heroku
+
     - run: heroku run -a "decide-part-chullo-2" sh -c "python decide/manage.py shell -c \"from django.contrib.auth.models import User; User.objects.filter(username='admin') or User.objects.create_superuser('admin', 'admin@example.com', 'admin')\""
