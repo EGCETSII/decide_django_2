@@ -860,13 +860,10 @@ class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
 
         self.groups = [group1]
         self.users = [user1, user4]
-<<<<<<< HEAD
-        
-        return super().setUp()  
-=======
 
-        return super().setUp()    
->>>>>>> 1c0f72d3579b5ad65c540d18f0654a1c4f295e1e
+
+        return super().setUp()  
+
 
     def tearDown(self):
         super().tearDown()
