@@ -73,51 +73,77 @@ class SeleniumTestCase(SeleniumBaseTestCase):
     def tearDown(self):
         super().tearDown()
     
-    
-    def test_booth_single_option_vote(self):
+    # Comprueba que el usuario no puede acceder al booth antes de que comience la votación
+    def test_A_voting_not_started(self):
 
         # Accedemos a la votación antes de que empiece y da error
-        
+
         self.driver.get("{}/booth/{}".format(self.live_server_url,500))
         heading1 = self.driver.find_element_by_tag_name('h1').text
         self.assertEquals(heading1,'Not Found')
     
+    # Comprueba que se muestren diferentes formularios en función del tipo de votación (Seleccion única o múltiple)
+    def test_B_different_forms_depending_type_voting(self):
+       
         # Iniciamos las votaciones
+
         self.login()
         self.driver.find_element_by_link_text('Votings').click()
-      
         self.driver.find_element_by_id('action-toggle').click()
-        
         select = Select(self.driver.find_element_by_name('action'))
         select.select_by_visible_text('Start')
         self.driver.find_element_by_class_name('actions').find_element_by_class_name('button').click()
         self.driver.find_element_by_link_text('TERMINAR SESIÓN').click()
 
-
-        # Intentamos acceder a la votación una vez haya comenzado
+        # Accedemos a la votación de selección única
         self.driver.get("{}/booth/{}".format(self.live_server_url,500))
-
-
-        # El usuario se logea
         self.driver.find_element_by_id('username').send_keys('username1Grupo1')
         self.driver.find_element_by_id('password').send_keys('password',Keys.ENTER)
         
-        # El usuario se encuentra con un formulario de tipo RADIO
-
+        #  Comprobamos que el formulario es de tipo RADIO
         wait = WebDriverWait(self.driver, 10)
         botonRadio= wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='q2']")))
-        
         self.assertEquals(botonRadio.get_attribute("type"),"radio")
 
-        # El usuario selecciona una única opción y envía el voto con éxito
+        # Accedemos a la votación de selección múltiple
+        self.driver.get("{}/booth/{}".format(self.live_server_url,501))
+        self.driver.find_element_by_id('username').send_keys('username1Grupo1')
+        self.driver.find_element_by_id('password').send_keys('password',Keys.ENTER)
+    
+        # Comprobamos que ahora el formulario es de tipo CHECKBOX
+        wait = WebDriverWait(self.driver, 10)
+        checkbox_1= wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='q1']")))
+        checkbox_2= wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='q2']")))
+        self.assertEquals(checkbox_1.get_attribute("type"),"checkbox")
+        self.assertEquals(checkbox_2.get_attribute("type"),"checkbox")
+    
+    # Comprueba que el usuario puede votar con éxito desde booth para votaciones de selección única empezadas
+    def test_C_complete_single_option_vote(self):
+         # Iniciamos las votaciones
 
-        botonRadio.click()
+        self.login()
+        self.driver.find_element_by_link_text('Votings').click()
+        self.driver.find_element_by_id('action-toggle').click()
+        select = Select(self.driver.find_element_by_name('action'))
+        select.select_by_visible_text('Start')
+        self.driver.find_element_by_class_name('actions').find_element_by_class_name('button').click()
+        self.driver.find_element_by_link_text('TERMINAR SESIÓN').click()
+
+        # Accedemos a la votación 
+        self.driver.get("{}/booth/{}".format(self.live_server_url,500))
+        self.driver.find_element_by_id('username').send_keys('username1Grupo1')
+        self.driver.find_element_by_id('password').send_keys('password',Keys.ENTER)
+
+        # El usuario selecciona una única opción y envía el voto con éxito
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='q2']"))).click()
         self.driver.find_element_by_class_name('btn-primary').click()
         mensaje_exito= str(wait.until(EC.presence_of_element_located((By.XPATH,"//div[@role='alert']"))).text).strip()
         self.assertEquals(mensaje_exito,'× Conglatulations. Your vote has been sent')
         self.driver.find_element_by_xpath("//button[@class='close']").click()
 
         # El usuario intenta votar otra vez pero ya no está autorizado
+        wait = WebDriverWait(self.driver, 10)
         wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='q1']"))).click()
         self.driver.find_element_by_class_name('btn-primary').click()
         mensaje_no_autorizado= str(wait.until(EC.presence_of_element_located((By.XPATH,"//div[@role='alert']"))).text).strip()
@@ -127,29 +153,27 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         self.login()
         self.driver.find_element_by_link_text('Votes').click()
         votes_sent= self.driver.find_elements_by_link_text('500: 101')
-        # sleep(1000)
         self.assertEquals(len(votes_sent), 1)
         
         votes_sent[0].click()
         voting_id= self.driver.find_element_by_xpath("//input[@id='id_voting_id']").get_attribute('value')
         voter_id= self.driver.find_element_by_xpath("//input[@id='id_voter_id']").get_attribute('value')
-        a_encrypted= self.driver.find_element_by_xpath("//textarea[@id='id_a']").text
-        b_encrypted= self.driver.find_element_by_xpath("//textarea[@id='id_b']").text
+        wait = WebDriverWait(self.driver, 10)
+    
+        a_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_a']"))).text).strip()
+        b_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_b']"))).text).strip()
 
         self.assertEquals(voting_id,"500")
         self.assertEquals(voter_id,"101")
-        self.assertTrue(len(a_encrypted)==77)
-        self.assertTrue(len(b_encrypted)==77)
-    
-    def test_booth_multiple_option_vote(self):
 
-        # Accedemos a la votación antes de que empiece y da error
-        
-        self.driver.get("{}/booth/{}".format(self.live_server_url,501))
-        heading1 = self.driver.find_element_by_tag_name('h1').text
-        self.assertEquals(heading1,'Not Found')
+        self.assertTrue(len(a_encrypted)>0)
+        self.assertTrue(len(b_encrypted)>0)
     
-        # Iniciamos las votaciones
+    # Comprueba que el usuario puede votar con éxito desde booth para votaciones de selección múltiple
+    def test_D_complete_multiple_option_vote(self):
+       
+         # Iniciamos las votaciones
+
         self.login()
         self.driver.find_element_by_link_text('Votings').click()
         self.driver.find_element_by_id('action-toggle').click()
@@ -158,71 +182,64 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         self.driver.find_element_by_class_name('actions').find_element_by_class_name('button').click()
         self.driver.find_element_by_link_text('TERMINAR SESIÓN').click()
 
-        # Intentamos acceder a la votación una vez haya comenzado
+        # Accedemos a la votación de selección múltiple
         self.driver.get("{}/booth/{}".format(self.live_server_url,501))
-
-
-        # El usuario se logea
         self.driver.find_element_by_id('username').send_keys('username1Grupo1')
         self.driver.find_element_by_id('password').send_keys('password',Keys.ENTER)
         
-        # Se muestra un formulario de tipo CHECKBOX
+        # El usuario selecciona DOS opciones simultáneas y vota
+
         wait = WebDriverWait(self.driver, 10)
-        
-        checkbox_1= wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='q1']")))
-        checkbox_2= wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='q2']")))
-        self.assertEquals(checkbox_1.get_attribute("type"),"checkbox")
-        self.assertEquals(checkbox_2.get_attribute("type"),"checkbox")
+        wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='q1']"))).click()
+        wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='q2']"))).click()
 
-        # El usuario selecciona DOS opciones simultáneas y vota con éxito
-
-        checkbox_1.click()
-        checkbox_2.click()
         self.driver.find_element_by_class_name('btn-primary').click()
-        
         mensaje_exito= str(wait.until(EC.presence_of_element_located((By.XPATH,"//div[@role='alert']"))).text).strip()
+
+        # Comprobamos el mensaje generado de éxito
         self.assertEquals(mensaje_exito,'× Conglatulations. Your vote has been sent')
         self.driver.find_element_by_xpath("//button[@class='close']").click()
 
-        # El usuario intenta votar otra vez pero ya no está autorizado
+        # Comprobamos que el usuario no puede votar otra vez
+        wait = WebDriverWait(self.driver, 10)
         wait.until(EC.element_to_be_clickable((By.XPATH,"//input[@id='q1']"))).click()
         self.driver.find_element_by_class_name('btn-primary').click()
         mensaje_no_autorizado= str(wait.until(EC.presence_of_element_located((By.XPATH,"//div[@role='alert']"))).text).strip()
         self.assertEquals(mensaje_no_autorizado,'× Error: Unauthorized')
 
-        # Comprobamos que se han creado DOS VOTOS correctamente
+        # Comprobamos que se han creado DOS VOTOS correctamente, uno por cada opción seleccionada
         self.login()
         self.driver.find_element_by_link_text('Votes').click()
         votes_sent= self.driver.find_elements_by_link_text('501: 101')
         self.assertEquals(len(votes_sent), 2)
         
-        # Primer voto correctamente guardado y encriptado
+        # Comprobamos que el PRIMER VOTO se ha guardado y encriptado
         votes_sent[0].click()
         voting_id= self.driver.find_element_by_xpath("//input[@id='id_voting_id']").get_attribute('value')
         voter_id= self.driver.find_element_by_xpath("//input[@id='id_voter_id']").get_attribute('value')
-        a_encrypted= self.driver.find_element_by_xpath("//textarea[@id='id_a']").text
-        b_encrypted= self.driver.find_element_by_xpath("//textarea[@id='id_b']").text
+        wait = WebDriverWait(self.driver, 10)
+        a_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_a']"))).text).strip()
+        b_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_b']"))).text).strip()
 
         self.assertEquals(voting_id,"501")
         self.assertEquals(voter_id,"101")
-        self.assertTrue(len(a_encrypted)==77)
-        self.assertTrue(len(b_encrypted)==77)
-        
-        # Segundo voto correctamente guardado y encriptado
+              
+        self.assertTrue(len(a_encrypted)>0)
+        self.assertTrue(len(b_encrypted)>0)
+
+        # Comprobamos que el SEGUNDO VOTO se ha guardado y encriptado
         self.driver.find_element_by_link_text('Votes').click()
         votes_sent= self.driver.find_elements_by_link_text('501: 101')
         votes_sent[1].click()
         voting_id= self.driver.find_element_by_xpath("//input[@id='id_voting_id']").get_attribute('value')
         voter_id= self.driver.find_element_by_xpath("//input[@id='id_voter_id']").get_attribute('value')
-        a_encrypted= self.driver.find_element_by_xpath("//textarea[@id='id_a']").text
-        b_encrypted= self.driver.find_element_by_xpath("//textarea[@id='id_b']").text
+        wait = WebDriverWait(self.driver, 10)
+        a_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_a']"))).text).strip()
+        b_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_b']"))).text).strip()
 
         self.assertEquals(voting_id,"501")
         self.assertEquals(voter_id,"101")
-        self.assertTrue(len(a_encrypted)==77)
-        self.assertTrue(len(b_encrypted)==77)
-
-
-
-
+              
+        self.assertTrue(len(a_encrypted)>0)
+        self.assertTrue(len(b_encrypted)>0)
 

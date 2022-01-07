@@ -1,0 +1,13 @@
+
+
+# ============================== FORMATO PARA REALIZAR COMMIT: ==============================
+# “#(Código Issue de GitHub)”:  Descripción de muy alto nivel (No más de 50 caracteres, sin punto final y en modo imperativo o participio) 
+# Linea en blanco
+# Descripción opcional del trabajo realizado en dicho commit (qué y porqué). (Se intentará no superar los 72 caracteres) 
+#
+#
+# ============================== EJEMPLO DE COMMIT: ==============================
+# “#22”: Formulario de registro creado 
+#
+# Se ha creado un formulario en el front-end del sistema para que los usuarios puedan registrarse e iniciar sesión en la web
+# ================================================================================
