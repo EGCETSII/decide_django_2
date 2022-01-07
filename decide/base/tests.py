@@ -46,9 +46,8 @@ class SeleniumBaseTestCase(StaticLiveServerTestCase):
         self.base.setUp()
 
         options = webdriver.ChromeOptions()
-        #options.headless = True
-        #options.add_argument("--incognito")
-        options.headless = False
+        options.headless = True
+        options.add_argument("--incognito")
         self.driver = webdriver.Chrome(options=options)
 
         super().setUp()            

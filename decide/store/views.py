@@ -52,7 +52,11 @@ class StoreView(generics.ListAPIView):
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
         # validating voter
-        token = request.auth.key
+        try:
+            token = request.auth.key
+        except:
+            token= request.data.get("token")
+        
         voter = mods.post('authentication', entry_point='/getuser/', json={'token': token})
         voter_id = voter.get('id', None)
 

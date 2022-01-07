@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from decide import settings
 
+from django.views.generic import TemplateView
+
 from rest_framework.response import Response
 from rest_framework.status import (
         HTTP_201_CREATED,
@@ -10,26 +12,26 @@ from rest_framework.status import (
 from django.contrib.sites.shortcuts import get_current_site  
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, render
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
+
 from .serializers import UserSerializer
 from django.contrib.auth.forms import AuthenticationForm
 from authentication.forms import SignUpForm
 from django.contrib.auth import login, authenticate, logout
 from authentication.forms import *
-from authentication.import_and_export import * 
-from django.contrib import messages
 from django.http import HttpResponse
 from django.template.loader import render_to_string  
-import os
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import EmailMessage  
 from .tokens import account_activation_token  
 import base64
+
+from voting.models import Voting
+from census.models import Census
+
+
 
 #Validación formulario y envío de email
 def inicio_registro(request):
@@ -132,81 +134,15 @@ class RegisterView(APIView):
             return Response({}, status=HTTP_400_BAD_REQUEST)
 
         try:
-            user = User(username=username)
+            is_superuser = request.data.get('is_superuser', False)
+            if is_superuser:
+                print('AAAAA')
+                user = User(username=username , is_superuser=is_superuser)
+            else:
+                user = User(username=username)
             user.set_password(pwd)
             user.save()
             token, _ = Token.objects.get_or_create(user=user)
         except IntegrityError:
             return Response({}, status=HTTP_400_BAD_REQUEST)
         return Response({'user_pk': user.pk, 'token': token.key}, HTTP_201_CREATED)
-
-
-
-### Importar/Exportar
-
-
-FILE_PATH = 'authentication/files/'
-FORMATS = {'excel':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'txt': 'text/plain'}
-
-
-#@csrf_exempt
-def importGroup(request):
-    form = importForm()
-
-    if request.method == 'POST':
-        form = importForm(request.POST, request.FILES)
-        if form.is_valid():
-            name = form.cleaned_data['name'] 
-            file = request.FILES['file']
-            format = file.content_type
-
-            users_list = []
-            # Si file es excel, guardo el archivo para abrirlo después
-            if (format == FORMATS['excel']):
-                path = default_storage.save(FILE_PATH + 'temp_import.xlsx', ContentFile(file.read()))
-                users_list = readExcelFile(path)
-                os.remove(os.path.join(path))   # Borro el archivo tras su uso
-            # Si file es txt, no necesito guardar el fichero
-            elif (format == FORMATS['txt']):
-                users_list = readTxtFile(file)
-            else:
-                messages.error(request, "Formato de archivo no válido.")
-                return render(request, 'import_group.html', {'form': form, 'STATIC_URL':settings.STATIC_URL})
-
-            # Si todos los usuarios existen, creo el grupo y añado todos los usuarios de la lista
-            if (users_list != None):
-                b = createGroup(name, users_list)
-                # Si b==False, entonces ya existía un grupo con mismo nombre
-                if (b):
-                    messages.success(request, "Grupo creado correctamente.")
-                else:
-                    messages.success(request, "Grupo actualizado correctamente.")
-            else:
-                messages.error(request, "Uno de los usuarios indicados no existe.")
-
-    return render(request, 'import_group.html', {'form': form, 'STATIC_URL':settings.STATIC_URL})
-        
-
-#@csrf_exempt
-def exportGroup(request):
-    form = exportForm()
-
-    if request.method == 'POST':
-        form = exportForm(request.POST, request.FILES)
-        if form.is_valid():
-            group = form.cleaned_data['group']
-            users = User.objects.filter(groups=group)
-            
-            # Crea el Excel con los usuarios exportados
-            writeInExcelUsernames(users, FILE_PATH + 'temp_export.xlsx', 'temp_export.xlsx')
-                
-            # Abrir el Excel generado
-            with open(FILE_PATH + 'temp_export.xlsx', 'rb') as excel:
-                data = excel.read()
-
-            # Automáticamente descarga el archivo
-            resp = HttpResponse(data, content_type=FORMATS['excel'])
-            resp['Content-Disposition'] = 'attachment; filename=export_group.xlsx'
-            return resp
-
-    return render(request, 'export_group.html', {'form': form, 'STATIC_URL':settings.STATIC_URL})

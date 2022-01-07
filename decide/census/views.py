@@ -1,11 +1,20 @@
-from django.contrib.auth.models import User
+import logging as log
+import json
+from django.http import Http404
+from rest_framework import status
+from rest_framework.views import APIView
+from django.contrib.auth.models import User,Group
 from django.http.response import HttpResponse
 from django.shortcuts import render
+
 from django.db.utils import IntegrityError
+from django.views.generic import TemplateView
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic.base import View
 from rest_framework import generics, permissions
 from rest_framework.response import Response
+from .serializers import ParentGroupSerializer
 from rest_framework.status import (
     HTTP_201_CREATED as ST_201,
     HTTP_204_NO_CONTENT as ST_204,
@@ -16,16 +25,30 @@ from rest_framework.status import (
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from base.perms import UserIsStaff
+from .models import Census, ParentGroup, Request
 from decide import settings
-from .models import Census, ParentGroup
 from .forms import GroupOperationsForm
 
 group_successfully_created = "Grupo creado con éxito"
 operations_template = 'group_operations.html'
 
+from django.views.generic.base import View
+from census.import_and_export import *
+from census.forms import *
+import os
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib import messages
+from django.http import HttpResponse
+from django.shortcuts import render
+from decide import settings
+
 
 class CensusCreate(generics.ListCreateAPIView):
     permission_classes = (UserIsStaff,)
+    
 
     def create(self, request, *args, **kwargs):
         voting_id = request.data.get('voting_id')
@@ -183,3 +206,139 @@ class GroupOperations(View):
         for group in groups:
             qs = qs.difference(group.voters.all())
         return qs
+
+
+class ImportExportGroup(View):
+    ### Importar/Exportar
+
+
+    FILE_PATH = 'authentication/files/'
+    FORMATS = {'excel':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'txt': 'text/plain'}
+
+
+    @csrf_exempt
+    @login_required(login_url='/authentication/iniciar_sesion')
+    def importGroup(request):
+        form = importForm()
+
+        if not request.user.is_superuser:
+            return render(request, 'inicio.html', {'STATIC_URL':settings.STATIC_URL})
+
+        if request.method == 'POST':
+            form = importForm(request.POST, request.FILES)
+            if form.is_valid():
+                name = form.cleaned_data['name'] 
+                is_public = form.cleaned_data['is_public']
+                file = request.FILES['file']
+                format = file.content_type
+
+                users_list = []
+                # Si file es excel, guardo el archivo para abrirlo después
+                if (format == ImportExportGroup.FORMATS['excel']):
+                    path = default_storage.save(ImportExportGroup.FILE_PATH + 'temp_import.xlsx', ContentFile(file.read()))
+                    users_list = readExcelFile(path)
+                    os.remove(os.path.join(path))   # Borro el archivo tras su uso
+                # Si file es txt, no necesito guardar el fichero
+                elif (format == ImportExportGroup.FORMATS['txt']):
+                    users_list = readTxtFile(file)
+                else:
+                    messages.error(request, "Formato de archivo no válido.")
+                    return render(request, 'import_group.html', {'form': form, 'STATIC_URL':settings.STATIC_URL})
+
+                # Si todos los usuarios existen, creo el grupo y añado todos los usuarios de la lista
+                if (users_list != None):
+                    b = createGroup(name, users_list, is_public)
+                    # Si b==False, entonces ya existía un grupo con mismo nombre
+                    if (b):
+                        messages.success(request, "Grupo creado correctamente.")
+                    else:
+                        messages.success(request, "Grupo actualizado correctamente.")
+                else:
+                    messages.error(request, "Uno de los usuarios indicados no existe.")
+
+        return render(request, 'import_group.html', {'form': form, 'STATIC_URL':settings.STATIC_URL})
+            
+
+    @csrf_exempt
+    @login_required(login_url='/authentication/iniciar_sesion')
+    def exportGroup(request):
+        form = exportForm()
+
+        if not request.user.is_superuser:
+            return render(request, 'inicio.html', {'STATIC_URL':settings.STATIC_URL})
+
+        if request.method == 'POST':
+            form = exportForm(request.POST, request.FILES)
+            if form.is_valid():
+                group = form.cleaned_data['group']
+                users = User.objects.filter(groups=group)
+                
+                # Crea el Excel con los usuarios exportados
+                writeInExcelUsernames(users, ImportExportGroup.FILE_PATH + 'temp_export.xlsx', 'temp_export.xlsx')
+                    
+                # Abrir el Excel generado
+                with open(ImportExportGroup.FILE_PATH + 'temp_export.xlsx', 'rb') as excel:
+                    data = excel.read()
+
+                # Automáticamente descarga el archivo
+                resp = HttpResponse(data, content_type=ImportExportGroup.FORMATS['excel'])
+                resp['Content-Disposition'] = 'attachment; filename=export_group.xlsx'
+                return resp
+
+        return render(request, 'export_group.html', {'form': form, 'STATIC_URL':settings.STATIC_URL})
+
+
+# Listado de grupos públicos y privados
+class joinGroup(APIView):
+    
+    def post(self, request):
+            #Obtener grupo y usuario
+            id_group= int(request.data.get('group_to_join'))        
+            id_user= int(request.data.get('userId'))
+
+            try:
+                group = ParentGroup.objects.get(pk=id_group)
+                user = User.objects.get(pk=id_user)
+                voters = group.voters.all()
+                userIsInTheGroup= user in voters
+
+                print(group.voters)
+                # Añadir usuario al grupo 
+                if group!=None and user!= None and not userIsInTheGroup: #Comprobar también que el usuario no está ya en el grupo....
+                    
+                    if group.isPublic:
+                        
+                        group.voters.add(user)
+                        
+                        return Response({})
+
+                    elif group.isPublic == False:
+                        request = Request(voter_id=id_user, group_id=id_group)
+                        request.save()
+                        return Response({})
+
+                #Grupo en el que ya está el usuario
+                else:
+                    return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+            except:
+                return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+
+# TODO: check permissions and census
+class GroupsView(TemplateView):
+    template_name = 'groupList.html'
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        groups = ParentGroup.objects.all()
+
+        diccionario= {}
+        for group in groups:
+            diccionario[group.pk]= {"name": group.name, "isPublic": group.isPublic }
+       
+        
+        context['groups_info'] = diccionario
+        context['KEYBITS'] = settings.KEYBITS
+
+        return context
+ 

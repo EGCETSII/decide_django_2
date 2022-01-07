@@ -207,7 +207,6 @@
                     if (this.selected!=""){ // Votación de opción única
                         
                         this.selectedArray.push(this.selected)
-                        console.log(this.selectedArray)
                         
                     }
 
@@ -227,7 +226,7 @@
                         votes.push(vote)
                     
                     }
-                    
+
                     var data = {
                         votes: votes,
                         voting: this.voting.id,
@@ -249,6 +248,7 @@
                 }
             },
         })
+        
     </script>
 </body>
 {% endblock %}

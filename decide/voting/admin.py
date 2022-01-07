@@ -4,6 +4,7 @@ from django.utils import timezone
 from .models import ChildVoting, QuestionOption
 from .models import Question
 from .models import Voting
+from django.core.mail import send_mail
 
 from .filters import StartedFilter
 
@@ -13,7 +14,16 @@ from census.models import Census, ParentGroup
 
 
 def start(modeladmin, request, queryset):
+    
+    
     for v in queryset.all():
+    # #IDs de los usuarios que puede participar en la votación
+        users_id=list(Census.objects.filter(voting_id=v.id).values_list('voter_id', flat=True))
+        users_email = []
+        for u in users_id:
+            users_email.extend(list(User.objects.filter(id=u).values_list('email',flat = True)))
+        send_mail('Nueva votación creada', 'Ha comenzado una nueva votación en la que puedes participar',
+        'decidepartchullo@gmail.com', users_email, fail_silently=False)  
         v.create_pubkey()
         v.start_date = timezone.now()
         v.save()

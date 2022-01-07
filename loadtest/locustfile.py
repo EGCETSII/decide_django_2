@@ -79,15 +79,29 @@ class Voters(HttpUser):
 
 class DefImportGroup(SequentialTaskSet):
 
+    def on_start(self):
+        with open('admin.json') as f:
+            self.voters = json.loads(f.read())
+        self.voter = choice(list(self.voters.items()))
+
+    @task
+    def login(self):
+        username, pwd = self.voter
+        self.token = self.client.post("/authentication/login/", {
+            "username": username,
+            "password": pwd,
+        }).json()
+
+
     @task
     def importGroup(self):
         # Obtiene el path home/francisco/Escritorio/decide-part-chullo/decide/decide/authentication/files/testfiles/testgroup1.txt
         basepath = path.dirname(__file__)
-        filepath = path.abspath(path.join(basepath, "..", "decide/authentication/files/testfiles/testgroup1.txt"))
+        filepath = path.abspath(path.join(basepath, "..", "decide/census/files/testfiles/testgroup1.txt"))
         f = open(filepath, "r")
         files = {"file": f}
 
-        self.client.post("/authentication/groups/import/", 
+        self.client.post("/census/groups/import/", 
             data = {"name": "Grupo 1"}, files=files)        
 
 
@@ -100,15 +114,29 @@ class ImportGroup(HttpUser):
 
 
 class DefExportGroup(SequentialTaskSet):
+
+    def on_start(self):
+        with open('admin.json') as f:
+            self.voters = json.loads(f.read())
+        self.voter = choice(list(self.voters.items()))
+
+    @task
+    def login(self):
+        username, pwd = self.voter
+        self.token = self.client.post("/authentication/login/", {
+            "username": username,
+            "password": pwd,
+        }).json()
      
     @task
     def exportGroup(self):
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
-        self.client.post("/authentication/groups/export/", {
+        self.client.post("/census/groups/export/", {
             "group": "Grupo 1",
         }, headers=headers)
+
 
 # PARA QUE FUNCIONE, DESCOMENTAR @csrf_exempt en el método exportGroup del views.py de authentication
 class ExportGroup(HttpUser):

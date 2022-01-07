@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 
 <!DOCTYPE html>
 <html lang='es'>
@@ -14,16 +15,16 @@
             color: green
         }
     </style>
-    <meta charset='utf-8'>
-    <link rel="stylesheet" href="{{STATIC_URL}}css/uikit.min.css" />
-    <script src="{{STATIC_URL}}js/jquery.min.js"></script>
-    <script src="{{STATIC_URL}}js/uikit.min.js"></script>
-</head>
+	<meta charset='utf-8'>
+		<link rel="stylesheet" href="{% static "css/uikit.min.css" %}" />
+        <script src="{% static "js/jquery.min.js" %}"></script>
+        <script src="{% static "js/uikit.min.js" %}"></script>
+        <link href="/static/css/style.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+  
 
-<body>
-
-
-    <h1>Sistema de votación DECIDE</h1>
+	<h1>Sistema de votación DECIDE</h1>
     <nav class="uk-navbar-container" uk-navbar>
         <div class="uk-navbar-left">
 
@@ -33,39 +34,59 @@
                 </li>
 
 
-                <li><a href='/authentication/groups/import'>Importar grupo desde Excel.</a></li>
-                <li><a href='/authentication/groups/export'>Exportar miembros de un grupo a Excel.</a></li>
-
                 {% if user.is_superuser%}
                 <li><a href="/admin">Zona de administración</a></li>
+                <li><a href='/census/groups/import'>Importar grupo desde Excel.</a></li>
+                <li><a href='/census/groups/export'>Exportar miembros de un grupo a Excel.</a></li>
                 {%else%}
                 {%endif%}
 
-
                 {% if user.is_authenticated %}
+                <li><a href="/census/operations">Operaciones entre grupos</a></li>
+
+                <li><a href="/census/groupList">Unirse a grupo</a></li>
+
                 <li><a href="#">Sesión iniciada de {{user.username }}</a>
                     <div class="uk-navbar-dropdown">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             <li><a href="/authentication/cerrar_sesion">Cerrar sesión</a></li>
                         </ul>
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            {% if user.is_staff %}
+                                <li><a href="/voting/notifications_admin">Notificaciones ADMIN</a></li>
+                            {% endif %}
+                        </ul>
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li><a href="/voting/notifications">Notificaciones</a></li>
+                        </ul>
                     </div>
                 </li>
-                <li><a href="/census/operations">Operaciones entre grupos</a></li>
 
                 {%else %}
-                <li><a href="/authentication/registrarse">Regístrate</a></li>
                 <li><a href="/authentication/iniciar_sesion">Iniciar sesión</a></li>
+                <li><a href="/authentication/registrarse">Regístrate</a></li>
+
+
+                <li><a href="#">Autentícate con tus redes sociales</a>
+                    <div class="uk-navbar-dropdown">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li><a href="{% provider_login_url 'github' %}">Autentícate con GitHub</a></li>
+                            <li><a href="{% provider_login_url 'discord' %}">Autentícate con Discord</a></li>
+                        </ul>
+                    </div>
+                </li>
                 {% endif %}
+
             </ul>
 
         </div>
     </nav>
 
-    <hr>
-
+            <hr>
     <h1>{% block titulo %} {% endblock %}</h1>
-
+    {% block extrahead %}{% endblock %}
     {% block contenido %} {% endblock %}
+    {% block extrabody %}{% endblock %}
 </body>
 
 </html>

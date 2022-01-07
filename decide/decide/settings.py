@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import django_heroku
+import dj_database_url
+
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,7 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'scheduler.apps.SchedulerConfig',
-
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.discord',
+    'allauth.socialaccount.providers.github',
     'corsheaders',
     'django_filters',
     'rest_framework',
@@ -46,6 +58,11 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'gateway',
 ]
+
+SITE_ID = 1
+ACCOUNT_EMAIL_VERIFICATION = "none"
+LOGIN_REDIRECT_URL = "home"
+ACCOUNT_LOGOUT_ON_GET = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -57,6 +74,7 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = [
     'base.backends.AuthBackend',
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 MODULES = [
@@ -69,10 +87,10 @@ MODULES = [
     'store',
     'visualizer',
     'voting',
-    'scheduler',
+   
 ]
 
-BASEURL = 'http://localhost:8000'
+BASEURL = 'http://127.0.0.1:8000'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -175,7 +193,50 @@ DEFAULT_VERSION = 'v1'
 try:
     from local_settings import *
 except ImportError:
-    print("local_settings.py not found")
+
+    
+    deploy_type= env("DEPLOY_TYPE")
+    print("Tipo de despliegue: ", deploy_type)
+    if deploy_type=='heroku':
+        
+        APIS = {
+            'authentication': 'https://decide-part-chullo-2.herokuapp.com',
+            'base': 'https://decide-part-chullo-2.herokuapp.com',
+            'booth': 'https://decide-part-chullo-2.herokuapp.com',
+            'census': 'https://decide-part-chullo-2.herokuapp.com',
+            'mixnet': 'https://decide-part-chullo-2.herokuapp.com',
+            'postproc': 'https://decide-part-chullo-2.herokuapp.com',
+            'store': 'https://decide-part-chullo-2.herokuapp.com',
+            'visualizer': 'https://decide-part-chullo-2.herokuapp.com',
+            'voting': 'https://decide-part-chullo-2.herokuapp.com',
+        }
+
+        BASEURL =  'https://decide-part-chullo-2.herokuapp.com'
+
+        DATABASES = dict()
+
+        DATABASES['default'] =  dj_database_url.config()
+        django_heroku.settings(locals())
+        print("settings.py configured for heroku")
+
+    elif deploy_type=='github':
+        print("Configurando settings.py para github")
+
+        BASEURL = 'http://localhost:8000'
+
+        APIS = {
+            'authentication': BASEURL,
+            'base': BASEURL,
+            'booth': BASEURL,
+            'census': BASEURL,
+            'mixnet': BASEURL,
+            'postproc': BASEURL,
+            'store': BASEURL,
+            'visualizer': BASEURL,
+            'voting': BASEURL,
+        }
+        print("settings.py configured for the GitHub virtual machine ")
+
 
 # loading jsonnet config
 if os.path.exists("config.jsonnet"):
@@ -189,7 +250,27 @@ if os.path.exists("config.jsonnet"):
 INSTALLED_APPS = INSTALLED_APPS + MODULES
 
 EMAIL_USE_TLS = True  
-EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_HOST_USER = 'decidepartchullo@gmail.com'  
-EMAIL_HOST_PASSWORD = 'decide1234%'  
-EMAIL_PORT = 587  
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'discord': {
+        'APP': {
+            'client_id': env('client_id_discord'),
+            'secret': env('secret_key_discord'),
+            'key': ''
+        }
+    },
+    
+    'github': {
+        'APP': {
+            'client_id': env('client_id_github'),
+            'secret': env('secret_key_github'),
+            'key': ''
+        }
+    }
+}
