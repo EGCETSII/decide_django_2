@@ -53,6 +53,7 @@
             <div v-if="!signup">
                
                 <h2> Listado de grupos </h2>
+                <br>
                  
                 {% for groupId, details in groups_info.items %}
 
@@ -65,7 +66,8 @@
                     </b-form-radio>
                
                 {% endfor %}
-                
+                <br>
+                <b>Nota: </b><p>Si se intenta unir a un grupo no público, se creará una solicitud que tendrá que gestionar un administrador.</p>
                 <b-button type="button" variant="primary" v-on:click="joinGroup">
                     {% trans "Unirse" %}
                 </b-button>
@@ -181,7 +183,7 @@
                     }
                     this.postData("{% url "gateway" "census"  "/joinGroup/" %}", data)
                         .then(data => {
-                            this.showAlert("success", '{% trans "Congratulations. Now you are in the group!" %}');
+                            this.showAlert("success", '{% trans "Congratulations!" %}');
                         })
                         .catch(error => {
                             this.showAlert("danger", '{% trans "No puedes unirte a un grupo al que ya perteneces o a un grupo privado || Error:" %}' + error);

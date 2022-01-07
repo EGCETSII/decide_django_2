@@ -11,6 +11,8 @@ from rest_framework.status import (
 )
 from django.contrib.sites.shortcuts import get_current_site  
 from rest_framework.views import APIView
+from rest_framework import generics, permissions
+from django.views.generic import TemplateView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User, Group
 from django.db import IntegrityError
@@ -18,6 +20,8 @@ from django.shortcuts import get_object_or_404, render
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
 
 from .serializers import UserSerializer
+from census.models import Census
+from voting.models import Voting
 from django.contrib.auth.forms import AuthenticationForm
 from authentication.forms import SignUpForm
 from django.contrib.auth import login, authenticate, logout
@@ -27,6 +31,10 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage  
 from .tokens import account_activation_token  
 import base64
+import os
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import datetime
 
 from voting.models import Voting
 from census.models import Census
@@ -146,3 +154,5 @@ class RegisterView(APIView):
         except IntegrityError:
             return Response({}, status=HTTP_400_BAD_REQUEST)
         return Response({'user_pk': user.pk, 'token': token.key}, HTTP_201_CREATED)
+
+
