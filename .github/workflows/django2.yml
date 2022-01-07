@@ -85,7 +85,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY_2}}
           heroku_app_name: "decide-part-chullo-2"
           heroku_email: "vicdiacor@alum.us.es"
-          env_file: ".env"
+          env_file: "decide/decide/.env"
       env:
         DEV_ENV_FILE: ${{secrets.ENV_SECRETS}}
         EMAIL_HOST_USER: ${{secrets.EMAIL_HOST_USER}}
