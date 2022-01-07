@@ -1,0 +1,92 @@
+name: Python application
+
+env:
+  DEV_ENV_FILE: ${{secrets.ENV_SECRETS}}
+  EMAIL_HOST_USER: ${{secrets.EMAIL_HOST_USER}}
+  EMAIL_HOST_PASSWORD: ${{secrets.EMAIL_HOST_PASSWORD}}
+  EMAIL_HOST: ${{secrets.EMAIL_HOST}}
+  client_id_discord: ${{secrets.CLIENT_ID_DISCORD}}
+  secret_key_discord: ${{secrets.SECRET_KEY_DISCORD}}
+  client_id_github: ${{secrets.CLIENT_ID_GITHUB}}
+  secret_key_github: ${{secrets.SECRET_KEY_GITHUB}}
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      
+  pull_request:
+    branches:
+      - master
+      - develop
+      
+
+
+  workflow_call:
+    secrets:
+      CODACY_PROJECT_TOKEN:
+        required: true
+      HEROKU_API_KEY:
+        required: true
+      
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: decide
+          POSTGRES_PASSWORD: decide
+          POSTGRES_DB: decide
+          DEPLOY_TYPE: github
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: psycopg2 prerequisites
+      run: sudo apt-get install libpq-dev
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install codacy-coverage
+    - name: print secrets
+      run: |
+        echo $DEV_ENV_FILE >> decide/decide/.env
+        echo "DEPLOY_TYPE=github" >> decide/decide/.env
+    - name: Run migrations        
+      run: cd decide;python manage.py migrate
+    - name: Run tests     
+      run: cd decide;coverage run --branch --source=. ./manage.py test voting --keepdb; coverage xml;
+    - name: Codacy Coverage Reporter
+      uses: codacy/codacy-coverage-reporter-action@v1.1.0
+      with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: decide/coverage.xml
+  deploy_2:
+    if: ${{github.ref == 'refs/heads/master' }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: print secrets
+      run: |
+        echo $DEV_ENV_FILE >> decide/decide/.env 
+        echo "DEPLOY_TYPE=heroku" >> decide/decide/.env
+    - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY_2}}
+          heroku_app_name: "decide-part-chullo-2"
+          heroku_email: "vicdiacor@alum.us.es"
+    - run: heroku run -a "decide-part-chullo-2" sh -c "python decide/manage.py shell -c \"from django.contrib.auth.models import User; User.objects.filter(username='admin') or User.objects.create_superuser('admin', 'admin@example.com', 'admin')\""

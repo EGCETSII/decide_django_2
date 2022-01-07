@@ -102,8 +102,10 @@ class StoreTextCase(BaseTestCase):
         self.assertEqual(Vote.objects.first().voter_id, 1)
         self.assertEqual(Vote.objects.first().a, CTE_A)
         self.assertEqual(Vote.objects.first().b, CTE_B)
+         
+    def test_store_vote_multiple_choice(self):
 
-        # Test para Votación Multiple_Choices seleccionando 2 opciones (+2 votos)
+        # Test para Votación Multiple_Choices seleccionando 2 opciones
         
         VOTING_PK_2 = 346
         CTE_A2 = 97
@@ -113,6 +115,8 @@ class StoreTextCase(BaseTestCase):
         census = Census(voting_id=VOTING_PK_2, voter_id=1)
         census.save()
         self.gen_voting(VOTING_PK_2)
+
+        # Cada opción se envía como un voto encriptado
         data = {
             "voting": VOTING_PK_2,
             "voter": 1,
@@ -123,10 +127,11 @@ class StoreTextCase(BaseTestCase):
         response = self.client.post('/store/', data, format='json')
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(Vote.objects.count(), 3) # 1 voto single_option + 2 votos Multiple_Choices
-
+        # Comprobamos que se han añadido 2 votos (Uno por cada opción seleccionada)
         votos = Vote.objects.filter(voting_id=VOTING_PK_2, voter_id= 1)
-        self.assertEquals(len(votos), 2) # Se han realizado 2 votos Multiple_Choices
+        self.assertEquals(len(votos), 2)
+
+        # Comprobamos que los 2 votos guardados coinciden con los enviados
 
         for voto in votos:
             self.assertEqual(voto.voting_id, VOTING_PK_2)
@@ -136,7 +141,6 @@ class StoreTextCase(BaseTestCase):
             else:
                 self.assertEqual(voto.a, CTE_C2)
                 self.assertEqual(voto.b, CTE_D2)
-         
 
     def test_vote(self):
         self.gen_votes()
@@ -202,7 +206,11 @@ class StoreTextCase(BaseTestCase):
         self.assertEqual(votes[0]["voting_id"], v)
         self.assertEqual(votes[0]["voter_id"], u)
 
-        # Enviar votación múltiple con 2 opciones seleccionadas
+
+    # Comprueba que un usuario no puede volver a votar en la misma votación Multiple_Choice varias veces
+    def test_not_vote_2_times_multiple_choice(self):
+
+        # Enviar votación múltiple con 2 opciones seleccionadas (+2 votos nuevos encriptados)
 
         census = Census(voting_id=6000, voter_id=1)
         census.save()
@@ -217,13 +225,43 @@ class StoreTextCase(BaseTestCase):
         response = self.client.post('/store/', data, format='json')
         self.assertEqual(response.status_code, 200)
 
-        # Comprobar que la api devuelve 2 votos de dicho usuario para la votación anterior
+        # Comprobar que la api devuelve exactamente 2 votos de dicho usuario
 
         self.login()
         response = self.client.get('/store/?voting_id={}&voter_id={}'.format(6000, 1), format='json')
         self.assertEqual(response.status_code, 200)
         votes = response.json()
         self.assertEqual(len(votes), 2)
+
+        # Comprobar que el usuario no puede volver a votar en la misma votación  otra vez
+        response = self.client.post('/store/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+
+    #Comprueba que un usuario no puede volver a votar en la misma votación "Single_Option" varias veces
+    def test_not_vote_2_times_single_option(self):
+
+        # Enviar votación de opción única (+1 voto encriptado)
+
+        census = Census(voting_id=6000, voter_id=1)
+        census.save()
+        self.gen_voting(6000)
+        data = {
+            "voting": 6000,
+            "voter": 1,
+            "votes": [{ "a": 444, "b": 64 }]
+        }
+        user = self.get_or_create_user(1)
+        self.login(user=user.username)
+        response = self.client.post('/store/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        # Comprobar que la api devuelve exactamente 1 votos de dicho usuario
+
+        self.login()
+        response = self.client.get('/store/?voting_id={}&voter_id={}'.format(6000, 1), format='json')
+        self.assertEqual(response.status_code, 200)
+        votes = response.json()
+        self.assertEqual(len(votes), 1)
 
         # Comprobar que el usuario no puede volver a votar en la misma votación otra vez
         response = self.client.post('/store/', data, format='json')

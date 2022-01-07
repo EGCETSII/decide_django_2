@@ -17,7 +17,7 @@ class Request(models.Model):
     ACCEPTED = 'ACCEPTED' 
     REJECTED = 'REJECTED'
     PENDING = 'PENDING'
-    RequestStatus = ((ACCEPTED, 'ACCEPTED'), (REJECTED, 'REJECTED'), (PENDING, 'PENDING'))
+    RequestStatus = ((ACCEPTED, 'ACCEPTED'), (REJECTED, 'REJECTED'), (PENDING, 'PENDING'),)
 
     voter_id = models.PositiveIntegerField()
     group_id = models.PositiveIntegerField()

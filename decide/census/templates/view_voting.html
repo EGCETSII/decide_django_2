@@ -1,0 +1,37 @@
+{% extends 'master.html'%}
+
+{% block contenido %}
+{% if user.is_authenticated %}
+<div>
+</ul> El usuario {{voter}} tiene {{abiertas|length}} votaciones abiertas, {{paradas|length}} paradas y {{pendientes|length}} votaciones esperando a comenzar.
+Puede ver el resultado de {{cerradas|length}} votaciones.
+<p>Votaciones que aún no han comenzado:</p>
+<ul> 
+    {% for vot in pendientes %} 
+    <li>Votación {{vot}}</li>
+    {% endfor %} 
+</ul>
+
+<p>Votaciones abiertas:</p>
+<ul> 
+    {% for vot in abiertas %} 
+    <li><a href="{% url 'booth' voting_id=vot%}">Votación {{vot}}</a></li>
+    {% endfor %} 
+</ul> 
+<p>Votaciones cerradas:</p>
+<ul> 
+    {% for vot in paradas %} 
+    <li>Votación {{vot}}</li>
+    {% endfor %} 
+</ul>
+Puede visualizar los resultados de las siguienes votaciones:
+<ul> 
+    {% for vot in cerradas %} 
+    <li><a href="{% url 'visualizer' voting_id=vot%}">Votación {{vot}}</a></li>
+    {% endfor %} 
+</ul> 
+</div>
+{% else %}
+Necesitas iniciar sesión para ver esta página
+{% endif %}
+{% endblock %}
