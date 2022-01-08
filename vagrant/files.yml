@@ -19,3 +19,10 @@
   copy:
     src: files/settings.py
     dest: /home/decide/decide/decide/local_settings.py
+
+- name: .env
+  become: yes
+  become_user: decide
+  copy:
+    src: "files/.env"
+    dest: /home/decide/decide/decide/decide/.env
