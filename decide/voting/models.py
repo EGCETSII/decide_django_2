@@ -124,7 +124,7 @@ class Voting(models.Model):
 
 class ChildVoting(models.Model):
     parent_voting = models.ForeignKey(Voting, on_delete=models.CASCADE, related_name='children')
-    group = models.OneToOneField(ParentGroup, on_delete=models.CASCADE, blank=True)
+    group = models.ForeignKey(ParentGroup, on_delete=models.CASCADE, related_name='child_voting')
 
     tally = JSONField(blank=True, null=True)
     postproc = JSONField(blank=True, null=True)

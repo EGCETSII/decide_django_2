@@ -1,7 +1,8 @@
 from django.test import TestCase
 from base.tests import SeleniumBaseTestCase
 from store.models import Vote
-from voting.models import Voting, Question, QuestionOption
+from voting.models import Voting, Question, QuestionOption, ChildVoting
+from census.models import ParentGroup
 from mixnet.models import Auth
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -31,10 +32,8 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         opt2 = QuestionOption(question=q, option='opcion 2',number=2)
         opt2.save()
 
-
-        g1 = Group(name='Grupo 1', pk=100)
+        g1 = ParentGroup(name='Grupo 1', pk=100)
         g1.save()
-
 
         u1 = User(username='username1Grupo1', pk= 101)
         u1.set_password('password')
@@ -43,12 +42,16 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         u1.groups.set([g1])
         u1.save()
 
-        
         v = Voting(name='Voting SO', question=q, pk= 500, desc="Description")
         v.save()
         v.auths.add(a)
         v.save()
 
+        child = ChildVoting(parent_voting=v, pk= 600, group=g1)
+        child.save()
+        
+        v.children.add(child)
+        v.save()
 
         c = Census(voter_id=u1.id, voting_id=v.id, adscripcion= "awadwadd")
         c.save()
@@ -64,7 +67,13 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         v.save()
         v.auths.add(a)
         v.save()
-       
+
+        child = ChildVoting(parent_voting=v, pk= 601, group = g1)
+        child.save()
+
+        v.children.add(child)
+        v.save()
+
         c = Census(voter_id=u1.id, voting_id=v.id, adscripcion= "awadwadd")
         c.save()
         

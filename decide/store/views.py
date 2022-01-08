@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework import generics
 
 from census.models import ParentGroup
+from django.contrib.auth.models import User
+
 
 from .models import Vote
 from .serializers import VoteSerializer
@@ -62,8 +64,7 @@ class StoreView(generics.ListAPIView):
 
         
         if not (ChildVoting.objects.filter(parent_voting=vid).count()==1 and ChildVoting.objects.filter(parent_voting=vid).first().group.name.startswith('Users with no group')):
-            voting_groups = [child.group for child in ChildVoting.objects.filter(parent_voting=vid) if voter in child.group.voters.all()]
-            child_voting = ChildVoting.objects.filter(group=voting_groups[0])
+            child_voting = ChildVoting.objects.filter(parent_voting=vid, group__in=[group for group in User.objects.filter(id=voter_id).first().groups.all()]).first()
         else:
             child_voting = ChildVoting.objects.filter(parent_voting=vid).first()
 
