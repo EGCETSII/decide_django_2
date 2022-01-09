@@ -358,7 +358,7 @@ class GroupOperationsAPITestCases(BaseTestCase):
         self.assertEqual(response.status_code, 201)
 
         difference = ParentGroup.objects.get(name='difference')
-        self.assertEquals(len(difference.voters.all()), 1)       
+        self.assertEquals(len(difference.voters.all()), 1)
 
 
 
@@ -923,8 +923,8 @@ class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
         self.driver.find_element_by_xpath("//button[@class='close']").click()
 
 
-
-    def test_add_group_private_error(self):
+    # EL usuario trata de unirse a un grupo publico al que ya pertenece
+    def test_add_group_public_error(self):
 
 
 
@@ -946,6 +946,10 @@ class JoinPublicGroupSeleniumTestCase(SeleniumBaseTestCase):
         # El usuario selecciona el grupo al que desea unirse
 
         botonRadio.click()
+        self.driver.find_element_by_class_name('btn-primary').click()
+        mensaje_exito= str(wait.until(EC.presence_of_element_located((By.XPATH,"//div[@role='alert']"))).text).strip()
+        self.assertEquals(mensaje_exito,'× No puedes unirte a un grupo al que ya perteneces o a un grupo privado || Error:Unauthorized')
+        self.driver.find_element_by_xpath("//button[@class='close']").click()
 
 
 class JoinPrivateGroup(BaseTestCase):
@@ -1115,10 +1119,6 @@ class PositiveRequestSeleniumTestCase(SeleniumBaseTestCase):
         rq3.save()
 
         return super().setUp()
-        self.driver.find_element_by_class_name('btn-primary').click()
-        mensaje_exito= str(wait.until(EC.presence_of_element_located((By.XPATH,"//div[@role='alert']"))).text).strip()
-        self.assertEquals(mensaje_exito,'× No puedes unirte a un grupo al que ya perteneces o a un grupo privado || Error:Unauthorized')
-        self.driver.find_element_by_xpath("//button[@class='close']").click()
         
     def tearDown(self):
         super().tearDown()
@@ -1196,4 +1196,4 @@ class NegativeRequestSeleniumTestCase(SeleniumBaseTestCase):
         dropdown.find_element_by_xpath("//option[. = 'Reject']").click()
         self.driver.find_element_by_name("index").click()
         self.assertEquals(self.driver.find_element_by_css_selector(".row1 .field-request_status").text, "PENDING")
-
+        
