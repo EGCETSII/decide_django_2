@@ -6,6 +6,9 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 from base import mods
+import logging         
+from selenium.webdriver.remote.remote_connection import LOGGER
+
 
 
 class BaseTestCase(APITestCase):
@@ -44,10 +47,11 @@ class SeleniumBaseTestCase(StaticLiveServerTestCase):
         #Load base test functionality for decide
         self.base = BaseTestCase()
         self.base.setUp()
+        LOGGER.setLevel(logging.WARNING) # Muestra menos logs por pantalla
 
         options = webdriver.ChromeOptions()
         options.headless = True
-        options.add_argument("--incognito")
+        #options.add_argument("--incognito")
         self.driver = webdriver.Chrome(options=options)
 
         super().setUp()            

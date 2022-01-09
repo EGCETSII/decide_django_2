@@ -108,13 +108,20 @@ class VotingTestCase(BaseTestCase):
 
 
 
-    def create_voters(self, v):
+    def create_voters_and_child(self, v):
+        group = ParentGroup(name='Group')
+        group.save()
         for i in range(100):
             u, _ = User.objects.get_or_create(username='testvoter{}'.format(i))
             u.is_active = True
             u.save()
             c = Census(voter_id=u.id, voting_id=v.id)
             c.save()
+            group.user_set.add(u)
+            group.save()
+        child = ChildVoting(parent_voting=v, group=group)
+        child.save()
+        
 
     def get_or_create_user(self, pk):
         user, _ = User.objects.get_or_create(pk=pk)
@@ -126,6 +133,7 @@ class VotingTestCase(BaseTestCase):
     def store_votes_single_option(self, v):
         voters = list(Census.objects.filter(voting_id=v.id))
         voter = voters.pop()
+        print(voter.voter_id)
         clear = {}
         for opt in v.question.options.all():
             clear[opt.number] = 0
@@ -173,7 +181,7 @@ class VotingTestCase(BaseTestCase):
     def test_complete_voting_single_option(self):
       
             v = self.create_voting('SO')
-            self.create_voters(v)
+            self.create_voters_and_child(v)
             v.create_pubkey()
             v.start_date = timezone.now()
             v.save()
@@ -181,20 +189,20 @@ class VotingTestCase(BaseTestCase):
             self.login()  # set token
             v.tally_votes(self.token)
 
-            tally = v.tally
+            tally = v.children.all()[0].tally
             tally.sort()
             tally = {k: len(list(x)) for k, x in itertools.groupby(tally)}
             for q in v.question.options.all():
 
                 self.assertEqual(tally.get(q.number, 0), clear.get(q.number, 0))
 
-            for q in v.postproc:
+            for q in v.children.all()[0].postproc:
                 self.assertEqual(tally.get(q["number"], 0), q["votes"])
 
     def test_complete_voting_multiple_choice(self):
 
             v = self.create_voting('MC')
-            self.create_voters(v)
+            self.create_voters_and_child(v)
             v.create_pubkey()
             v.start_date = timezone.now()
             v.save()
@@ -202,16 +210,17 @@ class VotingTestCase(BaseTestCase):
             self.login()  # set token
             v.tally_votes(self.token)
 
-            tally = v.tally
+            tally = v.children.all()[0].tally
             tally.sort()
             tally = {k: len(list(x)) for k, x in itertools.groupby(tally)}
             for q in v.question.options.all():
 
                 self.assertEqual(tally.get(q.number, 0), clear.get(q.number, 0))
 
-            for q in v.postproc:
+            for q in v.children.all()[0].postproc:
                 self.assertEqual(tally.get(q["number"], 0), q["votes"])
 
+        
     def test_create_voting_from_api(self):
         data = {'name': 'Example'}
         response = self.client.post('/voting/', data, format='json')
@@ -249,6 +258,21 @@ class VotingTestCase(BaseTestCase):
         self.assertEquals(voting.question.options.all()[0].option, 'cat')
         self.assertEquals(voting.question.options.all()[1].option, 'dog')
         self.assertEquals(voting.question.options.all()[2].option, 'horse')
+
+    def test_create_voting_api_one_chil_default(self):
+        self.login()
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'question': 'I want a ',
+            'question_opt': ['cat', 'dog', 'horse'],
+            'groups': '',
+        }
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 201)
+        voting = Voting.objects.get(name='Example')
+        self.assertEqual(voting.children.all().count(), 1)
+        self.assertEqual(voting.children.all()[0].group.name, 'Users with no group ' + str(voting.pk))
 
     
     # Comprueba que si no le ofrecemos a la API un tipo de votación, se crea de tipo "Single Option" de manera predeterminada
@@ -411,6 +435,9 @@ class VotingTestCase(BaseTestCase):
         numUsersInCensus = Census.objects.filter(voting_id=voting.pk).count()
         self.assertEqual(numUsersInCensus, 3)
 
+        correctNumberChild = ChildVoting.objects.filter(parent_voting=voting).count()
+        self.assertEqual(correctNumberChild, 2)
+'''
 class SeleniumTestCase(SeleniumBaseTestCase):    
 
     def setUp(self):
@@ -538,12 +565,7 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         
         self.driver.find_element_by_class_name('errornote')
 
-<<<<<<< HEAD
-class ChildVotingTestCase(BaseTestCase):
-
-=======
 class VotingNotificationTestCase(BaseTestCase):
->>>>>>> develop
     def setUp(self):
         # Crea un grupo con dos usuarios y otro con un usuario para probar el funcionamiento de los grupos en las votaciones
         g1 = Group(name='Grupo 1', pk=100)
@@ -850,3 +872,4 @@ class SeleniumNotificationTestCase(SeleniumBaseTestCase):
         self.assertEqual(mail.outbox[0].to,['testuser2@gmail.com'])      #Se envía el correo al usuario que puede participar
         self.assertNotEqual(mail.outbox[0].to, ['testuser@gmail.com'])   #Se envía un correo pero no al usuario que no puede participar                             
 
+'''

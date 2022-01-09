@@ -161,7 +161,7 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         # Comprobamos que se ha creado un único voto correctamnete encriptado
         self.login()
         self.driver.find_element_by_link_text('Votes').click()
-        votes_sent= self.driver.find_elements_by_link_text('500: 101')
+        votes_sent= self.driver.find_elements_by_link_text('600: 101')
         self.assertEquals(len(votes_sent), 1)
         
         votes_sent[0].click()
@@ -172,7 +172,7 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         a_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_a']"))).text).strip()
         b_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_b']"))).text).strip()
 
-        self.assertEquals(voting_id,"500")
+        self.assertEquals(voting_id,"600")
         self.assertEquals(voter_id,"101")
 
         self.assertTrue(len(a_encrypted)>0)
@@ -219,7 +219,7 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         # Comprobamos que se han creado DOS VOTOS correctamente, uno por cada opción seleccionada
         self.login()
         self.driver.find_element_by_link_text('Votes').click()
-        votes_sent= self.driver.find_elements_by_link_text('501: 101')
+        votes_sent= self.driver.find_elements_by_link_text('601: 101')
         self.assertEquals(len(votes_sent), 2)
         
         # Comprobamos que el PRIMER VOTO se ha guardado y encriptado
@@ -230,7 +230,7 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         a_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_a']"))).text).strip()
         b_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_b']"))).text).strip()
 
-        self.assertEquals(voting_id,"501")
+        self.assertEquals(voting_id,"601")
         self.assertEquals(voter_id,"101")
               
         self.assertTrue(len(a_encrypted)>0)
@@ -238,7 +238,7 @@ class SeleniumTestCase(SeleniumBaseTestCase):
 
         # Comprobamos que el SEGUNDO VOTO se ha guardado y encriptado
         self.driver.find_element_by_link_text('Votes').click()
-        votes_sent= self.driver.find_elements_by_link_text('501: 101')
+        votes_sent= self.driver.find_elements_by_link_text('601: 101')
         votes_sent[1].click()
         voting_id= self.driver.find_element_by_xpath("//input[@id='id_voting_id']").get_attribute('value')
         voter_id= self.driver.find_element_by_xpath("//input[@id='id_voter_id']").get_attribute('value')
@@ -246,7 +246,7 @@ class SeleniumTestCase(SeleniumBaseTestCase):
         a_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_a']"))).text).strip()
         b_encrypted= str(wait.until(EC.presence_of_element_located((By.XPATH,"//textarea[@id='id_b']"))).text).strip()
 
-        self.assertEquals(voting_id,"501")
+        self.assertEquals(voting_id,"601")
         self.assertEquals(voter_id,"101")
               
         self.assertTrue(len(a_encrypted)>0)
