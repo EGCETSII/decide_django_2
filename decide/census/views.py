@@ -33,7 +33,12 @@ group_successfully_created = "Grupo creado con éxito"
 operations_template = 'group_operations.html'
 
 from django.views.generic.base import View
-from census.import_and_export import *
+
+from census.import_and_export import readExcelFile
+from census.import_and_export import readTxtFile
+from census.import_and_export import createGroup
+from census.import_and_export import writeInExcelUsernames
+
 from census.forms import *
 import os
 from django.core.files.storage import default_storage
@@ -213,8 +218,7 @@ class GroupOperations(View):
 class ImportExportGroup(View):
     ### Importar/Exportar
 
-
-    FILE_PATH = 'authentication/files/'
+    FILE_PATH = '/'.join(__file__.split('/')[:-1])
     FORMATS = {'excel':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'txt': 'text/plain'}
 
 
@@ -237,7 +241,7 @@ class ImportExportGroup(View):
                 users_list = []
                 # Si file es excel, guardo el archivo para abrirlo después
                 if (format == ImportExportGroup.FORMATS['excel']):
-                    path = default_storage.save(ImportExportGroup.FILE_PATH + 'temp_import.xlsx', ContentFile(file.read()))
+                    path = default_storage.save(ImportExportGroup.FILE_PATH + '/files/temp_import.xlsx', ContentFile(file.read()))
                     users_list = readExcelFile(path)
                     os.remove(os.path.join(path))   # Borro el archivo tras su uso
                 # Si file es txt, no necesito guardar el fichero
@@ -276,10 +280,10 @@ class ImportExportGroup(View):
                 users = User.objects.filter(groups=group)
                 
                 # Crea el Excel con los usuarios exportados
-                writeInExcelUsernames(users, ImportExportGroup.FILE_PATH + 'temp_export.xlsx', 'temp_export.xlsx')
+                writeInExcelUsernames(users, ImportExportGroup.FILE_PATH + '/files/temp_export.xlsx', 'temp_export.xlsx')
                     
                 # Abrir el Excel generado
-                with open(ImportExportGroup.FILE_PATH + 'temp_export.xlsx', 'rb') as excel:
+                with open(ImportExportGroup.FILE_PATH + '/files/temp_export.xlsx', 'rb') as excel:
                     data = excel.read()
 
                 # Automáticamente descarga el archivo
