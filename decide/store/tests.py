@@ -62,8 +62,11 @@ class StoreTextCase(BaseTestCase):
             self.login(user=user.username)
             census = Census(voting_id=v, voter_id=random_user)
             census.save()
-            group = ParentGroup(name='group ' + str(v))
-            group.save()
+            try:
+                group = ParentGroup(name='group ' + str(v))
+                group.save()
+            except:
+                group = ParentGroup.objects.get(name='group ' + str(v))
             group.user_set.add(user)
             children = ChildVoting(parent_voting=Voting.objects.filter(pk=v).first(), group=group)
             children.save()
@@ -182,20 +185,21 @@ class StoreTextCase(BaseTestCase):
     def test_filter(self):
         votings, voters = self.gen_votes()
         v = votings[0]
+        children = ChildVoting.objects.filter(parent_voting=v).first()
 
-        response = self.client.get('/store/?voting_id={}'.format(v), format='json')
+        response = self.client.get('/store/?voting_id={}'.format(children.pk), format='json')
         self.assertEqual(response.status_code, 401)
 
         self.login(user='noadmin')
-        response = self.client.get('/store/?voting_id={}'.format(v), format='json')
+        response = self.client.get('/store/?voting_id={}'.format(children.pk), format='json')
         self.assertEqual(response.status_code, 403)
 
         self.login()
-        response = self.client.get('/store/?voting_id={}'.format(v), format='json')
+        response = self.client.get('/store/?voting_id={}'.format(children.pk), format='json')
         self.assertEqual(response.status_code, 200)
         votes = response.json()
 
-        self.assertEqual(len(votes), Vote.objects.filter(voting_id=v).count())
+        self.assertEqual(len(votes), Vote.objects.filter(voting_id=children.pk).count())
 
         v = voters[0]
         response = self.client.get('/store/?voter_id={}'.format(v), format='json')
@@ -231,15 +235,9 @@ class StoreTextCase(BaseTestCase):
     def test_not_vote_2_times_multiple_choice(self):
 
         # Enviar votación múltiple con 2 opciones seleccionadas (+2 votos nuevos encriptados)
-
+        self.gen_voting(6000)
         census = Census(voting_id=6000, voter_id=1)
         census.save()
-        self.gen_voting(6000)
-        data = {
-            "voting": 6000,
-            "voter": 1,
-            "votes": [{ "a": 444, "b": 64 }, {"a": 445, "b": 65 }]
-        }
         user = self.get_or_create_user(1)
         self.login(user=user.username)
         group = ParentGroup(name='group ' + str(6000))
@@ -248,6 +246,12 @@ class StoreTextCase(BaseTestCase):
         children = ChildVoting(parent_voting=Voting.objects.filter(pk=6000).first(), group=group)
         children.save()
         self.login(user=user.username)
+        data = {
+            "voting": 6000,
+            "voter": 1,
+            "votes": [{ "a": 444, "b": 64 }, {"a": 445, "b": 65 }]
+        }
+        
         response = self.client.post('/store/', data, format='json')
         self.assertEqual(response.status_code, 200)
 
@@ -260,8 +264,9 @@ class StoreTextCase(BaseTestCase):
         self.assertEqual(len(votes), 2)
 
         # Comprobar que el usuario no puede volver a votar en la misma votación otra vez
-        #response = self.client.post('/store/', data, format='json')
-        #self.assertEqual(response.status_code, 401)
+        self.login(user=user.username)
+        response = self.client.post('/store/', data, format='json')
+        self.assertEqual(response.status_code, 401)
 
     #Comprueba que un usuario no puede volver a votar en la misma votación "Single_Option" varias veces
     def test_not_vote_2_times_single_option(self):
@@ -295,8 +300,9 @@ class StoreTextCase(BaseTestCase):
         self.assertEqual(len(votes), 1)
 
         # Comprobar que el usuario no puede volver a votar en la misma votación otra vez
-        #response = self.client.post('/store/', data, format='json')
-        #self.assertEqual(response.status_code, 401)
+        self.login(user=user.username)
+        response = self.client.post('/store/', data, format='json')
+        self.assertEqual(response.status_code, 401)
 
 
     def test_voting_status(self):

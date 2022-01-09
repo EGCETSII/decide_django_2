@@ -62,13 +62,11 @@ class StoreView(generics.ListAPIView):
         voter = mods.post('authentication', entry_point='/getuser/', json={'token': token})
         voter_id = voter.get('id', None)
 
-        
         if not (ChildVoting.objects.filter(parent_voting=vid).count()==1 and ChildVoting.objects.filter(parent_voting=vid).first().group.name.startswith('Users with no group')):
             child_voting = ChildVoting.objects.filter(parent_voting=vid, group__in=[group for group in User.objects.filter(id=voter_id).first().groups.all()]).first()
         else:
             child_voting = ChildVoting.objects.filter(parent_voting=vid).first()
 
-        
         # borrar   self.assertEqual(response.status_code, 403)
         usuario_ha_votado= True if (Vote.objects.filter(voter_id=voter_id,voting_id=child_voting.pk).count()!=0) else False
     
@@ -86,7 +84,6 @@ class StoreView(generics.ListAPIView):
             a = vote.get("a")
             b = vote.get("b")
 
-            
             v= Vote.objects.create(voting_id=child_voting.pk, voter_id=uid, a=a, b=b)
             v.save()
             
