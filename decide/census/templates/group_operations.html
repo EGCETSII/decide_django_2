@@ -1,0 +1,15 @@
+{% extends 'master.html' %}
+
+{% block contenido %}
+{% if message %}
+<div class="success" style="text-indent: 2%;">
+    {{ message }}
+</div>
+{% endif %}
+<form action="" method="post">{% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" value="Enviar">
+</form>
+{% endblock %}

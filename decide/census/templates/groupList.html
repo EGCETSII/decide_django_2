@@ -1,0 +1,201 @@
+{% extends "master.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static "census/style.css" %}" />
+{% endblock %}
+
+{% block contenido %}
+    <div id="app-census">
+        <!-- Navbar -->
+        <b-navbar type="dark" variant="secondary">
+            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
+                <b-navbar-nav class="ml-auto" v-if="!signup">
+                    <b-nav-item href="#" v-on:click="decideLogout">
+                        {% trans "logout" %}
+                    </b-nav-item>
+                </b-navbar-nav>
+        </b-navbar>
+
+        <b-alert :variant="alertLvl" dismissible v-model="alertShow">
+            [[ alertMsg ]]
+        </b-alert>
+
+        <div class="groups">
+            <h1> GRUPOS </h1>
+        
+            <!-- Register -->
+            <b-form @submit="onSubmitLogin" v-if="signup">
+                <b-form-group label="{% trans "Username" %}" label-for="username">
+                    <b-form-input
+                        id="username"
+                        type="text"
+                        v-model="form.username"
+                        autocomplete="username"
+                        required />
+                </b-form-group>
+                <b-form-group label="{% trans "Password" %}" label-for="password">
+                    <b-form-input
+                        id="password"
+                        type="password"
+                        autocomplete="current-password"
+                        v-model="form.password"
+                        required />
+                </b-form-group>
+                <b-button type="submit" variant="primary">{% trans "Login" %}</b-button>
+            </b-form>
+
+            <!-- Groups -->
+            <div v-if="!signup">
+               
+                <h2> Listado de grupos </h2>
+                <br>
+                 
+                {% for groupId, details in groups_info.items %}
+
+                    <b-form-radio v-model="selected"
+                        :id= "{{ groupId }}"
+                        name="{{ groupId }}"
+                        :value="{{ groupId }}">
+                        <b> Id: </b> {{ groupId }} <b>  Nombre:  </b>  {{ details.name }} <b> Publico:  </b>{{ details.isPublic }} 
+
+                    </b-form-radio>
+               
+                {% endfor %}
+                <br>
+                <b>Nota: </b><p>Si se intenta unir a un grupo no público, se creará una solicitud que tendrá que gestionar un administrador.</p>
+                <b-button type="button" variant="primary" v-on:click="joinGroup">
+                    {% trans "Unirse" %}
+                </b-button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extrabody %}
+ 
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+
+    <script>
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app-census',
+            data: {
+                
+                
+                //selected= ""
+                signup: true,
+                alertShow: false,
+                alertMsg: "",
+                alertLvl: "info",
+                token: null,
+                user: null,
+                form: {
+                    username: '',
+                    password: ''
+                },
+                
+            },
+            beforeMount() {
+                this.init()
+            },
+            methods: {
+                init() {
+                    var cookies = document.cookie.split("; ");
+                    cookies.forEach((c) => {
+                        var cs = c.split("=");
+                        if (cs[0] == 'decide' && cs[1]) {
+                            this.token = cs[1];
+                            this.getUser();
+                        }
+                    });
+                },
+                postData(url, data) {
+                    // Default options are marked with *
+                    var fdata = {
+                        body: JSON.stringify(data),
+                        headers: {
+                            'content-type': 'application/json',
+                        },
+                        method: 'POST',
+                    };
+
+                    if (this.token) {
+                        fdata.headers['Authorization'] = 'Token ' + this.token;
+                    }
+
+                    return fetch(url, fdata)
+                        .then(response => {
+                            if (response.status === 200) {
+                                return response.json();
+                            } else {
+                                return Promise.reject(response.statusText);
+                            }
+                        });
+                },
+                onSubmitLogin(evt) {
+                    evt.preventDefault();
+                    this.postData("{% url "gateway" "authentication" "/login/" %}", this.form)
+                        .then(data => {
+                            document.cookie = 'decide='+data.token+';';
+                            this.token = data.token;
+                            this.getUser();
+                        })
+                        .catch(error => {
+                            this.showAlert("danger", '{% trans "Error: " %}' + error);
+                        });
+                    
+                },
+                getUser(evt) {
+                    var data = {token: this.token};
+                    this.postData("{% url "gateway" "authentication" "/getuser/" %}", data)
+                        .then(data => {
+                            this.user = data;
+                            this.signup = false;
+                        }).catch(error => {
+                            this.showAlert("danger", '{% trans "Error: " %}' + error);
+                        });
+                },
+                decideLogout(evt) {
+                    evt.preventDefault();
+                    var data = {token: this.token};
+                    this.postData("{% url "gateway" "authentication" "/logout/" %}", data);
+                    this.token = null;
+                    this.user = null;
+                    document.cookie = 'decide=;';
+                    this.signup = true;
+                },
+                joinGroup(evt) {
+                   
+                    var data = {
+                        userId: this.user.id,
+                        group_to_join: this.selected,
+                        token: this.token
+                    }
+                    this.postData("{% url "gateway" "census"  "/joinGroup/" %}", data)
+                        .then(data => {
+                            this.showAlert("success", '{% trans "Congratulations!" %}');
+                        })
+                        .catch(error => {
+                            this.showAlert("danger", '{% trans "No puedes unirte a un grupo al que ya perteneces o a un grupo privado || Error:" %}' + error);
+                        });
+                },
+                showAlert(lvl, msg) {
+                    this.alertLvl = lvl;
+                    this.alertMsg = msg;
+                    this.alertShow = true;
+                }
+            },
+        })
+    </script>
+</body>
+{% endblock %}

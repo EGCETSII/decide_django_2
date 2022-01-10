@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+  <meta charset='utf-8'>
+  <style>
+    {% block style_css %}{% endblock %}
+   </style>
+</head>
+<body>
+  <header> 
+  	{% block encabezado %}{% endblock %}
+  	<nav>
+  		<dl>
+        <dd><a href='/authentication/groups/import'>Importar grupo desde Excel.</a></dd>
+        <dd><a href='/authentication/groups/export'>Exportar miembros de un grupo a Excel.</a></dd>
+      </dl>
+	  </nav>
+    <hr>
+  </header>
+  <section>
+    {% block contenido %}{% endblock %}
+  </section>
+  {% block pie %}{% endblock %} 
+</body>
+</html>

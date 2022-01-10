@@ -1,0 +1,31 @@
+{% extends 'master.html' %}
+
+{% block titulo %}
+<h1>Importar grupo desde Excel.</h1>
+{%endblock%}
+
+
+{% block contenido %}
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="error">
+                ERROR: {{message}}
+            </div>
+            {% endif %}
+
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="success">
+                    {{message}}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <form id='form' enctype='multipart/form-data' method='post' action=''>{% csrf_token %}
+        <table>{{form}}</table>
+        <p><input type='submit' value='Importar' /></p>
+    </form>
+
+{% endblock %}

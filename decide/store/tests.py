@@ -11,10 +11,10 @@ from .serializers import VoteSerializer
 from base import mods
 from base.models import Auth
 from base.tests import BaseTestCase
-from census.models import Census
+from census.models import Census, ParentGroup
 from mixnet.models import Key
 from voting.models import Question
-from voting.models import Voting
+from voting.models import Voting, ChildVoting
 
 
 class StoreTextCase(BaseTestCase):
@@ -28,6 +28,11 @@ class StoreTextCase(BaseTestCase):
                              question=self.question,
                              start_date=timezone.now(),
         )
+        self.group = ParentGroup(name='group example')
+        self.group.save()
+        self.child_voting = ChildVoting(pk=5002,parent_voting=self.voting, group=self.group)
+        self.child_voting.save()
+        self.voting.children.add(self.child_voting)
         self.voting.save()
 
     def tearDown(self):
@@ -57,10 +62,18 @@ class StoreTextCase(BaseTestCase):
             self.login(user=user.username)
             census = Census(voting_id=v, voter_id=random_user)
             census.save()
+            try:
+                group = ParentGroup(name='group ' + str(v))
+                group.save()
+            except:
+                group = ParentGroup.objects.get(name='group ' + str(v))
+            group.user_set.add(user)
+            children = ChildVoting(parent_voting=Voting.objects.filter(pk=v).first(), group=group)
+            children.save()
             data = {
                 "voting": v,
                 "voter": random_user,
-                "vote": { "a": a, "b": b }
+                "votes": [{ "a": a, "b": b }] 
             }
             response = self.client.post('/store/', data, format='json')
             self.assertEqual(response.status_code, 200)
@@ -72,12 +85,15 @@ class StoreTextCase(BaseTestCase):
         data = {
             "voting": 1,
             "voter": 1,
-            "vote": { "a": 1, "b": 1 }
+            "votes": [{ "a": 1, "b": 1 }]
         }
         response = self.client.post('/store/', data, format='json')
         self.assertEqual(response.status_code, 401)
 
     def test_store_vote(self):
+
+        # Test para Votación single_option (+1 voto)
+
         VOTING_PK = 345
         CTE_A = 96
         CTE_B = 184
@@ -87,18 +103,67 @@ class StoreTextCase(BaseTestCase):
         data = {
             "voting": VOTING_PK,
             "voter": 1,
-            "vote": { "a": CTE_A, "b": CTE_B }
+            "votes": [{ "a": CTE_A, "b": CTE_B }]
         }
         user = self.get_or_create_user(1)
+        group = ParentGroup(name='group ' + str(VOTING_PK))
+        group.save()
+        group.user_set.add(user)
+        children = ChildVoting(parent_voting=Voting.objects.filter(pk=VOTING_PK).first(), group=group)
+        children.save()
         self.login(user=user.username)
         response = self.client.post('/store/', data, format='json')
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(Vote.objects.count(), 1)
-        self.assertEqual(Vote.objects.first().voting_id, VOTING_PK)
+        self.assertEqual(Vote.objects.first().voting_id, children.pk)
         self.assertEqual(Vote.objects.first().voter_id, 1)
         self.assertEqual(Vote.objects.first().a, CTE_A)
         self.assertEqual(Vote.objects.first().b, CTE_B)
+         
+    def test_store_vote_multiple_choice(self):
+
+        # Test para Votación Multiple_Choices seleccionando 2 opciones
+        
+        VOTING_PK_2 = 346
+        CTE_A2 = 97
+        CTE_B2 = 185
+        CTE_C2= 98
+        CTE_D2= 186
+        census = Census(voting_id=VOTING_PK_2, voter_id=1)
+        census.save()
+        self.gen_voting(VOTING_PK_2)
+
+        # Cada opción se envía como un voto encriptado
+        data = {
+            "voting": VOTING_PK_2,
+            "voter": 1,
+            "votes": [{ "a": CTE_A2, "b": CTE_B2 }, {"a": CTE_C2, "b": CTE_D2 }]
+        }
+        user = self.get_or_create_user(1)
+        group = ParentGroup(name='group ' + str(VOTING_PK_2))
+        group.save()
+        group.user_set.add(user)
+        children = ChildVoting(parent_voting=Voting.objects.filter(pk=VOTING_PK_2).first(), group=group)
+        children.save()
+        self.login(user=user.username)
+        response = self.client.post('/store/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        # Comprobamos que se han añadido 2 votos (Uno por cada opción seleccionada)
+        votos = Vote.objects.filter(voting_id=children.pk, voter_id= 1)
+        self.assertEquals(len(votos), 2)
+
+        # Comprobamos que los 2 votos guardados coinciden con los enviados
+
+        for voto in votos:
+            self.assertEqual(voto.voting_id, children.pk)
+            self.assertEqual(voto.voter_id, 1)
+            if(voto.a==CTE_A2):
+                self.assertEqual(voto.b, CTE_B2)
+            else:
+                self.assertEqual(voto.a, CTE_C2)
+                self.assertEqual(voto.b, CTE_D2)
 
     def test_vote(self):
         self.gen_votes()
@@ -120,20 +185,21 @@ class StoreTextCase(BaseTestCase):
     def test_filter(self):
         votings, voters = self.gen_votes()
         v = votings[0]
+        children = ChildVoting.objects.filter(parent_voting=v).first()
 
-        response = self.client.get('/store/?voting_id={}'.format(v), format='json')
+        response = self.client.get('/store/?voting_id={}'.format(children.pk), format='json')
         self.assertEqual(response.status_code, 401)
 
         self.login(user='noadmin')
-        response = self.client.get('/store/?voting_id={}'.format(v), format='json')
+        response = self.client.get('/store/?voting_id={}'.format(children.pk), format='json')
         self.assertEqual(response.status_code, 403)
 
         self.login()
-        response = self.client.get('/store/?voting_id={}'.format(v), format='json')
+        response = self.client.get('/store/?voting_id={}'.format(children.pk), format='json')
         self.assertEqual(response.status_code, 200)
         votes = response.json()
 
-        self.assertEqual(len(votes), Vote.objects.filter(voting_id=v).count())
+        self.assertEqual(len(votes), Vote.objects.filter(voting_id=children.pk).count())
 
         v = voters[0]
         response = self.client.get('/store/?voter_id={}'.format(v), format='json')
@@ -164,14 +230,97 @@ class StoreTextCase(BaseTestCase):
         self.assertEqual(votes[0]["voting_id"], v)
         self.assertEqual(votes[0]["voter_id"], u)
 
+
+    # Comprueba que un usuario no puede volver a votar en la misma votación Multiple_Choice varias veces
+    def test_not_vote_2_times_multiple_choice(self):
+
+        # Enviar votación múltiple con 2 opciones seleccionadas (+2 votos nuevos encriptados)
+        self.gen_voting(6000)
+        census = Census(voting_id=6000, voter_id=1)
+        census.save()
+        user = self.get_or_create_user(1)
+        self.login(user=user.username)
+        group = ParentGroup(name='group ' + str(6000))
+        group.save()
+        group.user_set.add(user)
+        children = ChildVoting(parent_voting=Voting.objects.filter(pk=6000).first(), group=group)
+        children.save()
+        self.login(user=user.username)
+        data = {
+            "voting": 6000,
+            "voter": 1,
+            "votes": [{ "a": 444, "b": 64 }, {"a": 445, "b": 65 }]
+        }
+        
+        response = self.client.post('/store/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        # Comprobar que la api devuelve exactamente 2 votos de dicho usuario
+
+        self.login()
+        response = self.client.get('/store/?voting_id={}&voter_id={}'.format(children.pk, 1), format='json')
+        self.assertEqual(response.status_code, 200)
+        votes = response.json()
+        self.assertEqual(len(votes), 2)
+
+        # Comprobar que el usuario no puede volver a votar en la misma votación otra vez
+        self.login(user=user.username)
+        response = self.client.post('/store/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+
+    #Comprueba que un usuario no puede volver a votar en la misma votación "Single_Option" varias veces
+    def test_not_vote_2_times_single_option(self):
+
+        # Enviar votación de opción única (+1 voto encriptado)
+
+        census = Census(voting_id=6000, voter_id=1)
+        census.save()
+        self.gen_voting(6000)
+        data = {
+            "voting": 6000,
+            "voter": 1,
+            "votes": [{ "a": 444, "b": 64 }]
+        }
+        user = self.get_or_create_user(1)
+        self.login(user=user.username)
+        group = ParentGroup(name='group ' + str(6000))
+        group.save()
+        group.user_set.add(user)
+        children = ChildVoting(parent_voting=Voting.objects.filter(pk=6000).first(), group=group)
+        children.save()
+        response = self.client.post('/store/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        # Comprobar que la api devuelve exactamente 1 votos de dicho usuario
+
+        self.login()
+        response = self.client.get('/store/?voting_id={}&voter_id={}'.format(children.pk, 1), format='json')
+        self.assertEqual(response.status_code, 200)
+        votes = response.json()
+        self.assertEqual(len(votes), 1)
+
+        # Comprobar que el usuario no puede volver a votar en la misma votación otra vez
+        self.login(user=user.username)
+        response = self.client.post('/store/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+
+
     def test_voting_status(self):
         data = {
             "voting": 5001,
             "voter": 1,
-            "vote": { "a": 30, "b": 55 }
+            "votes": [{ "a": 30, "b": 55 }]
         }
+        self.gen_voting(5001)
+        user = self.get_or_create_user(1)
+        self.login(user=user.username)
         census = Census(voting_id=5001, voter_id=1)
         census.save()
+        group = ParentGroup(name='group ' + str(5001))
+        group.save()
+        group.user_set.add(user)
+        children = ChildVoting(parent_voting=Voting.objects.filter(pk=5001).first(), group=group)
+        children.save()
         # not opened
         self.voting.start_date = timezone.now() + datetime.timedelta(days=1)
         self.voting.save()

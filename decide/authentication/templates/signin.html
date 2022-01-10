@@ -1,0 +1,10 @@
+{% extends 'master.html' %}
+
+{% block contenido %}
+  <h2>Inicie sesión en DECIDE</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Inicie sesión</button>
+  </form>
+{% endblock %}

@@ -27,6 +27,7 @@
 
         <div class="voting">
             <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
+            
 
             <!-- Register -->
             <b-form @submit="onSubmitLogin" v-if="signup">
@@ -52,14 +53,26 @@
             <!-- Voting -->
             <div v-if="!signup">
                 <h2>[[ voting.question.desc ]]</h2>
-                <b-form-group v-for="opt in voting.question.options" :key="opt.number">
-                    <b-form-radio v-model="selected"
-                                  :id="'q' + opt.number"
-                                  name="question"
-                                  :value="opt.number">
-                        [[ opt.option ]]
-                    </b-form-radio>
-                </b-form-group>
+                <div v-if=" voting.question.type == 'SO'">
+                    <h4 id="instruction"> Seleccione una única opción: </h4>
+                    <b-form-group v-for="opt in voting.question.options" :key="opt.number">
+                        <b-form-radio v-model="selected"
+                                    :id="'q' + opt.number"
+                                    name="question"
+                                    :value="opt.number">
+                            [[ opt.option ]]
+                        </b-form-radio>
+                    </b-form-group>
+                </div>
+
+                <div v-if="voting.question.type == 'MC'">
+                    <h4 id="instruction"> Puede seleccionar múltiples opciones: </h4>
+                        <div v-for="opt in voting.question.options" :key="opt.number">
+                          <input type="checkbox" v-model="selectedArray" :id="'q' + opt.number" :value="opt.number" :name="'question' + opt.number" />
+                          [[ opt.option ]]
+                        </div>
+                    
+                </div>
                 <b-button type="button" variant="primary" v-on:click="decideSend">
                     {% trans "Vote" %}
                 </b-button>
@@ -94,6 +107,7 @@
                 keybits: {{ KEYBITS }},
                 voting: voting,
                 selected: "",
+                selectedArray:[],
                 signup: true,
                 alertShow: false,
                 alertMsg: "",
@@ -179,16 +193,42 @@
                     document.cookie = 'decide=;';
                     this.signup = true;
                 },
-                decideEncrypt() {
-                    var bigmsg = BigInt.fromJSONObject(this.selected.toString());
+                decideEncrypt(value) {
+                    var bigmsg = BigInt.fromJSONObject(value.toString());
                     var cipher = ElGamal.encrypt(this.bigpk, bigmsg);
+                    
                     return cipher;
                 },
                 decideSend(evt) {
                     evt.preventDefault();
-                    var v = this.decideEncrypt();
+                    optionsEncrypted= [];
+
+                    
+                    if (this.selected!=""){ // Votación de opción única
+                        
+                        this.selectedArray.push(this.selected)
+                        
+                    }
+
+                    // Encriptación de cada opción seleccionada
+                    for (let i = 0; i < this.selectedArray.length; i++) {
+                        
+                        var encryptedOption = this.decideEncrypt(this.selectedArray[i]);
+                        optionsEncrypted.push(encryptedOption)
+
+                    }
+
+                    // Guardamos los atributos alpha y beta de cada voto encriptado 
+                    votes=[];
+                    for (let i = 0; i < optionsEncrypted.length; i++) {
+	
+                        let vote = {a:optionsEncrypted[i].alpha.toString(), b:optionsEncrypted[i].beta.toString()};
+                        votes.push(vote)
+                    
+                    }
+
                     var data = {
-                        vote: {a: v.alpha.toString(), b: v.beta.toString()},
+                        votes: votes,
                         voting: this.voting.id,
                         voter: this.user.id,
                         token: this.token
@@ -208,6 +248,7 @@
                 }
             },
         })
+        
     </script>
 </body>
 {% endblock %}
