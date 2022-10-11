@@ -6,10 +6,15 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        pyversion: ['3.8', '3.5']
+        pgversion: ['10.8', '12']
 
     services:
       postgres:
-        image: postgres:10.8
+        image: postgres:${{matrix.pgversion}}
         env:
           POSTGRES_USER: decide
           POSTGRES_PASSWORD: decide
@@ -21,10 +26,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.8
+    - name: Set up Python ${{matrix.pyversion}}
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: ${{matrix.pyversion}}
     - name: psycopg2 prerequisites
       run: sudo apt-get install libpq-dev
     - name: Install dependencies and config
