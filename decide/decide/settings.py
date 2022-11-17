@@ -75,6 +75,7 @@ BASEURL = 'http://localhost:8000'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -151,6 +152,9 @@ USE_L10N = True
 USE_TZ = True
 
 
+
+
+
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Static files (CSS, JavaScript, Images)
@@ -180,3 +184,12 @@ if os.path.exists("config.jsonnet"):
 
 
 INSTALLED_APPS = INSTALLED_APPS + MODULES
+from django.utils.translation import ugettext_lazy as _
+LANGUAGES = [
+    ('es', _('Español')),
+    ('en-us', _('English')),
+    ('de', _('German'))
+]
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
+]

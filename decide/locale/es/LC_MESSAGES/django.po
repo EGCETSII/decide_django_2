@@ -1,0 +1,64 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-17 19:27+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: booth/templates/booth/booth.html:19
+msgid "logout"
+msgstr ""
+
+#: booth/templates/booth/booth.html:33
+msgid "Username"
+msgstr "Que"
+
+#: booth/templates/booth/booth.html:41
+msgid "Password"
+msgstr "Pasa"
+
+#: booth/templates/booth/booth.html:49
+msgid "Login"
+msgstr "Perro"
+
+#: booth/templates/booth/booth.html:64
+msgid "Vote"
+msgstr ""
+
+#: booth/templates/booth/booth.html:160 booth/templates/booth/booth.html:170
+#: booth/templates/booth/booth.html:201
+msgid "Error: "
+msgstr ""
+
+#: booth/templates/booth/booth.html:198
+msgid "Conglatulations. Your vote has been sent"
+msgstr ""
+
+#: decide/settings.py:189
+msgid "Español"
+msgstr ""
+
+#: decide/settings.py:190
+msgid "English"
+msgstr ""
+
+#: decide/settings.py:191
+msgid "German"
+msgstr ""
+
+#: visualizer/templates/visualizer/visualizer.html:25
+msgid "result"
+msgstr "Resultado de la votación"
