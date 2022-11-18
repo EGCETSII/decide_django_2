@@ -20,8 +20,10 @@ class CensusCreate(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         voting_id = request.data.get('voting_id')
         voters = request.data.get('voters')
+        #adscripcion_id = request.data.get('adscripcion_id')
         try:
             for voter in voters:
+                #census = Census(voting_id=voting_id, voter_id=voter, adscripcion_id=adscripcion_id)
                 census = Census(voting_id=voting_id, voter_id=voter)
                 census.save()
         except IntegrityError:
@@ -30,6 +32,7 @@ class CensusCreate(generics.ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         voting_id = request.GET.get('voting_id')
+        #adscripcion_id = request.GET.get('adscripcion_id')
         voters = Census.objects.filter(voting_id=voting_id).values_list('voter_id', flat=True)
         return Response({'voters': voters})
 
