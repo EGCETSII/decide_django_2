@@ -1,4 +1,4 @@
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['decide.onrender.com', '*']
 
 # Modules in use, commented modules that you won't use
 MODULES = [
@@ -26,13 +26,12 @@ APIS = {
 }
 
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'decide',
         'USER': 'decide',
-        'PASSWORD':'decide',
+        'PASSWORD': 'decide',
         'HOST': 'localhost',
         'PORT': '5432',
     }
