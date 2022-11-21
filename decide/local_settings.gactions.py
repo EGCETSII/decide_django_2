@@ -1,3 +1,5 @@
+import dj_database_url
+
 ALLOWED_HOSTS = ['decide.onrender.com', '*']
 
 # Modules in use, commented modules that you won't use
@@ -12,7 +14,7 @@ MODULES = [
     'visualizer',
     'voting',
 ]
-BASEURL = 'http://localhost:8000'
+BASEURL = 'http://decide.onrender.com/'
 APIS = {
     'authentication': BASEURL,
     'base': BASEURL,
@@ -25,17 +27,13 @@ APIS = {
     'voting': BASEURL,
 }
 
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'decide',
-        'USER': 'decide',
-        'PASSWORD': 'decide',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        engine='django.db.backends.postgresql',
+        default='postgres://decide:decide@localhost:5432/decide',
+    )
 }
+
 
 # number of bits for the key, all auths should use the same number of bits
 KEYBITS = 256
