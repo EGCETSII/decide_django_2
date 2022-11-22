@@ -26,8 +26,7 @@ SECRET_KEY = '^##ydkswfu0+=ofw0l#$kv^8n)0$i(qd&d&ol#p9!b$8*5%j1+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['decide.onrender.com', '*']
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -40,10 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'corsheaders',
+    'rest_framework_swagger',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_framework_swagger',
     'gateway',
 ]
 
@@ -74,26 +73,26 @@ MODULES = [
 BASEURL = 'http://localhost:8000'
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "https://decide-coral.vercel.app",
-    "http://localhost:8080",
-    "http://127.0.0.1:9000",
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
-]
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CORS_ORIGIN_WHITELIST = (
+#     'google.com',
+#     'hostname.example.com',
+#     'localhost:8000',
+#     '127.0.0.1:9000'
+# )
+
 
 ROOT_URLCONF = 'decide.urls'
 
