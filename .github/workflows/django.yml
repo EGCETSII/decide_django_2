@@ -32,10 +32,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install codacy-coverage
-        
-        pip uninstall PyCrypto
-        pip uninstall PyCryptodome
-        pip install PyCryptodome
+      
         cp decide/local_settings.gactions.py decide/local_settings.py
     - name: Run tests
       run: |
