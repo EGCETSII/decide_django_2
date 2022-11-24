@@ -1,18 +1,18 @@
 import os
 import telebot
-import environ
+from dotenv import load_dotenv
 
-env = environ.Env()
-environ.Env.read_env()
+load_dotenv("voting/.env")
+
 
 # Instanciación del bot de Telegram
-bot = telebot.TeleBot(env("TELEGRAM_TOKEN"))
+bot = telebot.TeleBot(os.getenv("TELEGRAM_TOKEN")
+)
 
 class BotTelegram():
 
     def botSendMessage(message):
-        CHANNEL_ID=env("TELEGRAM_CHANNEL_ID")
-
+        CHANNEL_ID=os.getenv("TELEGRAM_CHANNEL_ID")
         bot.send_message(CHANNEL_ID, "Hola, ¿Cómo está ese votante?")
         bot.send_message(CHANNEL_ID, message)
 
