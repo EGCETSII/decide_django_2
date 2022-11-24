@@ -70,7 +70,7 @@ Veamos paso a paso entonces cómo funcionaría:
 2. El servidor recibe una URL concreta.
 3. Routing recibe la URL, busca que la tenga almacenada, y si es así, envía la información a la vista necesaria.
 4. La vista recibe la petición.
-4.1. (Opcional) La vista recibe una plantilla desde template para producir la response.
+4.1.(Opcional) La vista recibe una plantilla desde template para producir la response.
 4.2. (Opcional, pero muy frecuente) La vista pide al modelo unos datos concretos que pueden encontrarse en la base de datos.
 5. Con todo lo necesario, la vista produce una respuesta, que es lo que se renderiza y muestra al usuario.
 
@@ -82,23 +82,107 @@ Funcionando bajo esta arquitectura descrita anteriormente, Decide cuenta con var
 
 Por ello, en este apartado comentaremos o bien cambios que han hemos realizado sobre estos subsistemas, o nuevos que hayamos creado.
 
-### Autenticación
+#### Autenticación
 
 Queremos que el sistema utilice la tecnología de Oauth2 para que la API sea más segura y eficaz
 
-### Bot de Telegram
+#### Bot de Telegram
 
 Hemos diseñado un Bot de Telegram que comparte por chat los resultados de las votaciones. 
+
+#### Internacionalización
+
+Se ha hecho uso de [i18next](https://react.i18next.com/latest/trans-component ) para crear un módulo de traducción que permita traducir todo el contenido estático del [front-end](https://github.com/jvegax/decide-front). Este módulo se encuentra organizado dentro del proyecto de la siguiente forma:
+
+````
+decide-front   
+└───src
+│   └───i18n
+│       │ index.ts
+│       │ types.ts
+|       └───languages 
+|           | index.ts
+|           | de-DE.ts
+|           | en-US.ts
+|           | es-ES.ts
+|           | se-SV.ts
+````
+
+En primer lugar, se ha definido dentro de la carpeta *languages* un archivo *index.ts* donde creamos un diccionario para contener todos los lenguajes que soportamos. Además exportamos una lista con estos lenguajes para su uso posterior.
+
+```typescript
+import type { Dictionary } from '../types';  
+import en_US from './en-US';  
+import es_ES from './es-ES';  
+import de_DE from './de-DE';  
+import se_SV from './se-SV';  
+  
+const availableLanguages = { en_US, es_ES , de_DE, se_SV};  
+  
+const languages = Object.entries(availableLanguages).reduce(  
+  (acc, [key, value]) => ({  
+    ...acc,  
+    [`${key}`]: {  
+      translation: value,  
+    },  
+  }),  
+  {} as {  
+    [id in Language]: Dictionary;  
+  },  
+);  
+  
+export type Language = keyof typeof availableLanguages;  
+export default languages;
+```
+
+En segundo lugar, hemos creado los diccionarios de cada idioma con las palabras estáticas de nuestras vistas. Estos se encuentran dentro de sus respectivos directorios.
+
+```typescript
+const dictionary = {  
+  voting: 'Voting',  
+  login: 'Login',  
+  register: 'Register',  
+  log_in_to_decide: 'Log in to Decide!',  
+  email: 'Email',  
+  enter_your_email: 'Enter your email',  
+  password: 'Password',  
+  enter_password: 'Enter your password',  
+  register_to_decide: 'Register to Decide!',  
+  name: 'Name',  
+  enter_your_name: 'Enter your name',  
+  surname: 'Surname',  
+  enter_your_surname: 'Enter your surname',  
+  confirm_password: 'Confirm password',  
+  enter_your_password_again: 'Enter your password again',  
+  user_created_successfully: 'User created successfully',  
+  some_error_occurred: 'Some error occurred',  
+  submit_vote: 'Submit vote',  
+  voting_lists: 'Voting lists',  
+  cant_login: 'Its not possible to login with these credentials',  
+  username: 'Username',  
+  enter_your_username: 'Enter your username',  
+  passwords_dont_match: 'Passwords dont match',  
+};  
+  
+export default dictionary;
+```
+
+En último lugar debemos de declarar en *i18n/index.ts* el idioma por defecto, que en nuestro proyecto será *es_ES (español de ESpaña)* e inicializaremos i18next. De esta forma, el módulo ya es funcional en todos los archivos en los que se especifique mediante:
+
+```typescript
+const { t } = useTranslation();
+t('[Palabra del diccionario]') // Esto devuelve un AnyType con la traducción de la palabra
+```
 
 ## Visión global del proceso de desarrollo 
 Detallaremos el proceso general que el equipo seguirá para implementar los cambios deseados. 
 
-#### Aspectos generales
+### Aspectos generales
 
 - El equipo realizará los cambios en sistemas operativos de Ubuntu o MacOS.
 - Si a lo largo de cualquiera de los pasos detallados ocurre algún tipo de incidencia, el miembro del equipo deberá añadirla al registro de incidencias, así como comunicarla al resto de miembros del equipo si no es capaz de resolverla.
 
-Pasos a seguir: 
+### Pasos a seguir: 
 
 #### Preparar sistema
 
