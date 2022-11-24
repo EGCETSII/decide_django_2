@@ -4,7 +4,9 @@ from django.utils import timezone
 from .models import QuestionOption
 from .models import Question
 from .models import Voting
-
+from .bot import BotTelegram
+from .views import BotMessageHandler
+from base import mods
 from .filters import StartedFilter
 
 
@@ -13,6 +15,8 @@ def start(modeladmin, request, queryset):
         v.create_pubkey()
         v.start_date = timezone.now()
         v.save()
+        bot_message = BotMessageHandler.create_bot_message_start(str(v.id))
+        BotTelegram.botSendMessage(bot_message)
 
 
 def stop(ModelAdmin, request, queryset):

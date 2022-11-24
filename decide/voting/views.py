@@ -48,6 +48,13 @@ class VotingView(generics.ListCreateAPIView):
         voting.auths.add(auth)
         return Response({}, status=status.HTTP_201_CREATED)
 
+class BotMessageHandler():
+    def create_bot_message_start(r):
+        # Creamos el String de la v1 del módulo
+        URL="url de prueba"
+        
+        mensaje = "Se acaba de comenzar una votación, entra en " + URL + r + " para poder acceder a ella."
+        return mensaje
 
 class VotingUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Voting.objects.all()
