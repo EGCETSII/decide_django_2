@@ -1,3 +1,6 @@
+- [ ] Explicar el resto de cambios propuestos en el apartado decide
+- [ ] Ejercicio de Propuesta de cambio -> Explicar un incremento donde se vea bien los contenidos de la asignatura.
+
 # decide-single-estepa-34
 * Grupo 2 
 * Curso escolar: 2022/2023
