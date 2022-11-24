@@ -37,3 +37,13 @@
 * Acuerdos tomados:
   * Acuerdo 2022-02-01: establecer política de commits concreta.
   * Acuerdo 2022-02-02: establecer estrategia de branching concreta.
+
+
+## ACTA 2022-03
+* Asistentes: Todos los miembros del grupo.
+* Acuerdos tomados:
+  * Acuerdo 2022-03-01: establecer política de commits concreta.
+  * Acuerdo 2022-03-02: establecer estrategia de branching concreta.
+* Comprobaciones:
+  * Comprobación 2022-03-01: todo el equipo ha comprobado que sus sistemas están funcionando correctamente
+  * Comprobación 2022-03-02: se ha medido el avance en las distintas tareas. Aunque la tarea de implementar OAuth2 no ha avanzado lo suficiente, el resto de tareas estan en buen estado, cerca de ser terminadas.
