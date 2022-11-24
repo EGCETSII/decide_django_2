@@ -1,20 +1,20 @@
 import os
 import telebot
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Instanciación del bot de Telegram
-bot = telebot.TeleBot(os.environ.get('TELEGRAM_TOKEN'))
+bot = telebot.TeleBot(env("TELEGRAM_TOKEN"))
 
 class BotTelegram():
 
     def botSendMessage(message):
-        print(os.environ)
-        URL=os.environ.get('URL')
-        CHANNEL_ID=os.environ.get('TELEGRAM_CHANNEL_ID')
+        CHANNEL_ID=env("TELEGRAM_CHANNEL_ID")
 
-        bot.send_message(CHANNEL_ID, "Mensaje de prueba")
-        bot.send_message(CHANNEL_ID, "Mensaje de prueba 2")
-        bot.send_message(CHANNEL_ID, "Probando a ver si manda la URL" + str(URL) )
-        bot.send_message(CHANNEL_ID, "Ultimo mensaje ")
+        bot.send_message(CHANNEL_ID, "Hola, ¿Cómo está ese votante?")
+        bot.send_message(CHANNEL_ID, message)
 
 # MAIN ################################################################
 
@@ -23,3 +23,4 @@ if __name__ == '__main__':
     bot.infinity_polling()
     print('Bot iniciado correctamente')
     print('Fin')
+    

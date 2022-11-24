@@ -82,8 +82,27 @@ class BotMessageHandler():
         voting_start_date_formatted = "Votación creada el " + day_start + "/" + month_start + "/" + year_start
         voting_start_date_time = " a las " + str(r[0]['start_date']).split(sep='.')[0].split(sep='T')[1] + "\n"
 
+        #Formateamos la fecha de fin de la votación
+        date_end_splitted = voting_end_date_without_format.split(sep='-')
+        day_end = date_end_splitted[2]
+        month_end = date_end_splitted[1]
+        year_end = date_end_splitted[0]
+        voting_end_date_formatted = day_end + "/" + month_end + "/" + year_end
+        voting_end_date_time = str(r[0]['end_date']).split(sep='.')[0].split(sep='T')[1]
+
+        voting_tally = str(r[0]['tally'][0])
+        voting_postproc = r[0]['postproc']
+
+        voting_options_postproc_to_message = ""
+
+        for result in voting_postproc:
+            voting_options_postproc_to_message += "Opción " + str(result['number']) + " -> " + str(result['option']) + " ---> " + str(result['votes']) + " votos." + "\n"
+
+        message_tally = "\n################################################\nDespués de haber realizado el recuento de votos el " + voting_end_date_formatted + " a las " + voting_end_date_time + " se han obtenido los siguientes resultados: \nHan votado: " + voting_tally + " personas, distribuidas en las siguientes opciones: \n" 
+
+
         # Creamos el String de la v1 del módulo
-        mensaje_bot = voting_id + voting_name + voting_start_date_formatted + voting_start_date_time + voting_desc + voting_question + voting_options_to_message
+        mensaje_bot = voting_id + voting_name + voting_start_date_formatted + voting_start_date_time + voting_desc + voting_question + voting_options_to_message + message_tally + voting_options_postproc_to_message
 
         return mensaje_bot
 
