@@ -75,4 +75,14 @@ El módulo pycrypto ocasiona muchos errores en el proyecto.
 - Prioridad: 3
 
 Se debe desinstalar el módulo pycrypto e instalar pycryptodome, en la versión especificada en el requirements.txt
+
+## INC-006 - Errores con Decide en MacOs
+Debido a que no es posible particionar de manera segura el disco de los MacBook, decidimos probar a ejecutar el proyecto decide en MacOs, lo cual originó bastantes problemas de compatibilidad con respecto a los entornos y demás.
+
+- Estado: En progreso.
+- Tipo: Fallo.
+- Responsable: Márquez López, José Antonio
+- Prioridad: 2
+
+Para solucionar el problema, se optó por buscar informacion sobre cada fallo que iba resultando, hasta el punto de que actualmente, al menos dos miembros del equipo pueden ejecutar en proyecto en su MacOs sin problema. No se conocen aun todos los fallos que pueden resultar con respecto a proximas funcionalidades o métodos, por ello se define esta incidencia como en progreso ya que estamos pendientes de proximas evoluciones del proyecto.
   
