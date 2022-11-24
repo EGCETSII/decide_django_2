@@ -56,6 +56,38 @@ class BotMessageHandler():
         mensaje = "Se acaba de comenzar una votación, entra en " + URL + r + " para poder acceder a ella."
         return mensaje
 
+
+    def create_bot_message_tally(r):
+        # Vamos a obtener las propiedades del resultado de la votación
+        voting_id = "ID de la votación: " + str(r[0]['id']) + "\n"
+        voting_name = "Nombre de la votación: " + str(r[0]['name']) + "\n"
+        voting_desc =  "Descripción de la votación: " + str(r[0]['desc']) + "\n"
+        voting_question = "Cuestión que se debate en la votación: " + str(r[0]['question']['desc']) + "\n"
+
+        # Aquí vamos a crear la lista de opciones para el mensaje
+        voting_options = r[0]['question']['options']
+        voting_options_to_message = "Opciones de la encuesta: \n"
+
+        for option in voting_options:
+            voting_options_to_message += "Opción " + str(option['number']) + " -> " + str(option['option']) + "\n"
+
+        voting_start_date_without_format = str(r[0]['start_date']).split(sep='.')[0].split(sep='T')[0]
+        voting_end_date_without_format = str(r[0]['end_date']).split(sep='.')[0].split(sep='T')[0]
+
+        #Formateamos la fecha de inicio de la votación
+        date_start_splitted = voting_start_date_without_format.split(sep='-')
+        day_start = date_start_splitted[2]
+        month_start = date_start_splitted[1]
+        year_start = date_start_splitted[0]
+        voting_start_date_formatted = "Votación creada el " + day_start + "/" + month_start + "/" + year_start
+        voting_start_date_time = " a las " + str(r[0]['start_date']).split(sep='.')[0].split(sep='T')[1] + "\n"
+
+        # Creamos el String de la v1 del módulo
+        mensaje_bot = voting_id + voting_name + voting_start_date_formatted + voting_start_date_time + voting_desc + voting_question + voting_options_to_message
+
+        return mensaje_bot
+
+
 class VotingUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Voting.objects.all()
     serializer_class = VotingSerializer

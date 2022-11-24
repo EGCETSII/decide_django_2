@@ -28,6 +28,14 @@ def stop(ModelAdmin, request, queryset):
 def tally(ModelAdmin, request, queryset):
     for v in queryset.filter(end_date__lt=timezone.now()):
         token = request.session.get('auth-token', '')
+
+        # Bot
+        voting_for_bot = mods.get('voting', params={'id': v.id})
+        bot_message = BotMessageHandler.create_bot_message_tally(voting_for_bot)
+        print("MENSAJE:", bot_message)
+        BotTelegram.botSendMessage(bot_message)
+        # end Bot
+
         v.tally_votes(token)
 
 

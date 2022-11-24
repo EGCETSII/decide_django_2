@@ -7,7 +7,7 @@ bot = telebot.TeleBot(os.environ.get('TELEGRAM_TOKEN'))
 class BotTelegram():
 
     def botSendMessage(message):
-
+        print(os.environ)
         URL=os.environ.get('URL')
         CHANNEL_ID=os.environ.get('TELEGRAM_CHANNEL_ID')
 
