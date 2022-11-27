@@ -51,6 +51,7 @@ Vamos a ver en detalle en qué debe consistir cada propiedad de la incidencia:
   * Fallos: Un fallo en el sistema que impide su funcionamiento.
   * Documentación: Afecta a los documentos del proyecto.
   * GitHub: Relacionado con la plataforma de GitHub.
+  * Funcionalidad: Relacionado con incrementos funcionales o mejoras.
 - Responsable: Miembro/s del equipo encargado/s de resolver la incidencia
 - Prioridad: Del 1 al 5, nivel de prioridad para resolver el problema
 - Solución: Si la incidencia ha sido resuelta, detallar cómo.
