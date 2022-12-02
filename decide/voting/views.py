@@ -13,7 +13,7 @@ from base.models import Auth
 
 class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()
-    serializer_class = VotingSerializer
+    serializer_class = SimpleVotingSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_fields = ('id',)
 
