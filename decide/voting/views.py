@@ -20,10 +20,10 @@ class VotingView(generics.ListCreateAPIView):
 
     def get(self, request, *args, **kwargs):
         """Lists or show votings
+        ---
         ### You can either:
         - *Show a single voting*: Entering its id
         - *List all votings*: Not giving any parameter in the request
-        ---
         ## Description field by field:
         - **id**: ID of the voting
         """
@@ -36,19 +36,34 @@ class VotingView(generics.ListCreateAPIView):
         return res
 
     def post(self, request, *args, **kwargs):
+        """
+        Create a Voting with a new question
+        ---
+        ### In order to create a voting, you will need to generate an authentication token by logging in. Then, add it to the parameter "token"
+        # Parameters
+        - **name**: Title of the voting
+        - **desc**: Description of the voting
+        - **question**: Describe the question to be asked in the voting
+        - **question_opt**: A list containing each of the available options for the voting. Ex: ['cat','dog','horse]
+
+        ## Extra Parameters
+        - **token**: Auth token of an user with voting permissions
+
+        """
         request.auth = request
+        request_data = request.data[0]
         self.permission_classes = (UserIsStaff,)
-        self.check_permissions(request) ## TODO: LOS PERMISOS NO VAN BIEN
+        self.check_permissions(request)
         for data in ['name', 'desc', 'question', 'question_opt']:
-            if not data in request.data:
+            if not data in request_data:
                 return Response(f"Cant find parameter {data} in your request", status=status.HTTP_400_BAD_REQUEST)
 
-        question = Question(desc=request.data.get('question'))
+        question = Question(desc=request_data.get('question'))
         question.save()
-        for idx, q_opt in enumerate(request.data.get('question_opt')):
+        for idx, q_opt in enumerate(request_data.get('question_opt')):
             opt = QuestionOption(question=question, option=q_opt, number=idx)
             opt.save()
-        voting = Voting(name=request.data.get('name'), desc=request.data.get('desc'),
+        voting = Voting(name=request_data.get('name'), desc=request_data.get('desc'),
                 question=question)
         voting.save()
 

@@ -8,6 +8,6 @@ class UserIsStaff(permissions.BasePermission):
     def has_permission(self, request, view):
         if not request.auth:
             return False
-        response = mods.post('authentication/getuser', json={'token': request.auth.key},
+        response = mods.post('authentication/getuser', json={'token': request.data[1]['token']},
                 response=True)
         return response.json().get('is_staff', False)
