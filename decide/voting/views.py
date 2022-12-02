@@ -10,6 +10,7 @@ from .serializers import SimpleVotingSerializer, VotingSerializer
 from base.perms import UserIsStaff
 from base.models import Auth
 from dotenv import load_dotenv
+import os
 
 load_dotenv("voting/.env")
 class VotingView(generics.ListCreateAPIView):
@@ -53,7 +54,7 @@ class BotMessageHandler():
     def create_bot_message_start(r):
         # Creamos el String de la v1 del módulo
         # TODO: URL del front
-        URL="URL de prueba"
+        URL = os.getenv("URL")
         mensaje = "Se acaba de comenzar una votación, entra en " + URL + r + " para poder acceder a ella."
         return mensaje
 
