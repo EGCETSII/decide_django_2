@@ -15,23 +15,33 @@ class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()
     serializer_class = VotingSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
-    filter_fields = ('id', )
+    filter_fields = ('id',)
+
 
     def get(self, request, *args, **kwargs):
+        """Lists or show votings
+        ### You can either:
+        - *Show a single voting*: Entering its id
+        - *List all votings*: Not giving any parameter in the request
+        ---
+        ## Description field by field:
+        - **id**: ID of the voting
+        """
         version = request.version
         if version not in settings.ALLOWED_VERSIONS:
             version = settings.DEFAULT_VERSION
         if version == 'v2':
             self.serializer_class = SimpleVotingSerializer
-
-        return super().get(request, *args, **kwargs)
+        res = super().get(request, *args, **kwargs)
+        return res
 
     def post(self, request, *args, **kwargs):
+        request.auth = request
         self.permission_classes = (UserIsStaff,)
-        self.check_permissions(request)
+        self.check_permissions(request) ## TODO: LOS PERMISOS NO VAN BIEN
         for data in ['name', 'desc', 'question', 'question_opt']:
             if not data in request.data:
-                return Response({}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(f"Cant find parameter {data} in your request", status=status.HTTP_400_BAD_REQUEST)
 
         question = Question(desc=request.data.get('question'))
         question.save()
