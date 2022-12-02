@@ -9,8 +9,10 @@ from .models import Question, QuestionOption, Voting
 from .serializers import SimpleVotingSerializer, VotingSerializer
 from base.perms import UserIsStaff
 from base.models import Auth
+from dotenv import load_dotenv
+import os
 
-
+load_dotenv("voting/.env")
 class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()
     serializer_class = VotingSerializer
@@ -51,7 +53,8 @@ class VotingView(generics.ListCreateAPIView):
 class BotMessageHandler():
     def create_bot_message_start(r):
         # Creamos el String de la v1 del módulo
-        URL="url de prueba"
+        # TODO: URL del front
+        URL="URL de prueba"
         mensaje = "Se acaba de comenzar una votación, entra en " + URL + r + " para poder acceder a ella."
         return mensaje
 
@@ -96,9 +99,7 @@ class BotMessageHandler():
 
         for result in voting_postproc:
             voting_options_postproc_to_message += "Opción " + str(result['number']) + " -> " + str(result['option']) + " ---> " + str(result['votes']) + " votos." + "\n"
-
         message_tally = "\n################################################\nDespués de haber realizado el recuento de votos el " + voting_end_date_formatted + " a las " + voting_end_date_time + " se han obtenido los siguientes resultados: \nHan votado: " + voting_tally + " personas, distribuidas en las siguientes opciones: \n"
-
         # Creamos el String de la v1 del módulo
         mensaje_bot = voting_id + voting_name + voting_start_date_formatted + voting_start_date_time + voting_desc + voting_question + voting_options_to_message + message_tally + voting_options_postproc_to_message
 
