@@ -12,6 +12,7 @@ class BotTelegram():
         bot.send_message(CHANNEL_ID, "Hola, ¿Cómo está ese votante?")
         bot.send_message(CHANNEL_ID, message)
 
+
 if __name__ == '__main__':
     print('Iniciando el bot')
     bot.infinity_polling()
