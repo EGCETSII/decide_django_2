@@ -51,7 +51,7 @@ class VotingView(generics.ListCreateAPIView):
 
         """
         request.auth = request
-        request_data = request.data[0]
+        request_data = request.data
         self.permission_classes = (UserIsStaff,)
         self.check_permissions(request)
         for data in ['name', 'desc', 'question', 'question_opt']:

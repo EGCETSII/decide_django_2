@@ -24,12 +24,12 @@ class StoreView(generics.ListAPIView):
 
     def post(self, request):
         """
-         * voting: id
-         * voter: id
+         * voting_id: id
+         * voter_id: id
          * vote: { "a": int, "b": int }
         """
 
-        vid = request.data.get('voting')
+        vid = request.data.get('voting_id')
         voting = mods.get('voting', params={'id': vid})
         if not voting or not isinstance(voting, list):
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
@@ -40,14 +40,14 @@ class StoreView(generics.ListAPIView):
         if not_started or is_closed:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
-        uid = request.data.get('voter')
+        uid = request.data.get('voter_id')
         vote = request.data.get('vote')
 
         if not vid or not uid or not vote:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
         # validating voter
-        token = request.auth.key
+        token = request.data.get('token')
         voter = mods.post('authentication', entry_point='/getuser/', json={'token': token})
         voter_id = voter.get('id', None)
         if not voter_id or voter_id != uid:
