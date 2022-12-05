@@ -42,8 +42,6 @@ class Voting(models.Model):
     tally = JSONField(blank=True, null=True)
     postproc = JSONField(blank=True, null=True)
 
-    token = models.CharField(blank=True, null=True, max_length=500)
-
     def create_pubkey(self):
         if self.pub_key or not self.auths.count():
             return
