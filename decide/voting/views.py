@@ -95,15 +95,17 @@ class BotMessageHandler():
         voting_tally = str(r[0]['tally'][0])
         voting_postproc = r[0]['postproc']
 
-        voting_options_postproc_to_message = ""
-
+        part2 = ""
+        part1 = ""
         for result in voting_postproc:
-            voting_options_postproc_to_message += "Opción " + str(result['number']) + " -> " + str(result['option']) + " ---> " + str(result['votes']) + " votos." + "\n"
-        message_tally1 = "\n\nDespués de haber realizado el recuento de votos el " + voting_end_date_formatted + " a las " + voting_end_date_time
-        message_tally2 = message_tally1 + " se han obtenido los siguientes resultados: \nHan votado: " + voting_tally + " personas, distribuidas en las siguientes opciones: \n\n"
+            part1 = part2 + "Opción " + str(result['number']) + " -> " + str(result['option'])
+            part2 = part1 +" ---> " + str(result['votes']) + " votos." + "\n"
+        m_tally1 = "\n\nDespués de haber realizado el recuento de votos el " + voting_end_date_formatted + " a las " + voting_end_date_time
+        m_tally2 = m_tally1 + " se han obtenido los siguientes resultados: \nHan votado: " + voting_tally
+        m_tally_final = m_tally2 + " personas, distribuidas en las siguientes opciones: \n\n"
         # Creamos el String de la v1 del módulo
         mensaje_botPart1 = voting_id + voting_name + voting_start_date_formatted + voting_start_date_time + voting_desc
-        mensaje_bot = mensaje_botPart1 + voting_question + voting_options_to_message + message_tally1 + message_tally2 + voting_options_postproc_to_message
+        mensaje_bot = mensaje_botPart1 + voting_question + voting_options_to_message + m_tally_final + part2
 
         return mensaje_bot
 
