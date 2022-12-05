@@ -9,7 +9,7 @@ class BotTelegram():
 
     def botSendMessage(message):
         CHANNEL_ID=os.getenv("TELEGRAM_CHANNEL_ID")
-        bot.send_message(CHANNEL_ID, "Hola, ¿Cómo está ese votante?")
+        bot.send_message(CHANNEL_ID, "Hola 👋👋👋, ¿Cómo está ese votante? 🫶")
         bot.send_message(CHANNEL_ID, message)
 
 
