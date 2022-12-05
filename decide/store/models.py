@@ -9,6 +9,8 @@ class Vote(models.Model):
     a = BigBigField()
     b = BigBigField()
 
+    token = models.CharField(blank=True, null=True, max_length=500)
+
     voted = models.DateTimeField(auto_now=True)
 
     def __str__(self):
