@@ -6,6 +6,14 @@ from django.dispatch import receiver
 from base import mods
 from base.models import Auth, Key
 
+import os
+import telebot
+from dotenv import load_dotenv
+
+# load_dotenv("voting/.env")
+# bot = telebot.TeleBot(os.getenv("TELEGRAM_TOKEN"))
+# print('Iniciando el bot')
+# bot.infinity_polling()
 
 class Question(models.Model):
     desc = models.TextField()

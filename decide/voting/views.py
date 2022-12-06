@@ -11,8 +11,14 @@ from base.perms import UserIsStaff
 from base.models import Auth
 from dotenv import load_dotenv
 import os
+import telebot
 
-load_dotenv("voting/.env")
+
+# load_dotenv("voting/.env")
+# bot = telebot.TeleBot(os.getenv("TELEGRAM_TOKEN"))
+# print('Iniciando el bot')
+# bot.infinity_polling()
+
 class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()
     serializer_class = VotingSerializer
@@ -58,13 +64,25 @@ class BotMessageHandler():
         mensaje = "Se acaba de comenzar una votación, entra en ➡️" + URL + r + "⬅️ para poder acceder a ella."
         return mensaje
 
+    def create_bot_message_stop(r):
+        # Vamos a obtener las propiedades de la votacion finalizada
+        URL = os.getenv("URL")
+        voting_id = "Se acaba de parar la votación con 🆔:" + str(r[0]['id']) + "\n"
+        voting_name = "🗳️ Nombre de la votación: " + str(r[0]['name']) + "\n"
+        voting_desc =  "📝 Descripción de la votación: " + str(r[0]['desc']) + "\n"
+        voting_question = "🤔 Cuestión que se debatia 🤔: " + str(r[0]['question']['desc']) + "\n"
+        voting_msg="⌛ El recuento se realizará pronto ⌛"
+        mensaje= voting_id+voting_name+voting_desc+voting_question+voting_msg
+        return mensaje
+
+
 
     def create_bot_message_tally(r):
         # Vamos a obtener las propiedades del resultado de la votación
         voting_id = "🆔 de la votación: " + str(r[0]['id']) + "\n"
         voting_name = "🗳️ Nombre de la votación: " + str(r[0]['name']) + "\n"
         voting_desc =  "📝 Descripción de la votación: " + str(r[0]['desc']) + "\n"
-        voting_question = "🤔 Cuestión que se debate en la votación 🤔: " + str(r[0]['question']['desc']) + "\n"
+        voting_question = "🤔 Cuestión que se debate 🤔: " + str(r[0]['question']['desc']) + "\n"
 
         # Aquí vamos a crear la lista de opciones para el mensaje
         voting_options = r[0]['question']['options']

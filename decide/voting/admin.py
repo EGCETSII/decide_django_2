@@ -23,6 +23,9 @@ def stop(ModelAdmin, request, queryset):
     for v in queryset.all():
         v.end_date = timezone.now()
         v.save()
+        voting_for_bot = mods.get('voting', params={'id': v.id})
+        bot_message = BotMessageHandler.create_bot_message_stop(voting_for_bot)
+        BotTelegram.botSendMessage(bot_message)
 
 
 def tally(ModelAdmin, request, queryset):
