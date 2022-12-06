@@ -42,15 +42,22 @@ class VotingView(generics.ListCreateAPIView):
         Create a Voting with a new question
         ---
         ### In order to create a voting, you will need to generate an authentication token by logging in. Then, add it to the parameter "token"
-        # Parameters
+        # Body Parameters
         - **name**: Title of the voting
         - **desc**: Description of the voting
         - **question**: Describe the question to be asked in the voting
         - **question_opt**: A list containing each of the available options for the voting. Ex: ['cat','dog','horse]
-
-        ## Extra Parameters
         - **token**: Auth token of an user with voting permissions
-
+        # Example request
+        ```
+        {
+            "name": "Voting 1",
+            "desc": "Voting 1 description",
+            "question": "What is your favorite animal?",
+            "question_opt": {"cat":1,"dog":2,"horse":3},
+            "token": 21398suhdud9182u8381uediqh9128
+        }
+        ```
         """
         request.auth = request
         request_data = request.data
@@ -77,15 +84,28 @@ class VotingView(generics.ListCreateAPIView):
 
 
 class VotingUpdate(generics.UpdateAPIView):
-    '''
-    Sisi
-    '''
     queryset = Voting.objects.all()
     serializer_class = VotingActionSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     #permission_classes = (UserIsStaff,)
 
     def put(self, request, voting_id, *args, **kwars):
+        """
+        Start/Stop/Tally a voting
+        ---
+        ### Keep in mind that some actions will take some time to be executed. For example, if you start a voting, it will take some time to generate its pub_keys.
+        # Pre-conditions
+        - The voting must exist
+        - The correct order of actions is Start -> Stop -> Tally
+        - Votes can be casted only when the voting is started, a closed voting wont accept votes
+        - You need to provide the correct token
+        ---
+        # Parameters
+        - **id**: ID of the voting
+        # Body Parameters
+        - **action**: start, stop, tally. In that order, they will start the voting, stop it and tally the results
+        - **token**: Auth token of an user with voting management permissions
+        """
         action = request.data.get('action')
         if not action:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
@@ -99,6 +119,7 @@ class VotingUpdate(generics.UpdateAPIView):
                 st = status.HTTP_400_BAD_REQUEST
             else:
                 voting.start_date = timezone.now()
+                voting.create_pubkey()
                 voting.save()
                 msg = 'Voting started'
         elif action == 'stop':
