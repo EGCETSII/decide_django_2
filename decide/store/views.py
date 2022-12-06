@@ -4,7 +4,9 @@ import django_filters.rest_framework
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import generics
+from django.shortcuts import get_object_or_404
 
+from voting.models import Voting
 from .models import Vote
 from .serializers import VoteSerializer
 from base import mods
@@ -16,7 +18,6 @@ class StoreView(generics.ListAPIView):
     serializer_class = VoteSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_fields = ('voting_id', 'voter_id')
-
     def get(self, request):
         self.permission_classes = (UserIsStaff,)
         self.check_permissions(request)
@@ -30,20 +31,20 @@ class StoreView(generics.ListAPIView):
         """
 
         vid = request.data.get('voting_id')
-        voting = mods.get('voting', params={'id': vid})
-        if not voting or not isinstance(voting, list):
+        voting = get_object_or_404(Voting, pk=vid)
+        if not voting:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
-        start_date = voting[0].get('start_date', None)
-        end_date = voting[0].get('end_date', None)
-        not_started = not start_date or timezone.now() < parse_datetime(start_date)
-        is_closed = end_date and parse_datetime(end_date) < timezone.now()
+        start_date = voting.start_date
+        end_date = voting.end_date
+        not_started = not start_date or timezone.now() < start_date
+        is_closed = end_date and end_date < timezone.now()
         if not_started or is_closed:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
         uid = request.data.get('voter_id')
-        vote = request.data.get('vote')
+        #vote = request.data.get('vote')
 
-        if not vid or not uid or not vote:
+        if not vid or not uid:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
         # validating voter
@@ -58,8 +59,8 @@ class StoreView(generics.ListAPIView):
         if perms.status_code == 401:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
-        a = vote.get("a")
-        b = vote.get("b")
+        a = request.data.get("a")
+        b = request.data.get("b")
 
         defs = { "a": a, "b": b }
         v, _ = Vote.objects.get_or_create(voting_id=vid, voter_id=uid,

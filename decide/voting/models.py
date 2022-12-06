@@ -5,6 +5,7 @@ from django.dispatch import receiver
 
 from base import mods
 from base.models import Auth, Key
+from store.models import Vote
 
 
 class Question(models.Model):
@@ -12,7 +13,6 @@ class Question(models.Model):
 
     def __str__(self):
         return self.desc
-
 
 class QuestionOption(models.Model):
     question = models.ForeignKey(Question, related_name='options', on_delete=models.CASCADE)
@@ -59,16 +59,17 @@ class Voting(models.Model):
 
     def get_votes(self, token=''):
         # gettings votes from store
-        votes = mods.get('store', params={'voting_id': self.id}, HTTP_AUTHORIZATION='Token ' + token)
+        #votes = mods.get('store', params={'voting_id': self.id}, HTTP_AUTHORIZATION='Token ' + str(token))
+        votes = Vote.objects.filter(voting_id=self.id)
         # anon votes
-        return [[i['a'], i['b']] for i in votes]
+        return [[i.a, i.b] for i in votes]
 
     def tally_votes(self, token=''):
         '''
         The tally is a shuffle and then a decrypt
         '''
 
-        votes = self.get_votes(token)
+        votes = self.get_votes(token=token)
 
         auth = self.auths.first()
         shuffle_url = "/shuffle/{}/".format(self.id)

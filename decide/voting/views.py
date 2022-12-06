@@ -4,11 +4,13 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework import viewsets
 
 from .models import Question, QuestionOption, Voting
-from .serializers import SimpleVotingSerializer, VotingSerializer
+from .serializers import SimpleVotingSerializer, VotingSerializer, VotingActionSerializer
 from base.perms import UserIsStaff
 from base.models import Auth
+from rest_framework.views import APIView
 
 
 class VotingView(generics.ListCreateAPIView):
@@ -74,11 +76,14 @@ class VotingView(generics.ListCreateAPIView):
         return Response({}, status=status.HTTP_201_CREATED)
 
 
-class VotingUpdate(generics.RetrieveUpdateDestroyAPIView):
+class VotingUpdate(generics.UpdateAPIView):
+    '''
+    Sisi
+    '''
     queryset = Voting.objects.all()
-    serializer_class = VotingSerializer
+    serializer_class = VotingActionSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
-    permission_classes = (UserIsStaff,)
+    #permission_classes = (UserIsStaff,)
 
     def put(self, request, voting_id, *args, **kwars):
         action = request.data.get('action')
@@ -118,7 +123,7 @@ class VotingUpdate(generics.RetrieveUpdateDestroyAPIView):
                 msg = 'Voting already tallied'
                 st = status.HTTP_400_BAD_REQUEST
             else:
-                voting.tally_votes(request.auth.key)
+                voting.tally_votes(token=request.data.get('token'))
                 msg = 'Voting tallied'
         else:
             msg = 'Action not found, try with start, stop or tally'
