@@ -52,10 +52,6 @@ Por lo tanto se asumen algunas carencias para permitir que sea entendible y exte
         bot.send_message(message.chat.id,"Estos son los Links oficiales de Decide: \n" +
             "🔘 Front ➡️ "+str(FRONT_LINK)+"✅\n"+ "🔘 Back/API ➡️ " +str(BACK_LINK)+"✅")
             
-    @bot.message_handler(content_types=['text'])
-    def RandomMessage(message):
-        bot.send_message(message.chat.id,"No te entiendo...😔 usa /ayuda para ver los comandos disponibles")
-            
     @bot.message_handler(commands=['ayuda',])
     def helpMessage(message):
         bot.send_message(message.chat.id,"""\
