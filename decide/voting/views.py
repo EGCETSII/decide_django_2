@@ -11,6 +11,8 @@ from .serializers import SimpleVotingSerializer, VotingSerializer, VotingActionS
 from base.perms import UserIsStaff
 from base.models import Auth
 from rest_framework.views import APIView
+from dotenv import load_dotenv
+import os
 
 
 load_dotenv("voting/.env")
