@@ -35,11 +35,13 @@ class LogoutView(APIView):
 
 class RegisterView(APIView):
     def post(self, request):
-        key = request.data.get('token', '')
-        tk = get_object_or_404(Token, key=key)
-        if not tk.user.is_superuser:
-            return Response({}, status=HTTP_401_UNAUTHORIZED)
-
+        """
+        Registra un nuevo usuario
+        ---
+        # Parametros
+        - username: Nombre de usuario
+        - password: Contraseña
+        """
         username = request.data.get('username', '')
         pwd = request.data.get('password', '')
         if not username or not pwd:

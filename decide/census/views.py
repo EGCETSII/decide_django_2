@@ -29,14 +29,14 @@ class CensusCreate(generics.ListCreateAPIView):
         - **voting_id**: ID of the voting you want to add a census into
         - **voters**: List of voters_ids that you want to add to the votation
         # Example request
-        '''
+        ```
         {
             "voting_id": 1,
             "voters": [
                 1, 2, 3
             ]
         }
-        '''
+        ```
         """
         voting_id = request.data.get('voting_id')
         voters = request.data.get('voters')

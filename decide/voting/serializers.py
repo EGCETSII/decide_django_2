@@ -32,7 +32,6 @@ class VotingSerializer(serializers.HyperlinkedModelSerializer):
 class SimpleVotingSerializer(serializers.HyperlinkedModelSerializer):
     question_opt = QuestionSerializer(many=False)
     token = serializers.CharField()
-    # token = serializers.SerializerMethodField('token')
     class Meta:
         model = Voting
         fields = ('name', 'desc', 'question', 'question_opt', 'token')
