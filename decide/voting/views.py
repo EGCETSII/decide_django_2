@@ -4,13 +4,11 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework import viewsets
 
 from .models import Question, QuestionOption, Voting
 from .serializers import SimpleVotingSerializer, VotingSerializer, VotingActionSerializer
 from base.perms import UserIsStaff
 from base.models import Auth
-from rest_framework.views import APIView
 from dotenv import load_dotenv
 import os
 
