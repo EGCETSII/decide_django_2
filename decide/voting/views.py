@@ -39,8 +39,7 @@ class VotingView(generics.ListCreateAPIView):
         res = super().get(request, *args, **kwargs)
         return res
 
-    def p
-    t(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         """
         Create a Voting with a new question
         ---
