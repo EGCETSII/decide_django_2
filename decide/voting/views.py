@@ -66,7 +66,7 @@ class VotingView(generics.ListCreateAPIView):
         self.permission_classes = (UserIsStaff,)
         self.check_permissions(request)
         for data in ['name', 'desc', 'question', 'question_opt']:
-            if not data in request_data:
+            if data not in request_data:
                 return Response(f"Cant find parameter {data} in your request", status=status.HTTP_400_BAD_REQUEST)
 
         question = Question(desc=request_data.get('question'))
@@ -154,7 +154,8 @@ class VotingUpdate(generics.UpdateAPIView):
         """
         Start/Stop/Tally a voting
         ---
-        ### Keep in mind that some actions will take some time to be executed. For example, if you start a voting, it will take some time to generate its pub_keys.
+        ### Keep in mind that some actions will take some time to be executed. For example, if you start a voting,
+        ### it will take some time to generate its pub_keys.
         # Pre-conditions
         - The voting must exist
         - The correct order of actions is Start -> Stop -> Tally
