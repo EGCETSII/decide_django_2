@@ -18,6 +18,7 @@ class VotingView(generics.ListCreateAPIView):
     serializer_class = SimpleVotingSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filter_fields = ('id',)
+    lookup_field = ('question-detail',)
 
 
     def get(self, request, *args, **kwargs):
@@ -32,8 +33,8 @@ class VotingView(generics.ListCreateAPIView):
         version = request.version
         if version not in settings.ALLOWED_VERSIONS:
             version = settings.DEFAULT_VERSION
-        if version == 'v2':
-            self.serializer_class = SimpleVotingSerializer
+        if version == 'v1':
+            self.serializer_class = VotingSerializer
         res = super().get(request, *args, **kwargs)
         return res
 
