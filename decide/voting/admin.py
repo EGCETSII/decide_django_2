@@ -15,8 +15,11 @@ def start(modeladmin, request, queryset):
         v.create_pubkey()
         v.start_date = timezone.now()
         v.save()
-        bot_message = BotMessageHandler.create_bot_message_start(str(v.id))
-        BotTelegram.botSendMessage(bot_message)
+        try:
+            bot_message = BotMessageHandler.create_bot_message_start(str(v.id))
+            BotTelegram.botSendMessage(bot_message)
+        except:
+            pass
 
 
 def stop(ModelAdmin, request, queryset):
@@ -31,7 +34,8 @@ def tally(ModelAdmin, request, queryset):
 
         # Bot
         voting_for_bot = mods.get('voting', params={'id': v.id})
-        bot_message = BotMessageHandler.create_bot_message_tally(voting_for_bot)
+        bot_message = BotMessageHandler.create_bot_message_tally(
+            voting_for_bot)
         BotTelegram.botSendMessage(bot_message)
         # end Bot
 
@@ -54,7 +58,7 @@ class VotingAdmin(admin.ModelAdmin):
     list_filter = (StartedFilter,)
     search_fields = ('name', )
 
-    actions = [ start, stop, tally ]
+    actions = [start, stop, tally]
 
 
 admin.site.register(Voting, VotingAdmin)
