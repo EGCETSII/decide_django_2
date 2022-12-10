@@ -45,9 +45,10 @@ Por lo tanto se asumen algunas carencias para permitir que sea entendible y exte
         #TODO no muestra los links
         FRONT_LINK=os.getenv("FRONT_URL")
         BACK_LINK=os.getenv("API_URL")
-
-        bot.send_message(message.chat.id,"Estos son los Links oficiales de Decide: \n" +
-        "🔘 Front ➡️ "+str(FRONT_LINK)+"✅\n"+ "🔘 Back/API ➡️ " +str(BACK_LINK)+"✅")      
+        text="Estos son los Links oficiales de Decide: \n"
+        text2="🔘 Front ➡️ "+str(FRONT_LINK)+"✅\n"+ "🔘 Back/API ➡️ " +str(BACK_LINK)+"✅"
+        text_final=text + text2
+        bot.send_message(message.chat.id,text_final)      
     @bot.message_handler(commands=['ayuda',])
     def helpMessage(message):
         bot.send_message(message.chat.id,"""\
