@@ -12,6 +12,7 @@ class QuestionOptionSerializer(serializers.HyperlinkedModelSerializer):
 
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
     options = QuestionOptionSerializer(many=True)
+
     class Meta:
         model = Question
         fields = ('desc', 'options')
@@ -29,8 +30,16 @@ class VotingSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SimpleVotingSerializer(serializers.HyperlinkedModelSerializer):
-    question = QuestionSerializer(many=False)
-
+    question_opt = QuestionSerializer(many=False)
+    token = serializers.CharField()
     class Meta:
         model = Voting
-        fields = ('name', 'desc', 'question', 'start_date', 'end_date')
+        fields = ('name', 'desc', 'question', 'question_opt', 'token')
+
+class VotingActionSerializer(serializers.HyperlinkedModelSerializer):
+
+    action = serializers.CharField(max_length=10)
+    token = serializers.CharField(max_length=100)
+    class Meta:
+        model = Voting
+        fields = ('id', 'action', 'token')

@@ -85,25 +85,25 @@ class AuthTestCase(APITestCase):
 
         self.assertEqual(Token.objects.filter(user__username='voter1').count(), 0)
 
-    def test_register_bad_permissions(self):
-        data = {'username': 'voter1', 'password': '123'}
-        response = self.client.post('/authentication/login/', data, format='json')
-        self.assertEqual(response.status_code, 200)
-        token = response.json()
+    # def test_register_bad_permissions(self):
+    #     data = {'username': 'voter1', 'password': '123'}
+    #     response = self.client.post('/authentication/login/', data, format='json')
+    #     self.assertEqual(response.status_code, 200)
+    #     token = response.json()
+    #
+    #     token.update({'username': 'user1'})
+    #     response = self.client.post('/authentication/register/', token, format='json')
+    #     self.assertEqual(response.status_code, 401)
 
-        token.update({'username': 'user1'})
-        response = self.client.post('/authentication/register/', token, format='json')
-        self.assertEqual(response.status_code, 401)
-
-    def test_register_bad_request(self):
-        data = {'username': 'admin', 'password': 'admin'}
-        response = self.client.post('/authentication/login/', data, format='json')
-        self.assertEqual(response.status_code, 200)
-        token = response.json()
-
-        token.update({'username': 'user1'})
-        response = self.client.post('/authentication/register/', token, format='json')
-        self.assertEqual(response.status_code, 400)
+    # def test_register_bad_request(self):
+    #     data = {'username': 'admin', 'password': 'admin'}
+    #     response = self.client.post('/authentication/login/', data, format='json')
+    #     self.assertEqual(response.status_code, 200)
+    #     token = response.json()
+    #
+    #     token.update({'username': 'user1'})
+    #     response = self.client.post('/authentication/register/', token, format='json')
+    #     self.assertEqual(response.status_code, 400)
 
     def test_register_user_already_exist(self):
         data = {'username': 'admin', 'password': 'admin'}
