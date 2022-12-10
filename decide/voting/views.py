@@ -11,7 +11,6 @@ from base.perms import UserIsStaff
 from base.models import Auth
 from dotenv import load_dotenv
 import os
-import telebot
 
 
 # load_dotenv("voting/.env")
@@ -102,7 +101,6 @@ class BotMessageHandler():
 
     def create_bot_message_stop(r):
         # Vamos a obtener las propiedades de la votacion finalizada
-        URL = os.getenv("URL")
         voting_id = "Se acaba de parar la votación con 🆔:" + str(r[0]['id']) + "\n"
         voting_name = "🗳️ Nombre de la votación: " + str(r[0]['name']) + "\n"
         voting_desc =  "📝 Descripción de la votación: " + str(r[0]['desc']) + "\n"
