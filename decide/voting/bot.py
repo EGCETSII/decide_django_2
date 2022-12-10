@@ -28,7 +28,6 @@ class BotTelegram():
     def channelMessage(message):
         CHANNEL_LINK=os.getenv("TELEGRAM_NAME_CHANNEL")
         bot.send_message(message.chat.id,"Únete 🫵 a nuestro canal de telegram para mantenerte informado de Decide!! ➡️" + CHANNEL_LINK+ "⬅️")
-    
     @bot.message_handler(commands=['info',])
     def infoMessage(message):
         bot.send_message(message.chat.id,"""\
