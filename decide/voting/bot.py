@@ -40,7 +40,6 @@ por lo que prima la simplicidad por encima de la eficiencia cuando sea posible �
 Por lo tanto se asumen algunas carencias para permitir que sea entendible y extensible 🤝.
                         \
                 """)
-    
     @bot.message_handler(commands=['links',])
     def LinksMessage(message):
         #TODO no muestra los links
@@ -48,8 +47,7 @@ Por lo tanto se asumen algunas carencias para permitir que sea entendible y exte
         BACK_LINK=os.getenv("API_URL")
 
         bot.send_message(message.chat.id,"Estos son los Links oficiales de Decide: \n" +
-            "🔘 Front ➡️ "+str(FRONT_LINK)+"✅\n"+ "🔘 Back/API ➡️ " +str(BACK_LINK)+"✅")
-            
+            "🔘 Front ➡️ "+str(FRONT_LINK)+"✅\n"+ "🔘 Back/API ➡️ " +str(BACK_LINK)+"✅")      
     @bot.message_handler(commands=['ayuda',])
     def helpMessage(message):
         bot.send_message(message.chat.id,"""\
@@ -63,8 +61,6 @@ Por lo tanto se asumen algunas carencias para permitir que sea entendible y exte
 
             \
                 """)
-
-
     if __name__ == '__main__':
         print('Iniciando el bot')
         bot.infinity_polling()
