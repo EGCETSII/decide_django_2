@@ -47,7 +47,7 @@ Por lo tanto se asumen algunas carencias para permitir que sea entendible y exte
         BACK_LINK=os.getenv("API_URL")
 
         bot.send_message(message.chat.id,"Estos son los Links oficiales de Decide: \n" +
-            "🔘 Front ➡️ "+str(FRONT_LINK)+"✅\n"+ "🔘 Back/API ➡️ " +str(BACK_LINK)+"✅")      
+        "🔘 Front ➡️ "+str(FRONT_LINK)+"✅\n"+ "🔘 Back/API ➡️ " +str(BACK_LINK)+"✅")      
     @bot.message_handler(commands=['ayuda',])
     def helpMessage(message):
         bot.send_message(message.chat.id,"""\
@@ -66,4 +66,3 @@ Por lo tanto se asumen algunas carencias para permitir que sea entendible y exte
         bot.infinity_polling()
         print('Bot iniciado correctamente')
         print('Fin')
-    
