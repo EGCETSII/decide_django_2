@@ -12,7 +12,7 @@ class BotTelegram():
         CHANNEL_ID=os.getenv("TELEGRAM_CHANNEL_ID")
         bot.send_message(CHANNEL_ID, "Hola 👋👋👋, ¿Cómo está ese votante? 🫶")
         bot.send_message(CHANNEL_ID, message)
-    
+
     @bot.message_handler(commands=['votaciones',])
     def showAllVotings(message):
         # TODO: Mostrar votaciones parseadas
@@ -31,7 +31,6 @@ class BotTelegram():
     
     @bot.message_handler(commands=['info',])
     def infoMessage(message):
-        CHANNEL_LINK=os.getenv("TELEGRAM_NAME_CHANNEL")
         bot.send_message(message.chat.id,"""\
         Decide es una plataforma de voto electrónica educativa 🗳️, 
 el objetivo de este proyecto es implementar una plataforma de voto electrónico seguro 🛟
@@ -65,14 +64,11 @@ Por lo tanto se asumen algunas carencias para permitir que sea entendible y exte
 
             \
                 """)
-    
-    def main(self):
-        bot.infinity_polling()
 
 
     if __name__ == '__main__':
         print('Iniciando el bot')
-        main()
+        bot.infinity_polling()
         print('Bot iniciado correctamente')
         print('Fin')
     

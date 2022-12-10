@@ -1,7 +1,7 @@
 import os
 import telebot
 from dotenv import load_dotenv
-from django.core.management.base import BaseCommand,CommandError
+from django.core.management.base import BaseCommand
 from ...bot import BotTelegram
 
 load_dotenv("voting/.env")
