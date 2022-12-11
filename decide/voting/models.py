@@ -7,6 +7,10 @@ from base import mods
 from base.models import Auth, Key
 from store.models import Vote
 
+# load_dotenv("voting/.env")
+# bot = telebot.TeleBot(os.getenv("TELEGRAM_TOKEN"))
+# print('Iniciando el bot')
+# bot.infinity_polling()
 
 class Question(models.Model):
     desc = models.TextField()
