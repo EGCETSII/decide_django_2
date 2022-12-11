@@ -62,8 +62,10 @@ Por lo tanto se asumen algunas carencias para permitir que sea entendible y exte
 
             \
                 """)
+    def main(self):
+        bot.infinity_polling()
     if __name__ == '__main__':
         print('Iniciando el bot')
-        bot.infinity_polling()
+        main()
         print('Bot iniciado correctamente')
         print('Fin')
