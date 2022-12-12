@@ -1,4 +1,4 @@
-BASEURL = 'http://localhost:8000'
+BASEURL = 'https://decide-production-afa2.up.railway.app'
 
 APIS = {
     'authentication': BASEURL,

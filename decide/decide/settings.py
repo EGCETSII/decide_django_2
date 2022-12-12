@@ -59,7 +59,8 @@ MODULES = [
     'voting',
 ]
 
-BASEURL = 'http://localhost:8000'
+# BASEURL = 'http://localhost:8000'
+BASEURL = 'https://decide-production-afa2.up.railway.app'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
