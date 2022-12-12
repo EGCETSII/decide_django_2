@@ -21,10 +21,10 @@ REST_FRAMEWORK = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'railway',
-        'USER': 'root',
-        'PASSWORD': '1weg0qKU3XEdhtcWIJj9',
-        'HOST': 'containers-us-west-67.railway.app',
-        'PORT': '7729', 
+        'USER': 'postgres',
+        'PASSWORD': 'LXDIwUYidMB8FTkQyV8g',
+        'HOST': 'containers-us-west-152.railway.app',
+        'PORT': '5455',
 }}
