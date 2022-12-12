@@ -11,14 +11,8 @@ from base.perms import UserIsStaff
 from base.models import Auth
 from dotenv import load_dotenv
 import os
-
-
-# load_dotenv("voting/.env")
-# bot = telebot.TeleBot(os.getenv("TELEGRAM_TOKEN"))
-# print('Iniciando el bot')
-# bot.infinity_polling()
-
-
+from .bot import BotTelegram
+from base import mods
 
 load_dotenv("voting/.env")
 
@@ -112,6 +106,7 @@ class BotMessageHandler():
 
 
     def create_bot_message_tally(r):
+        print("SALIDA -> ", r[0])
         # Vamos a obtener las propiedades del resultado de la votación
         voting_id = "🆔 de la votación: " + str(r[0]['id']) + "\n"
         voting_name = "🗳️ Nombre de la votación: " + str(r[0]['name']) + "\n"
@@ -151,15 +146,24 @@ class BotMessageHandler():
         voting_end_date_time = str(r[0]['end_date']).split(sep='.')[
             0].split(sep='T')[1]
 
-        voting_tally = str(r[0]['tally'][0])
-        voting_postproc = r[0]['postproc']
+        try:
+            voting_tally = str(r[0]['tally'][0])
+        except:
+            voting_tally = "0"
 
-        part2 = ""
-        part1 = ""
-        for result in voting_postproc:
-            part1 = part2 + "Opción " + \
-                str(result['number']) + " -> ✅ " + str(result['option'])
-            part2 = part1 + " ---> " + str(result['votes']) + " votos." + "\n"
+        try:
+            voting_postproc = r[0]['postproc']
+            part2 = ""
+            part1 = ""
+            for result in voting_postproc:
+                part1 = part2 + "Opción " + \
+                    str(result['number']) + " -> ✅ " + str(result['option'])
+                part2 = part1 + " ---> " + str(result['votes']) + " votos." + "\n"
+        except:
+            part2 = 'No hay distribución de votaciones por opciones que dar'
+            part2 += ' debido a que no ha habido ninguna votación.'
+
+        
         m_tally1 = "\n\nDespués de haber realizado el recuento de votos el " + \
             voting_end_date_formatted + "🗓️ a las " + voting_end_date_time
         m_tally2 = m_tally1 + \
@@ -198,6 +202,7 @@ class VotingUpdate(generics.UpdateAPIView):
         - **action**: start, stop, tally. In that order, they will start the voting, stop it and tally the results
         - **token**: Auth token of an user with voting management permissions
         """
+        voting_for_bot = mods.get('voting', params={'id': voting_id})
         action = request.data.get('action')
         if not action:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
@@ -213,6 +218,11 @@ class VotingUpdate(generics.UpdateAPIView):
                 voting.start_date = timezone.now()
                 voting.create_pubkey()
                 voting.save()
+                #####
+                votingID = str(voting_id)
+                bot_message = BotMessageHandler.create_bot_message_start(votingID)
+                BotTelegram.botSendMessage(bot_message)
+                ####
                 msg = 'Voting started'
         elif action == 'stop':
             if not voting.start_date:
@@ -224,6 +234,10 @@ class VotingUpdate(generics.UpdateAPIView):
             else:
                 voting.end_date = timezone.now()
                 voting.save()
+                #####
+                bot_message = BotMessageHandler.create_bot_message_stop(voting_for_bot)
+                BotTelegram.botSendMessage(bot_message)
+                ####
                 msg = 'Voting stopped'
         elif action == 'tally':
             if not voting.start_date:
@@ -237,6 +251,10 @@ class VotingUpdate(generics.UpdateAPIView):
                 st = status.HTTP_400_BAD_REQUEST
             else:
                 voting.tally_votes(token=request.data.get('token'))
+                #####
+                bot_message = BotMessageHandler.create_bot_message_tally(voting_for_bot)
+                BotTelegram.botSendMessage(bot_message)
+                ####
                 msg = 'Voting tallied'
         else:
             msg = 'Action not found, try with start, stop or tally'
