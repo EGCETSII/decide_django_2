@@ -12,14 +12,6 @@ from base.models import Auth
 from dotenv import load_dotenv
 import os
 
-
-# load_dotenv("voting/.env")
-# bot = telebot.TeleBot(os.getenv("TELEGRAM_TOKEN"))
-# print('Iniciando el bot')
-# bot.infinity_polling()
-
-
-
 load_dotenv("voting/.env")
 
 class VotingView(generics.ListCreateAPIView):

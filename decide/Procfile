@@ -1,0 +1,1 @@
+web: ./manage.py migrate && gunicorn decide.wsgi
