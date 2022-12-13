@@ -33,7 +33,7 @@ jobs:
         pip install -r requirements.txt
         pip install codacy-coverage
       
-        cp decide/local_settings.gactions.py decide/local_settings.py
+        cp decide/local_settings.py
     - name: Run tests
       run: |
         cd decide
