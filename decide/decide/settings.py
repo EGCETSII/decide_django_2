@@ -17,7 +17,6 @@ DEBUG = True
 
 # ALLOWED HOSTS
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ['*']
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -59,12 +58,14 @@ MODULES = [
     'voting',
 ]
 
-# BASEURL = 'http://localhost:8000'
-BASEURL = 'https://decide-production-afa2.up.railway.app'
+BASEURL = 'http://localhost:8000'
+# BASEURL = 'https://decide-production-afa2.up.railway.app'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -100,15 +101,22 @@ WSGI_APPLICATION = 'decide.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'railway',
+#         'USER': 'postgres',
+#         'PASSWORD': 'LXDIwUYidMB8FTkQyV8g',
+#         'HOST': 'containers-us-west-152.railway.app',
+#         'PORT': '5455',
+# }}
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'LXDIwUYidMB8FTkQyV8g',
-        'HOST': 'containers-us-west-152.railway.app',
-        'PORT': '5455',
-}}
+    'default': dj_database_url.config(
+        engine='django.db.backends.postgresql',
+        default='postgres://decide:decide@localhost:5432/decide',
+    )
+}
 
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 

@@ -1,1 +1,1 @@
-web: ./manage.py migrate && gunicorn decide.wsgi
+web: ./manage.py migrate && ./manage.py bot && gunicorn decide.wsgi
