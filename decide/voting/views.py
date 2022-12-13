@@ -87,6 +87,7 @@ class VotingView(generics.ListCreateAPIView):
 
 
 class BotMessageHandler():
+    
     def create_bot_message_start(votingID):
         URL = f"{os.getenv('URL')}/votacion/{votingID}"
         mensaje = f"Se acaba de comenzar una votación, entra en ➡️ {str(URL)} ⬅️ para poder acceder a ella."
@@ -94,6 +95,7 @@ class BotMessageHandler():
 
 
     def create_bot_message_stop(r):
+        
         # Vamos a obtener las propiedades de la votacion finalizada
         voting_id = "Se acaba de parar la votación con 🆔:" + str(r[0]['id']) + "\n"
         voting_name = "🗳️ Nombre de la votación: " + str(r[0]['name']) + "\n"
@@ -106,7 +108,7 @@ class BotMessageHandler():
 
 
     def create_bot_message_tally(r):
-        print("SALIDA -> ", r[0])
+        
         # Vamos a obtener las propiedades del resultado de la votación
         voting_id = "🆔 de la votación: " + str(r[0]['id']) + "\n"
         voting_name = "🗳️ Nombre de la votación: " + str(r[0]['name']) + "\n"
@@ -202,7 +204,7 @@ class VotingUpdate(generics.UpdateAPIView):
         - **action**: start, stop, tally. In that order, they will start the voting, stop it and tally the results
         - **token**: Auth token of an user with voting management permissions
         """
-        voting_for_bot = mods.get('voting', params={'id': voting_id})
+        
         action = request.data.get('action')
         if not action:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
@@ -235,6 +237,7 @@ class VotingUpdate(generics.UpdateAPIView):
                 voting.end_date = timezone.now()
                 voting.save()
                 #####
+                voting_for_bot = mods.get('voting', params={'id': voting_id})
                 bot_message = BotMessageHandler.create_bot_message_stop(voting_for_bot)
                 BotTelegram.botSendMessage(bot_message)
                 ####
@@ -252,6 +255,7 @@ class VotingUpdate(generics.UpdateAPIView):
             else:
                 voting.tally_votes(token=request.data.get('token'))
                 #####
+                voting_for_bot = mods.get('voting', params={'id': voting_id})
                 bot_message = BotMessageHandler.create_bot_message_tally(voting_for_bot)
                 BotTelegram.botSendMessage(bot_message)
                 ####
