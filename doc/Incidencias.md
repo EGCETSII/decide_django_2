@@ -147,5 +147,19 @@ Debido a que no es posible particionar de manera segura el disco de los MacBook,
 Para solucionar el problema, se optó por buscar informacion sobre cada fallo que iba resultando, hasta el punto de que actualmente, al menos dos miembros del equipo pueden ejecutar en proyecto en su MacOs sin problema. 
 
 **No se conocen aun todos los fallos que pueden resultar con respecto a proximas funcionalidades o métodos, por ello se define esta incidencia como en progreso ya que estamos pendientes de proximas evoluciones del proyecto.**
+
+## 🧨 INC-010 - Errores de los tests con el uso de useNavigate
+
+| Estado      | Tipo  | Responsable                 | Prioridad |
+| ----------- | ----- | --------------------------- | --------- |
+| En progreso | Fallo | Márquez López, José Antonio | 2         | 
+
+### Descripción 
+En el front, se utilizaba la funcion "navigate()" propia de react-router-dom, sin embargo, se ha encontrado, que para los tests, esa funcion crea un conflicto.
+
+### Posibles Soluciones
+Se han cambiado todos los usos de navigate() donde daban fallos, por redirect() cuyo funcionamiento es exactamente igual.
+
+**No se conocen aun todos los fallos que pueden resultar con respecto a proximas funcionalidades o métodos, por ello se define esta incidencia como en progreso ya que estamos pendientes de proximas evoluciones del proyecto.**
   
 
