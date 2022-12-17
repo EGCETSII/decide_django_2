@@ -36,6 +36,11 @@ jobs:
     - name: Run tests
       env:
         TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        TELEGRAM_NAME_CHANNEL: https://t.me/+seqiuW01_aVmOWNk
+        TELEGRAM_CHANNEL_ID: -1001872642217
+        URL: https://decide-coral.vercel.app/votacion
+        FRONT_URL: https://decide-coral.vercel.app/
+        API_URL: NONE
       run: |
         cd decide
         coverage run --branch --source=. ./manage.py test  --keepdb 
