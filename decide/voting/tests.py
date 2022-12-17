@@ -98,7 +98,6 @@ class VotingTestCase(BaseTestCase):
 
         self.login()  # set token
         votes = v.tally_votes(self.token)
-        # votes = v.get_votes(self.token)
 
         tally = v.tally
         tally.sort()
