@@ -59,7 +59,7 @@ class Voting(models.Model):
 
     def get_votes(self, token=''):
         # gettings votes from store
-        #votes = mods.get('store', params={'voting_id': self.id}, HTTP_AUTHORIZATION='Token ' + str(token))
+        votes = mods.get('store', params={'voting_id': self.id}, HTTP_AUTHORIZATION='Token ' + str(token))
         votes = Vote.objects.filter(voting_id=self.id)
         # anon votes
         return [[i.a, i.b] for i in votes]
@@ -97,6 +97,8 @@ class Voting(models.Model):
         self.save()
 
         self.do_postproc()
+        # return votes in a dict
+        return self.get_votes()
 
     def do_postproc(self):
         tally = self.tally
