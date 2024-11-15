@@ -1,0 +1,23 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container d-flex p-4 justify-content-center">
+    <aside class="col-sm-8">
+        <div class="card">
+            <h1 class="card-title mb-4 mt-5 text-center">Bienvenido a Decide-Pícaro</h1>
+
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <div class="form-group">
+                        <a href="/authentication/logingui" class="btn btn-primary btn-outline-block btn-lg mb-4">Iniciar sesión</a>
+                    </div> <!-- form-group// -->
+                </div>
+                <div class="col-md-4 text-center">
+                    <a href="/authentication/registergui" class="float-right btn btn-outline-primary btn-lg">Registrar usuario</a>
+                </div>                                            
+            </div>
+    </aside>
+</div>
+{% endblock %}

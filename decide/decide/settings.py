@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+from django.utils.translation import ugettext_lazy as _
 
 # Application definition
 
@@ -46,6 +47,12 @@ INSTALLED_APPS = [
     'gateway',
 ]
 
+#Authentication Apps
+
+AUTH_APPS = [
+    'social_django',
+]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
@@ -54,9 +61,32 @@ REST_FRAMEWORK = {
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning'
 }
 
+#Authentication Backends
+
 AUTHENTICATION_BACKENDS = [
     'base.backends.AuthBackend',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
 ]
+
+#Social Login Keys
+import environ
+#Facebook App Keys
+SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get('SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get('SOCIAL_AUTH_FACEBOOK_SECRET')
+
+#Twitter App keys
+SOCIAL_AUTH_TWITTER_KEY = os.environ.get('SOCIAL_AUTH_TWITTER_KEY')
+SOCIAL_AUTH_TWITTER_SECRET = os.environ.get('SOCIAL_AUTH_TWITTER_SECRET')
+
+#Email Auth Backend (For testing and debugging purposes, not yet ready for production)
+#If emails doesn't show up in the command prompt when performing an email dependant operation (Such as email verification)
+#Try running the following line is a new command prompt: python3 -m smtpd -n -c DebuggingServer localhost:1025 > mail.log
+#This command will run a dummy smtpd server in the port 1025 of your machine, note that this server may already been enabled
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+#Url to redirect after successfull login
+LOGIN_REDIRECT_URL = '/'
 
 MODULES = [
     'authentication',
@@ -70,16 +100,31 @@ MODULES = [
     'voting',
 ]
 
-BASEURL = 'http://localhost:8000'
+BASEURL = 'https://picaro-decide.herokuapp.com'
+
+APIS = {
+    'authentication': BASEURL ,
+    'base': BASEURL ,
+    'booth': BASEURL ,
+    'census': BASEURL ,
+    'mixnet': BASEURL ,
+    'postproc': BASEURL ,
+    'store': BASEURL ,
+    'visualizer': BASEURL ,
+    'voting': BASEURL ,
+    }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'social_django.middleware.SocialAuthExceptionMiddleware', #Authentication Social Middleware
 ]
 
 ROOT_URLCONF = 'decide.urls'
@@ -87,7 +132,7 @@ ROOT_URLCONF = 'decide.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["decide/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -140,7 +185,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'en'
+_ = lambda s: s
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('es', _('Spanish')),
+]
 
 TIME_ZONE = 'UTC'
 
@@ -150,6 +202,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
+]
+
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
@@ -157,6 +213,21 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = ''
+STATIC_TMP = os.path.join(BASE_DIR, 'static')
+
+os.makedirs(STATIC_TMP, exist_ok=True)
+
+STATICFILES_DIRS = (
+    'static',
+)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = ''
+
+MEDIAFILES_DIRS = (
+    'media',
+)
 
 # number of bits for the key, all auths should use the same number of bits
 KEYBITS = 256
@@ -178,5 +249,9 @@ if os.path.exists("config.jsonnet"):
     for k, v in config.items():
         vars()[k] = v
 
+#All the apps are loaded from here, it's better to divide the apps of each team in different arrays so we can identify
+#which are the newly added ones, for example: All the needed Apps for Authentication are under the array: AUTH_APPS
+INSTALLED_APPS = INSTALLED_APPS + MODULES + AUTH_APPS
 
-INSTALLED_APPS = INSTALLED_APPS + MODULES
+import django_heroku
+django_heroku.settings(locals())

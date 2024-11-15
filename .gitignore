@@ -101,3 +101,5 @@ ENV/
 .mypy_cache/
 
 .vagrant
+.vscode/settings.json
+.vscode/settings.json

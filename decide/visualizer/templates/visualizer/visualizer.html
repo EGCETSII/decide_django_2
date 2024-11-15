@@ -1,48 +1,70 @@
 {% extends "base.html" %}
 {% load i18n static %}
 
+{% block title %} - Visualización{% endblock %}
 {% block extrahead %}
-    <link type="text/css" rel="stylesheet"
-         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet"
-         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
-    <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static 'booth/style.css' %}" />
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    
 {% endblock %}
 
 {% block content %}
     <div id="app-visualizer">
-        <!-- Navbar -->
+
+        <!-- Header -->
         <b-navbar type="dark" variant="secondary">
-            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
+            <b-navbar-brand tag="h1">{% trans "Decide Visualization" %}</b-navbar-brand>
+            
+            <b-navbar-nav class="ml-auto">
+                <!-- Dark mode and light mode buttons -->
+                <button id="lightButton" type="button" class="btn btn-light btn-sm pull-xs-right" style="display: none"
+                    onclick="activateLightMode()">{% trans "Light mode" %}</button>
+                <button id="darkButton" type="button" class="btn btn-dark btn-sm pull-xs-right" style="display: inline"
+                    onclick="activateDarkMode()">{% trans "Dark mode" %}</button>
+            </b-navbar-nav>
         </b-navbar>
 
         <div class="voting container">
-            <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
-
-            <h2 v-if="!voting.start_date">Votación no comenzada</h2>
-            <h2 v-else-if="!voting.end_date">Votación en curso</h2>
+            <h2 id="text" v-if="!voting.start_date">{% trans "Voting not started" %}</h2>
+            <h2 id="text" v-else-if="!voting.end_date">{% trans "Voting in progress" %}</h2>
             <div v-else>
-                <h2 class="heading">Resultados:</h2>
-
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Opción</th>
-                            <th>Puntuación</th>
-                            <th>Votos</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="opt in voting.postproc" :key="opt.number">
-                            <th>[[opt.option]]</th>
-                            <td>[[opt.postproc]]</td>
-                            <td class="text-muted">[[opt.votes]]</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h2 id="text" class="heading">{% trans "Results" %}</h2>
+                <div>
+                    <table class="table table-bordered table-striped">
+                        <thead style="text-align:center;">
+                            <tr>
+                                <th><u>{% trans "Option" %}</u></th>
+                                <th><u>{% trans "Punctuation" %}</u></th>
+                                <th><u>{% trans "Votes" %}</u></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="opt in voting.postproc" :key="opt.number">
+                                <th>[[opt.option]]</th>
+                                <td style="text-align:center;">[[opt.postproc]]</td>
+                                <td class="text-muted" style="text-align:center;">[[opt.votes]]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
+            <canvas id="myChart"></canvas>
         </div>
+
+        <!-- Footer -->
+        <b-navbar type="dark" variant="secondary" style="margin-top: 20px;">
+            <div class="container">
+                <span class="navbar-text" style="color: white;">{% trans "Evolution and Configuration Management" %} · <em>Decide</em></span>
+                <span class="navbar-text navbar-right" style="color: white;">Decide Pícaro - Visualización &copy; 2021</span>
+            </div>
+        </b-navbar>
+
+        
     </div>
 {% endblock %}
 
@@ -51,7 +73,7 @@
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-
+    <script src="http://java.sun.com/jsp/jstl/core"></script>
     <script>
         var voting = {{voting|safe}};
         var app = new Vue({
@@ -62,5 +84,62 @@
             }
         })
     </script>
-</body>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="{% static 'js/mfb.js' %}"></script>
+
+    <script>
+        var data=[];var labels=[];var colores=[]; var numeros="0123456789ABCDEF";var almohadilla="#";var color="";
+        var postproc=voting.postproc;
+
+        function getColoresRandom(){
+            var colorRandom='#'+Math.random().toString(16).substr(-6);
+           return colorRandom;
+        }
+
+        for(var i=0;i<postproc.length;i++){
+            data.push(postproc[i].votes)
+            labels.push(postproc[i].option)
+            color= getColoresRandom()
+            colores.push(color)
+        }
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'doughnut',
+            data:{
+                datasets: [{
+                    data: data,
+                    backgroundColor: colores,
+                    label: 'Número de votos'}],
+                    labels: labels},
+            options: {responsive: true}
+            });
+    </script>   
+    
+    <script>
+        // Light mode and dark mode scripts
+        function activateLightMode() {
+            document.body.className = "bg-light"
+            document.getElementById("lightButton").style.display = "none"
+            document.getElementById("darkButton").style.display = "inline"
+            document.getElementById("text").style.color = "black"
+        }
+
+        function activateDarkMode() {
+            document.body.className = "bg-dark"
+            document.getElementById("lightButton").style.display = "inline"
+            document.getElementById("darkButton").style.display = "none"
+            document.getElementById("text").style.color = "white"
+        }
+
+        function popUp() {
+            if (confirm("La página de visualización es demasiado chula. ¿Quiere continuar?")) {   
+            } else {
+                window.onload = popUp();
+            }
+        }
+
+        window.onload = popUp();
+    </script>
+
 {% endblock %}

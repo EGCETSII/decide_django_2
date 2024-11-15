@@ -1,14 +1,52 @@
 <!DOCTYPE html>
+{% load i18n static %}
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>{% block title %}Decide!{% endblock %}</title>
+        <title>Decide Pícaro{% block title %}{% endblock %}</title>
+        <link rel="shortcut icon" type="image/png" href="{% static 'favicon/picaro.png' %}" />
+        <link rel="stylesheet" href="{% static 'css/mfb.css' %}" >
         {% block extrahead %}{% endblock %}
     </head>
     <body>
         {% block content %}
         {% endblock %}
-
+        <!-- Floating action button to select language -->
+        <form action="{% url 'set_language' %}" method="post">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ redirect_to }}" />
+            <ul id="menu" class="mfb-component--br mfb-zoomin" data-mfb-toggle="hover">
+                <li class="mfb-component__wrap">
+                    <a class="pmd-floating-action-btn btn pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-primary">
+                        <i class="fa fa-globe"></i>
+                    </a>
+                    <ul class="mfb-component__list">
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for lang in languages %}
+                        <li>
+                            {% get_current_language as LANGUAGE_CODE %}
+                            {% if LANGUAGE_CODE == "es" %}
+                            <button class="pmd-floating-action-btn btn btn-sm pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-light"
+                                type="submit" value="{{lang.code}}" name="language"
+                                {% if lang.code == "es" %} data-mfb-label="Español" {% else %} data-mfb-label="Inglés" {% endif %}>
+                                <img width="30" {% if lang.code == "es" %} src="{% static '/images/spain.jpg' %}" {% else %}
+                                    src="{% static '/images/england.jpg' %}" {% endif %}> 
+                            </button>
+                            {% else %}
+                            <button class="pmd-floating-action-btn btn btn-sm pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-light"
+                                type="submit" value="{{lang.code}}" name="language"
+                                {% if lang.code == "es" %} data-mfb-label="Spanish" {% else %} data-mfb-label="English" {% endif %}>
+                                <img width="30" {% if lang.code == "es" %} src="{% static '/images/spain.jpg' %}" {% else %}
+                                    src="{% static '/images/england.jpg' %}" {% endif %}> 
+                            </button>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </form>
         {% block extrabody %}{% endblock %}
     </body>
 </html>

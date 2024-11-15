@@ -1,0 +1,32 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="card-title mb-4 mt-1 text-center">Esta acción no es reversible</h1>
+<h3 class="card-title mb-4 mt-1 text-center">Para confirmar, escribar <strong>BORRAR</strong> a continuación</h3>
+<div class="container d-flex p-4 justify-content-center">
+    <aside class="col-sm-8">
+        <article>
+            <hr>
+            <form method="POST">
+                {% csrf_token %}
+                {% if messages %}
+                {% for message in messages %}
+                <div class="card-title mb-4 mt-1 text-center">{{ message|safe }}</div>
+                {% endfor %}
+                {% endif %}
+                <div class="form-group">
+                    <input name="deleteprofile" class="form-control" placeholder="" type="text">
+                </div>
+                <div>
+                    <button  href="../../"  type="submit" class="float-right btn btn-outline-danger">Eliminar</button>
+                </div>  
+
+
+
+            </form>
+        </article>
+    </aside>
+</div>
+{% endblock %}

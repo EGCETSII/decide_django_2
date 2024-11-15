@@ -1,0 +1,42 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container d-flex p-2 justify-content-center">
+<aside class="col-sm-4">
+ 
+    <div class="card">
+        <h4 class="card-title mb-4 mt-1 text-center">  Iniciar sesión</h4>
+    <article class="card-body">	
+        <p>
+            <a href="{% url 'social:begin' 'twitter' %}" class="btn btn-block btn-outline-info"> <i class="fab fa-twitter"></i>   Login via Twitter</a>
+            <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-block btn-outline-primary"> <i class="fab fa-facebook-f"></i>   Login via facebook</a>
+        </p>
+        <hr>
+        <form method="post">
+			{% csrf_token %}
+        <div class="form-group">
+            <input name="username" class="form-control" placeholder="Username" type="text" value="username">
+        </div> <!-- form-group// -->
+        <div class="form-group">
+            <input name ="password" value="password" class="form-control" placeholder="******" type="password">
+        </div> <!-- form-group// -->                                      
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block"> Login  </button>
+                </div> <!-- form-group// -->
+            </div>
+            <div class="col-md-6 text-right">
+                <a href="../registergui" class="float-right btn btn-outline-primary">Registrar usuario</a>
+            </div>                                            
+        </div> <!-- .row// -->                                                                  
+    </form>
+    </article>
+    </div> <!-- card.// -->
+    </aside> <!-- col.// -->
+	</div> <!-- container.// -->
+ 
+ 
+{% endblock %}

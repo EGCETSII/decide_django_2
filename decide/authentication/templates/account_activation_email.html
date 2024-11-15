@@ -1,0 +1,7 @@
+{% autoescape off %}
+    Hi {{ user.username }},
+    
+    Please, click below to activate your Decide account:
+    
+    http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+{% endautoescape %}

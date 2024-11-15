@@ -1,0 +1,53 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container d-flex p-2 justify-content-center">
+<aside class="col-sm-4">
+ 
+    <div class="card">
+        <h4 class="card-title mb-4 mt-1 text-center">  Datos de {{username}}</h4>
+    <article class="card-body">	
+        <hr>
+        <form method="POST">
+            {% csrf_token %}
+            {% if messages %}
+            {% for message in messages %}
+        <div class="card-title mb-4 mt-1 text-center">{{ message|safe }}</div>
+            {% endfor %}
+            {% endif %}
+        <div class="form-group">
+            <h6>Nombre de usuario:</h6>
+            <input name="username" class="form-control" placeholder="" type="text" value="{{username}}">
+        </div> <!-- form-group// -->
+        <div class="form-group">
+            <h6>Nombre:</h6>
+            <input name="first_name" class="form-control" placeholder="" type="text" value="{{first_name}}">
+        </div> <!-- form-group// -->    
+        <div class="form-group">
+            <h6>Apellidos:</h6>
+            <input name="last_name" class="form-control" placeholder="" type="text" value="{{last_name}}">
+        </div> <!-- form-group// -->   
+        <div class="form-group">
+            <h6>Email:</h6>
+            <input readonly name="email" class="form-control" placeholder="" type="text" value="{{email}}">
+        </div> <!-- form-group// -->  
+        <div>
+            <button  href="../profile/{{username}}"  type="submit" class="float-right btn btn-outline-primary">Actualizar usuario</button>
+        </div>       
+        <br><br><br>
+        <p>
+         <a href="{% url 'social:begin' 'twitter' %}" class="btn btn-block btn-outline-info"> <i class="fab fa-twitter"></i> Enlazar a Twitter</a>
+        </p>  
+        <p>
+         <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-block btn-outline-primary"> <i class="fab fa-facebook-f"></i> Enlazar a facebook</a>
+        </p>  
+    </form>
+    </article>
+    </div> <!-- card.// -->
+    </aside> <!-- col.// -->
+	</div> <!-- container.// -->
+ 
+ 
+{% endblock %}
